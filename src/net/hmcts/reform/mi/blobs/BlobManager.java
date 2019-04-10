@@ -138,11 +138,14 @@ public class BlobManager {
         CloudStorageAccount storageAccount = CloudStorageAccount.parse(this.connectionString);
 
     	CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
-    	MILogger.debugLine("account name = "+blobClient.getCredentials().getAccountName());
+    	MILogger.debugLine("[BlobManager] Storage account name = "+blobClient.getCredentials().getAccountName());
     	this.setStorageAccountName(blobClient.getCredentials().getAccountName());
 
     	this.blobContainer = blobClient.getContainerReference(this.containerName);
+    	MILogger.debugLine("[BlobManager] Container name = "+this.blobContainer.getName());
     	this.containerURI = this.blobContainer.getUri().toString();
+    	MILogger.debugLine("[BlobManager] Container URI = "+this.blobContainer.getUri());
+    	MILogger.debugLine("[BlobManager] (Storage URI = "+this.blobContainer.getStorageUri()+")");
 	}
 	
 	public void resetAppendBlob() {

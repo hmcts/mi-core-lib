@@ -11,10 +11,11 @@ import net.hmcts.reform.mi.utils.MILogger;
 
 public class PostgresDBManager {
 
-	public static final int MIPRESENTATION_PROFILE = 0;
+	public static final int P1_MIPRESENTATION_PROFILE = 0;
 	public static final int EXPORT_PROFILE = 1;
 	public static final int RORDEV_TEST_PROFILE = 2;
 	public static final int CTSC_MI_PRESENTATION_PROFILE = 3;
+	public static final int P1_MIPRESENTATION_TEST_PROFILE = 4;
 
 	private int connectionProfile = -1;
 
@@ -23,12 +24,14 @@ public class PostgresDBManager {
     
 	private Connection connection = null;
 
-	private String dbHostKey = "";
-	private String dbUserKey = "";
-	private String dbPasswordKey = "";
+	private String dbConnProfileName;
+	private String dbHostKey;
+	private String dbUserKey;
+	private String dbPasswordKey;
 	
-	private String dbPort = "";
-	private String dbName = "";
+	private String dbPort;
+	private String dbName;
+	private String schemaName;
 
 
 	public PostgresDBManager(int CONNECTION_PROFILE, KeyVaultHandler kvh) throws MIParamException {
@@ -42,33 +45,50 @@ public class PostgresDBManager {
 	private void initialiseProperties() throws MIParamException {
 		
 		switch (this.connectionProfile) {
-			case PostgresDBManager.MIPRESENTATION_PROFILE:
+			case PostgresDBManager.P1_MIPRESENTATION_PROFILE:
+				this.dbConnProfileName = "P1_MIPRESENTATION_PROFILE";
 				this.dbHostKey = "mi-postgresdb-phaseone-host-key";
 				this.dbUserKey = "mi-postgresdb-phaseone-mipres-user-key";
 				this.dbPasswordKey = "mi-postgresdb-phaseone-mipres-pw-key";
 				this.dbPort = "5432";
 				this.dbName = "miphaseone";
+				this.schemaName = "p1plus";
 				break;
 			case PostgresDBManager.EXPORT_PROFILE:
+				this.dbConnProfileName = "EXPORT_PROFILE";
 				this.dbHostKey = "mi-postgresdb-phaseone-host-key";
 				this.dbUserKey = "mi-postgresdb-phaseone-export-user-key";
 				this.dbPasswordKey = "mi-postgresdb-phaseone-export-pw-key";
 				this.dbPort = "5432";
 				this.dbName = "miphaseone";
+				this.schemaName = "p1plus";
 				break;
 			case PostgresDBManager.RORDEV_TEST_PROFILE:
+				this.dbConnProfileName = "RORDEV_TEST_PROFILE";
 				this.dbHostKey = "mi-postgresdb-misandbox-host-key";
 				this.dbUserKey = "mi-postgresdb-misandbox-rordev-user-key";
 				this.dbPasswordKey = "mi-postgresdb-misandbox-rordev-pw-key";
 				this.dbPort = "5432";
 				this.dbName = "ror_db";
+				this.schemaName = "test";
+				break;
+			case PostgresDBManager.P1_MIPRESENTATION_TEST_PROFILE:
+				this.dbConnProfileName = "P1_MIPRESENTATION_TEST_PROFILE";
+				this.dbHostKey = "mi-postgresdb-phaseonetest-host-key";
+				this.dbUserKey = "mi-postgresdb-phaseonetest-mipres-user-key";
+				this.dbPasswordKey = "mi-postgresdb-phaseonetest-mipres-pw-key";
+				this.dbPort = "5432";
+				this.dbName = "miphaseone";
+				this.schemaName = "p1plus";
 				break;
 			case PostgresDBManager.CTSC_MI_PRESENTATION_PROFILE:
+				this.dbConnProfileName = "CTSC_MI_PRESENTATION_PROFILE";
 				this.dbHostKey = "mi-postgresdb-ctsc-host-key";
 				this.dbUserKey = "mi-postgresdb-ctsc-mipres-user-key";
 				this.dbPasswordKey = "mi-postgresdb-ctsc-mipres-pw-key";
 				this.dbPort = "5432";
 				this.dbName = "ctsc";
+				this.schemaName = "p1plus";
 				break;
 			default:
 				throw new MIParamException(
@@ -79,21 +99,21 @@ public class PostgresDBManager {
 	
 	private String getConnectionString() throws MIParamException {
 
-		String url = "jdbc:postgresql://"+this.getDbHost()+":"+this.dbPort+"/"+this.dbName+"?user="+this.getDbUser()+"&password="+this.getDbPassword()+"&ssl=true";
-		return url;		
+		return  "jdbc:postgresql://"+this.getDbHost()+":"+this.dbPort+"/"+this.dbName+"?user="+this.getDbUser()+"&password="+this.getDbPassword()+"&ssl=true";
 	}
 
 	
 	
-	public Connection getConnection(int CONNECTION_PROFILE) throws SQLException, MIParamException {
+	public Connection getConnection() throws SQLException, MIParamException {
 
-		if (this.connection == null || this.connection.isClosed() || this.connectionProfile != CONNECTION_PROFILE) {
-			MILogger.debugLine("Initialise connection to Azure PostgreSQL!");
-			this.connectionProfile = CONNECTION_PROFILE;
-			this.initialiseProperties();
-			String url = this.getConnectionString();
-
-			this.connection = DriverManager.getConnection(url);
+		if (this.connection == null || this.connection.isClosed()) {
+			MILogger.debugLine();
+			MILogger.debugLine("Initialise connection to Azure PostgreSQL for profile "+this.dbConnProfileName+". ("+this.getDbHost()+")");
+			MILogger.debugLine("db host: <" +this.dbHostKey+"> - "+this.getDbHost());
+			MILogger.debugLine("db user: <" +this.dbUserKey+"> - "+this.getDbUser());
+			MILogger.debugLine("db pw: <" +this.dbPasswordKey+"> - "+"************");
+			MILogger.debugLine();
+			this.connection = DriverManager.getConnection(this.getConnectionString());
 		} 
 
 		return connection;
@@ -119,6 +139,14 @@ public class PostgresDBManager {
 
 	public String getDbName() {
 		return dbName;
+	}
+
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	public String getDbConnProfileName() {
+		return dbConnProfileName;
 	}	
 	
 }

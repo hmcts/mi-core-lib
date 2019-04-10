@@ -13,25 +13,27 @@ import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.blob.BlobInputStream;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
+
+
+import com.microsoft.azure.storage.blob.CloudAppendBlob;
 
 
 
-public class BlockBlobCSVReader implements MICSVReader {
+public class AppendBlobCSVReader implements MICSVReader {
 
 	private String storageConnectionStr; 
 	private String containerName; 
 	private String blobName;
 	
 	private BlobInputStream bis = null;
-	private CloudBlockBlob blockBlob = null;
+	private CloudAppendBlob appendBlob = null;
 
 	private Reader reader = null;
 	private CSVParser blobCSVParser = null;
 	
 	private Iterator<CSVRecord> csvIterator = null;
 	
-	public BlockBlobCSVReader(String storageConnectionStr, String containerName, String blobName) throws MIBlobException {
+	public AppendBlobCSVReader(String storageConnectionStr, String containerName, String blobName) throws MIBlobException {
 
 		if (containerName == null || containerName.equals("")) throw new MIBlobException("ERROR: Container name not set!");
     	if (blobName == null || blobName.equals("")) throw new MIBlobException("ERROR: Blob Name not set!");
@@ -72,7 +74,7 @@ public class BlockBlobCSVReader implements MICSVReader {
         	blobClient = storageAccount.createCloudBlobClient();
         	
         	blobContainer = blobClient.getContainerReference(this.containerName);
-        	return blobContainer.getBlockBlobReference(this.blobName).exists();
+        	return blobContainer.getAppendBlobReference(this.blobName).exists();
         			
     	} catch (Exception ex) {
     		throw new MIBlobException("Error checking if blob exists.", ex);
@@ -98,7 +100,7 @@ public class BlockBlobCSVReader implements MICSVReader {
     	} 
 
 	}
-
+	
 	private void initCSVParser() throws MIBlobException {
 		
     	CloudStorageAccount storageAccount = null;
@@ -112,16 +114,16 @@ public class BlockBlobCSVReader implements MICSVReader {
         	blobContainer = blobClient.getContainerReference(this.containerName);
         	if (!blobContainer.exists()) throw new MIBlobException("ERROR: Container "+containerName+" does not exist!");
         	
-    		this.blockBlob = blobContainer.getBlockBlobReference(this.blobName);
-        	if (!this.blockBlob.exists()) throw new MIBlobException("ERROR: Blob "+blobName+" does not exist!");
+    		this.appendBlob = blobContainer.getAppendBlobReference(this.blobName);
+        	if (!this.appendBlob.exists()) throw new MIBlobException("ERROR: Blob "+blobName+" does not exist!");
     		
-    		this.bis = this.blockBlob.openInputStream();
+    		this.bis = this.appendBlob.openInputStream();
     		this.reader = new InputStreamReader(bis);
     		this.blobCSVParser = new CSVParser(this.reader, CSVFormat.EXCEL.withHeader());
     		this.csvIterator = this.blobCSVParser.iterator();
         	
     	} catch (Exception ex) {
-    		this.blockBlob = null;
+    		this.appendBlob = null;
         	storageAccount = null;
         	blobClient = null;
         	blobContainer = null;
@@ -129,7 +131,7 @@ public class BlockBlobCSVReader implements MICSVReader {
 	    	this.storageConnectionStr = "";
 	    	this.containerName = "";
 	    	this.blobName = "";			
-    		throw new MIBlobException("Error initialising CSVParser in BlockBlobCSVReader.", ex);
+    		throw new MIBlobException("Error initialising CSVParser in AppendBlobCSVReader.", ex);
     	} 
 
 	}
