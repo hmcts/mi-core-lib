@@ -17,11 +17,14 @@ import com.microsoft.azure.storage.blob.CloudBlockBlob;
 
 
 
-public class BlockBlobCSVReader {
+public class BlockBlobCSVReader implements MICSVReader {
 
+	private String storageConnectionStr; 
+	private String containerName; 
+	private String blobName;
+	
 	private BlobInputStream bis = null;
 	private CloudBlockBlob blockBlob = null;
-	private String blobURI;
 
 	private Reader reader = null;
 	private CSVParser blobCSVParser = null;
@@ -33,89 +36,123 @@ public class BlockBlobCSVReader {
 		if (containerName == null || containerName.equals("")) throw new MIBlobException("ERROR: Container name not set!");
     	if (blobName == null || blobName.equals("")) throw new MIBlobException("ERROR: Blob Name not set!");
 
+    	this.storageConnectionStr = storageConnectionStr;
+    	this.containerName = containerName;
+    	this.blobName = blobName;
+    				
+	}
+	
+	public boolean containerExists() throws MIBlobException {
+		
     	CloudStorageAccount storageAccount = null;
     	CloudBlobClient blobClient = null;
     	CloudBlobContainer blobContainer = null;
 
     	try {
-        	storageAccount = CloudStorageAccount.parse(storageConnectionStr);
+        	storageAccount = CloudStorageAccount.parse(this.storageConnectionStr);
         	blobClient = storageAccount.createCloudBlobClient();
         	
-        	blobContainer = blobClient.getContainerReference(containerName);
-        	if (!blobContainer.exists()) throw new MIBlobException("ERROR: Container "+containerName+" does not exist!");
-        	
-    		this.blockBlob = blobContainer.getBlockBlobReference(blobName);
-        	if (!this.blockBlob.exists()) throw new MIBlobException("ERROR: Blob "+blobName+" does not exist!");
-    		
-        	this.initCSVParser();
-        	
-    		this.blobURI = this.blockBlob.getUri().toString();
-
-    		
-    	} catch (MIBlobException miBlobEx) {
-    		throw miBlobEx;
+        	blobContainer = blobClient.getContainerReference(this.containerName);
+        	return blobContainer.exists();
+        			
     	} catch (Exception ex) {
-    		this.blockBlob = null;
-        	storageAccount = null;
-        	blobClient = null;
-        	blobContainer = null;
-    		throw new MIBlobException("Error creating BlockBlobCSVReader.", ex);
+    		throw new MIBlobException("Error checking if container exists.", ex);
     	} 
-			
+
+	}
+	
+	public boolean blobExists() throws MIBlobException {
+		
+    	CloudStorageAccount storageAccount = null;
+    	CloudBlobClient blobClient = null;
+    	CloudBlobContainer blobContainer = null;
+
+    	try {
+        	storageAccount = CloudStorageAccount.parse(this.storageConnectionStr);
+        	blobClient = storageAccount.createCloudBlobClient();
+        	
+        	blobContainer = blobClient.getContainerReference(this.containerName);
+        	return blobContainer.getBlockBlobReference(this.blobName).exists();
+        			
+    	} catch (Exception ex) {
+    		throw new MIBlobException("Error checking if blob exists.", ex);
+    	} 
+
 	}
 	
 	private void initCSVParser() throws MIBlobException {
 		
+    	CloudStorageAccount storageAccount = null;
+    	CloudBlobClient blobClient = null;
+    	CloudBlobContainer blobContainer = null;
+
     	try {
+        	storageAccount = CloudStorageAccount.parse(this.storageConnectionStr);
+        	blobClient = storageAccount.createCloudBlobClient();
+        	
+        	blobContainer = blobClient.getContainerReference(this.containerName);
+        	if (!blobContainer.exists()) throw new MIBlobException("ERROR: Container "+containerName+" does not exist!");
+        	
+    		this.blockBlob = blobContainer.getBlockBlobReference(this.blobName);
+        	if (!this.blockBlob.exists()) throw new MIBlobException("ERROR: Blob "+blobName+" does not exist!");
+    		
     		this.bis = this.blockBlob.openInputStream();
     		this.reader = new InputStreamReader(bis);
     		this.blobCSVParser = new CSVParser(this.reader, CSVFormat.EXCEL.withHeader());
     		this.csvIterator = this.blobCSVParser.iterator();
         	
     	} catch (Exception ex) {
+    		this.blockBlob = null;
+        	storageAccount = null;
+        	blobClient = null;
+        	blobContainer = null;
+			// We don't want this object being reused once closed so clear the params as well
+	    	this.storageConnectionStr = "";
+	    	this.containerName = "";
+	    	this.blobName = "";			
     		throw new MIBlobException("Error initialising CSVParser in BlockBlobCSVReader.", ex);
     	} 
+
 	}
 	
 	public boolean hasNext() throws MIBlobException {
-		if (this.blobCSVParser == null) throw new MIBlobException("CSVParser is not initialised.");
-		if (this.blobCSVParser.isClosed()) throw new MIBlobException("CSVParser is not initialised.");
+
+		if (this.blobCSVParser == null) this.initCSVParser();
+		
+		if (this.blobCSVParser.isClosed()) throw new MIBlobException("CSVParser is closed.");
 		if (this.csvIterator == null) throw new MIBlobException("CSVIterator is not initialised.");
 		
 		return this.csvIterator.hasNext();
 	}
 	
 	public CSVRecord next() throws MIBlobException {
-		if (this.blobCSVParser == null) throw new MIBlobException("CSVParser is not initialised.");
-		if (this.blobCSVParser.isClosed()) throw new MIBlobException("CSVParser is not initialised.");
+		
+		if (this.blobCSVParser == null) this.initCSVParser();
+		
+		if (this.blobCSVParser.isClosed()) throw new MIBlobException("CSVParser is closed.");
 		if (this.csvIterator == null) throw new MIBlobException("CSVIterator is not initialised.");
 		
 		return this.csvIterator.next();		
 	}
 	
 	public void close() throws MIBlobException {
-		if (this.bis == null) throw new MIBlobException("BlobInputStream is not initialised.");
-		if (this.blobCSVParser == null) throw new MIBlobException("CSVParser is not initialised.");
-		if (this.blobCSVParser.isClosed()) throw new MIBlobException("CSVParser is not initialised.");
-		if (this.csvIterator == null) throw new MIBlobException("CSVIterator is not initialised.");
-
+		
 		try {
-			this.blobCSVParser.close();
-			this.reader.close();
-			this.bis.close();
-			this.blobCSVParser = null;
-			this.reader = null;
-			this.bis = null;
+			if (this.blobCSVParser != null && !this.blobCSVParser.isClosed()) this.blobCSVParser.close(); this.blobCSVParser = null;
+			if (this.reader != null) this.reader.close(); this.reader = null;
+			if (this.bis != null) this.bis.close(); this.bis = null;			
+			this.csvIterator = null;
 		} catch (IOException ioEx) {
 			throw new MIBlobException("Wrapped exception caught trying to close resources in "+this.getClass().getSimpleName(),ioEx);
+		} finally {
+			// We don't want this object being reused once closed so clear the params as well
+	    	this.storageConnectionStr = "";
+	    	this.containerName = "";
+	    	this.blobName = "";			
 		}
+		
+
 	}
 	
-	
-
-	public String getBlobURI() {
-		return blobURI;
-	}
-
 
 }

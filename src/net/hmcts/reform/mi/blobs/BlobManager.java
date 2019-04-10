@@ -165,7 +165,7 @@ public class BlobManager {
 			// Need to uncomment this to run locally, make sure 'HMCTS-MI-PARAMS Project is on the build path - NOT Maven!!
 			//			kvh.setSpCredentials(KeyVaultProperties.getSPCredentials());
 			
-			BlobManager bm = new BlobManager(new StagingProperties(StagingProperties.STAGING_TEST,kvh).getStorageConnectionString());
+			BlobManager bm = new BlobManager(new StagingProperties(StagingProperties.STAGING_TEST,StagingProperties.NOTIFY_DIVORCE_API,kvh).getStorageConnectionString());
 			bm.setContainerName("notifystagingdivorce");	
 			bm.setBlobName("20190107");
 			BlobOutputStream bos = bm.getBlockBlobOutputStream();
