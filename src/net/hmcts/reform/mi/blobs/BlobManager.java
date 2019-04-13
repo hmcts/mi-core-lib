@@ -145,7 +145,7 @@ public class BlobManager {
     	MILogger.debugLine("[BlobManager] Container name = "+this.blobContainer.getName());
     	this.containerURI = this.blobContainer.getUri().toString();
     	MILogger.debugLine("[BlobManager] Container URI = "+this.blobContainer.getUri());
-    	MILogger.debugLine("[BlobManager] (Storage URI = "+this.blobContainer.getStorageUri()+")");
+//    	MILogger.debugLine("[BlobManager] (Storage URI = "+this.blobContainer.getStorageUri()+")");
 	}
 	
 	public void resetAppendBlob() {
