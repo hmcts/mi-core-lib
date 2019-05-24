@@ -16,6 +16,7 @@ public class KeyVaultHandler {
 	private static final String KEYVAULT_URL_PATTERN = "https://######.vault.azure.net/"; 
 	
 	private String keyVaultURL;
+	private KeyVaultClient kvClient;
 	
 	// This allows the KVH to be used with explicit Service Principal credentials, eg. if running locally. 
 	private boolean spConnect = false;
@@ -24,8 +25,17 @@ public class KeyVaultHandler {
 	
 	public KeyVaultHandler(String keyVaultName) {	
 		this.keyVaultURL = KeyVaultHandler.KEYVAULT_URL_PATTERN.replaceFirst("######", keyVaultName);
+		
+		MSICredentials credentials = new MSICredentials(AzureEnvironment.AZURE);
+		this.kvClient = new KeyVaultClient(credentials);			
+		 
 	}
 		
+	/** 
+	 * I had this create the client for each call previously but was having some problems so added it to the class in constructor
+	 * instead. have left this method here in case need to switch back.
+	 * 
+	 */
 	private KeyVaultClient getKeyVaultClient() {
 
 		if (this.spConnect) {
@@ -34,6 +44,7 @@ public class KeyVaultHandler {
 		} else {
 			MSICredentials credentials = new MSICredentials(AzureEnvironment.AZURE);
 			KeyVaultClient kvClient = new KeyVaultClient(credentials);			
+			
 			return kvClient;			
 		}
 	}
@@ -42,7 +53,10 @@ public class KeyVaultHandler {
 		
 		String secretURL = this.keyVaultURL+"secrets/"+secretKey;
 //		MILogger.debugLine("Try to retrieve secret - "+secretURL);
-		return this.getKeyVaultClient().getSecret(secretURL).value();
+		
+		
+		return this.kvClient.getSecret(secretURL).value();
+//		return this.getKeyVaultClient().getSecret(secretURL).value();
 
 	}
 	
@@ -92,13 +106,13 @@ public class KeyVaultHandler {
 		
 	}
 
-	public void setSpConnect(boolean spConnect) {
-		this.spConnect = spConnect;
-	}
 
 	public void setSpCredentials(ServiceClientCredentials spCredentials) {
+
 		this.spCredentials = spCredentials;
-		this.setSpConnect(true);
+		this.spConnect = true;
+		this.kvClient = null;
+		this.kvClient = new KeyVaultClient(this.spCredentials);
 	}
 
 	public String getKeyVaultURL() {

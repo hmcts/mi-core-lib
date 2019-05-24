@@ -30,6 +30,8 @@ public class StagingProperties {
     public static final int NOTIFY_TIDAM_API = 405; 
 
     public static final int EXE_CTSC_INTERACTIONS_API = 501;
+
+    public static final int BILL_API = 999;
     
     
     private String stagingContainerName;
@@ -122,6 +124,9 @@ public class StagingProperties {
             break;
         case StagingProperties.PAYMENT_CREDIT_CMC_EMAIL:  
         	this.stagingContainerName = "paymentstagingcreditcmc";
+            break;
+        case StagingProperties.BILL_API:  
+        	this.stagingContainerName = "billapidata";
             break;
         default: 
         	throw new MIParamException("Atttempt to configure Staging Data Source Properties with unknown DS Profile ID '"+this.dsProfileID+"'.");

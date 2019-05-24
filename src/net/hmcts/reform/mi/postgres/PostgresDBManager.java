@@ -13,9 +13,13 @@ public class PostgresDBManager {
 
 	public static final int P1_MIPRESENTATION_PROFILE = 0;
 	public static final int EXPORT_PROFILE = 1;
-	public static final int RORDEV_TEST_PROFILE = 2;
-	public static final int CTSC_MI_PRESENTATION_PROFILE = 3;
-	public static final int P1_MIPRESENTATION_TEST_PROFILE = 4;
+	public static final int RORDEV_ROR_PROFILE = 2;
+	public static final int RORDEV_VIEW_PROFILE = 3;
+	public static final int RORDEV_TEST_PROFILE = 4;
+	public static final int CTSC_MI_PRESENTATION_PROFILE = 5;
+	public static final int P1_MIPRESENTATION_TEST_PROFILE = 6;
+	public static final int P1_MAN_MIPRESENTATION_PROFILE = 7;
+	public static final int P1_OLD_MIPRESENTATION_PROFILE = 8;
 
 	private int connectionProfile = -1;
 
@@ -63,6 +67,24 @@ public class PostgresDBManager {
 				this.dbName = "miphaseone";
 				this.schemaName = "p1plus";
 				break;
+			case PostgresDBManager.RORDEV_ROR_PROFILE:
+				this.dbConnProfileName = "RORDEV_ROR_PROFILE";
+				this.dbHostKey = "mi-postgresdb-misandbox-host-key";
+				this.dbUserKey = "mi-postgresdb-misandbox-rordev-user-key";
+				this.dbPasswordKey = "mi-postgresdb-misandbox-rordev-pw-key";
+				this.dbPort = "5432";
+				this.dbName = "ror_db";
+				this.schemaName = "ror";
+				break;
+			case PostgresDBManager.RORDEV_VIEW_PROFILE:
+				this.dbConnProfileName = "RORDEV_VIEW_PROFILE";
+				this.dbHostKey = "mi-postgresdb-misandbox-host-key";
+				this.dbUserKey = "mi-postgresdb-misandbox-rordev-user-key";
+				this.dbPasswordKey = "mi-postgresdb-misandbox-rordev-pw-key";
+				this.dbPort = "5432";
+				this.dbName = "ror_db";
+				this.schemaName = "view";
+				break;
 			case PostgresDBManager.RORDEV_TEST_PROFILE:
 				this.dbConnProfileName = "RORDEV_TEST_PROFILE";
 				this.dbHostKey = "mi-postgresdb-misandbox-host-key";
@@ -89,6 +111,24 @@ public class PostgresDBManager {
 				this.dbPort = "5432";
 				this.dbName = "ctsc";
 				this.schemaName = "p1plus";
+				break;
+			case PostgresDBManager.P1_MAN_MIPRESENTATION_PROFILE:
+				this.dbConnProfileName = "P1_MAN_MIPRESENTATION_PROFILE";
+				this.dbHostKey = "mi-postgresdb-phaseone-host-key";
+				this.dbUserKey = "mi-postgresdb-phaseone-mipres-user-key";
+				this.dbPasswordKey = "mi-postgresdb-phaseone-mipres-pw-key";
+				this.dbPort = "5432";
+				this.dbName = "miphaseone";
+				this.schemaName = "manual";
+				break;
+			case PostgresDBManager.P1_OLD_MIPRESENTATION_PROFILE:
+				this.dbConnProfileName = "P1_OLD_MIPRESENTATION_PROFILE";
+				this.dbHostKey = "mi-postgresdb-phaseone-host-key";
+				this.dbUserKey = "mi-postgresdb-phaseone-mipres-user-key";
+				this.dbPasswordKey = "mi-postgresdb-phaseone-mipres-pw-key";
+				this.dbPort = "5432";
+				this.dbName = "miphaseone";
+				this.schemaName = "p1";
 				break;
 			default:
 				throw new MIParamException(
