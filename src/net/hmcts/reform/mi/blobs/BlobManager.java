@@ -3,6 +3,8 @@ package net.hmcts.reform.mi.blobs;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -15,6 +17,8 @@ import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.azure.storage.blob.ListBlobItem;
+import com.microsoft.azure.storage.blob.SharedAccessBlobPermissions;
+import com.microsoft.azure.storage.blob.SharedAccessBlobPolicy;
 
 import net.hmcts.reform.mi.params.StagingProperties;
 import net.hmcts.reform.mi.utils.KeyVaultHandler;
@@ -157,6 +161,35 @@ public class BlobManager {
 	public void setAppendBlobOld() {
 		this.newAppendBlob = false;
 	}
+	
+	
+	public String genSASForBlockBlob(int expiryHours) throws StorageException, URISyntaxException, MIBlobException, InvalidKeyException {
+		
+		if (this.blobContainer == null || !this.blobContainer.exists()) throw new MIBlobException("ERROR: Container "+this.containerName+" does not exist!");
+		if (this.blobName == null || this.blobName.equals("") ) throw new MIBlobException("ERROR: Blob Name not set in BlobManager!");
+		
+        CloudBlockBlob blockBlob = this.blobContainer.getBlockBlobReference(this.blobName);
+		if (!blockBlob.exists()) {
+			MILogger.errLine("An error has occurred when trying to check if the Blob "+this.containerURI+"/"+this.blobName+" exists before generating the SAS.");
+			MILogger.errLine("This can be caused by calling this method before the Blob has been fully created, eg. by closing the CSVPrinter once all records are written!");
+			MILogger.errLine("");
+			MILogger.errLine("");
+			throw new MIBlobException("ERROR: Blob "+this.containerURI+"/"+this.blobName+" does not exist!");
+		}
+        
+        SharedAccessBlobPolicy blobAccessPolicy = new SharedAccessBlobPolicy();
+        Calendar now = Calendar.getInstance();
+        Calendar expiry = Calendar.getInstance();
+        expiry.add(Calendar.HOUR, expiryHours);
+        blobAccessPolicy.setSharedAccessStartTime(now.getTime());
+        blobAccessPolicy.setSharedAccessExpiryTime(expiry.getTime());
+//        blobAccessPolicy.setPermissions(EnumSet.of(SharedAccessBlobPermissions.LIST,SharedAccessBlobPermissions.READ));
+        blobAccessPolicy.setPermissions(EnumSet.of(SharedAccessBlobPermissions.READ));
+
+        return blockBlob.generateSharedAccessSignature(blobAccessPolicy, null);
+	
+	}	
+
 	
 	public static void main(String[] args) {
 
