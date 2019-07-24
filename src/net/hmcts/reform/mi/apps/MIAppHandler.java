@@ -35,7 +35,7 @@ public abstract class MIAppHandler {
 		
 	protected void initResultMessage() {
 		String timestamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new java.util.Date());
-		this.resultMessage = nl+this.getClass().getName()+" executed at "+timestamp +nl;
+		this.resultMessage = nl+this.getClass().getName()+" executed at "+timestamp +" (UTC) "+nl;
 
 		if (this.params != null && this.params.size() > 0) {
 			
