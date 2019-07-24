@@ -20,6 +20,7 @@ public class PostgresDBManager {
 	public static final int P1_MIPRESENTATION_TEST_PROFILE = 6;
 	public static final int P1_MAN_MIPRESENTATION_PROFILE = 7;
 	public static final int P1_OLD_MIPRESENTATION_PROFILE = 8;
+	public static final int CTSC_MI_EXPORT_PROFILE = 9;
 
 	private int connectionProfile = -1;
 
@@ -130,6 +131,16 @@ public class PostgresDBManager {
 				this.dbName = "miphaseone";
 				this.schemaName = "p1";
 				break;
+			case PostgresDBManager.CTSC_MI_EXPORT_PROFILE:
+				this.dbConnProfileName = "CTSC_MI_EXPORT_PROFILE";
+				this.dbHostKey = "mi-postgresdb-phaseone-host-key";
+				this.dbUserKey = "mi-postgresdb-phaseone-ctsc-user-key";
+				this.dbPasswordKey = "mi-postgresdb-phaseone-ctsc-pw-key";
+				this.dbPort = "5432";
+				this.dbName = "miphaseone";
+				this.schemaName = "p1plus";
+				break;
+
 			default:
 				throw new MIParamException(
 						"Atttempt to configure DB connection with unknown profile '" + this.connectionProfile + "'.");
