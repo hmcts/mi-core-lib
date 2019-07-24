@@ -228,6 +228,7 @@ public class BlobManager {
 		return (this.blobContainer != null && this.blobContainer.exists());
 	}	
 	
+	
 	public Iterable<ListBlobItem> listContainerBlobs() {
 		return this.blobContainer.listBlobs();
 	}
@@ -239,6 +240,14 @@ public class BlobManager {
 	public void setBlobName(String blobName) {
 		this.blobName = blobName;
 	}
+
+	public boolean blobExists() throws StorageException, MIBlobException, URISyntaxException {
+		
+		if (this.blobContainer == null || !this.blobContainer.exists()) throw new MIBlobException("ERROR: Container "+this.containerName+" does not exist!");
+		if (this.blobName == null || this.blobName.equals("")) throw new MIBlobException("ERROR: Blob Name not set in BlobManager!");
+		
+		return this.blobContainer.getBlockBlobReference(this.blobName).exists();
+	}	
 	
 	public String getContentType() {
 		return contentType;
