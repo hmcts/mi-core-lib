@@ -18,7 +18,12 @@ public class LakeProperties {
     public static final int CCD_CASE_DIVORCE = 101; 
     public static final int CCD_CASE_PROBATE_GOR = 102; 
     public static final int CCD_CASE_PROBATE_CAV = 103; 
+    public static final int CCD_CASE_PROBATE_STS = 104; 
+    public static final int CCD_CASE_PROBATE_WLL = 105; 
+    public static final int CCD_CASE_ET_SINGLE = 106; 
+    public static final int CCD_CASE_ET_MULTIPLE = 107; 
 
+    
     public static final int PAYMENTS = 301;   
     
     public static final int NOTIFY = 401; 
@@ -44,7 +49,13 @@ public class LakeProperties {
 	private final String[] CCD_METADATA_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt","extraction_date","ce_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_event_id","ce_event_name","ce_state_id","ce_state_name","cd_created_date","cd_last_modified","cd_jurisdiction","cd_reference" };
 	private final String[] CCD_DIVORCE_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt","extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_divorce_unit","ce_contact_confidential","ce_need_help_with_fees","ce_financial_order","ce_reason_for_divorce","ce_divorce_claim_from","ce_adultery_wish_to_name","ce_link_case_reference" };
 	private final String[] CCD_PROBATE_GOR_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_app_type","ce_app_sub_date","ce_reg_location","ce_will_exists","ce_iht_net_value","ce_iht_gross_value","ce_deceased_dod","ce_deceased_other_names","ce_case_stop_reason","ce_case_stop_reason_cnt","ce_gor_case_type","ce_paperform_ind","ce_grantissued_date","ce_leg_record_id" };
-	private final String[] CCD_PROBATE_CAV_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_expiry_date","ce_app_type","ce_reg_location","ce_deceased_dod" };
+
+	private final String[] CCD_PROBATE_CAV_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_expiry_date","ce_app_type","ce_reg_location","ce_deceased_dod","ce_leg_record_id","ce_app_sub_date","ce_paperform" };
+	private final String[] CCD_PROBATE_STS_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_app_type","ce_reg_location","ce_expiry_date","ce_leg_record_id","ce_app_sub_date" };
+	private final String[] CCD_PROBATE_WLL_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_app_type","ce_reg_location","ce_lodgement_type","ce_lodgement_date","ce_withdrawal_reason","ce_leg_record_id" };
+
+	private final String[] CCD_ET_SINGLE_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_case_state","ce_case_type","ce_receipt_date","ce_position_type","ce_multiple_ref","ce_ethos_case_ref" };
+	private final String[] CCD_ET_MULTIPLE_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt", "extraction_date","case_metadata_event_id","ce_case_data_id","ce_created_date","ce_case_type_id","ce_case_type_version","ce_blk_case_title","ce_multiple_ref","ce_multiple_coll_cnt" };
 
 	private final String[] PAYMENTS_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt","service","payment_group_reference","payment_reference","ccd_reference","case_reference","organisation_name","customer_internal_reference","pba_number","payment_created_date","payment_status_updated_date","payment_status","payment_channel","payment_method","payment_amount","site_id","fee_code","version","calculated_amount","memo_line","nac","fee_volume" };
 	private final String[] NOTIFY_LAKE_CSVHEADERS = { "md_uuid","md_staging_version","md_insert_time","md_source_id","md_retention","md_retention_exempt","notification_id","service","reference","type","template_id","template_version","template_name","status","created_timestamp","sent_timestamp","completed_timestamp","estimated_timestamp" };
@@ -106,6 +117,30 @@ public class LakeProperties {
         	this.dataSortFieldKey = "ce_created_date";
         	this.dataSortFieldFormat = "yyyy-MM";
         	this.dataCSVHeaders = CCD_PROBATE_CAV_LAKE_CSVHEADERS;
+            break;
+        case LakeProperties.CCD_CASE_PROBATE_STS:  
+        	this.lakeContainerName = "ccdprobatestsp1plus";
+        	this.dataSortFieldKey = "ce_created_date";
+        	this.dataSortFieldFormat = "yyyy-MM";
+        	this.dataCSVHeaders = CCD_PROBATE_STS_LAKE_CSVHEADERS;
+            break;
+        case LakeProperties.CCD_CASE_PROBATE_WLL:  
+        	this.lakeContainerName = "ccdprobatewllp1plus";
+        	this.dataSortFieldKey = "ce_created_date";
+        	this.dataSortFieldFormat = "yyyy-MM";
+        	this.dataCSVHeaders = CCD_PROBATE_WLL_LAKE_CSVHEADERS;
+            break;
+        case LakeProperties.CCD_CASE_ET_SINGLE:  
+        	this.lakeContainerName = "ccdetsinglep1plus";
+        	this.dataSortFieldKey = "ce_created_date";
+        	this.dataSortFieldFormat = "yyyy-MM";
+        	this.dataCSVHeaders = CCD_ET_SINGLE_LAKE_CSVHEADERS;
+            break;
+        case LakeProperties.CCD_CASE_ET_MULTIPLE:  
+        	this.lakeContainerName = "ccdetmultiplep1plus";
+        	this.dataSortFieldKey = "ce_created_date";
+        	this.dataSortFieldFormat = "yyyy-MM";
+        	this.dataCSVHeaders = CCD_ET_MULTIPLE_LAKE_CSVHEADERS;
             break;
         case LakeProperties.PAYMENTS:  
         	this.lakeContainerName = "paymentsp1plus";

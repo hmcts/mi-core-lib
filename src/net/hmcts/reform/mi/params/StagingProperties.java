@@ -18,10 +18,18 @@ public class StagingProperties {
     public static final int CCD_DIVORCE_EMAIL = 101; 
     public static final int CCD_PROBATE_GOR_EMAIL = 102; 
     public static final int CCD_PROBATE_CAV_EMAIL = 103; 
+    public static final int CCD_PROBATE_STS_EMAIL = 104; 
+    public static final int CCD_PROBATE_WLL_EMAIL = 105; 
+    public static final int CCD_ET_SINGLE_EMAIL = 106; 
+    public static final int CCD_ET_MULTIPLE_EMAIL = 107; 
 
     public static final int PAYMENT_CARD_EMAIL = 301; 
     public static final int PAYMENT_CREDIT_DIVORCE_EMAIL = 302; 
     public static final int PAYMENT_CREDIT_CMC_EMAIL = 303;  
+    public static final int PAYMENT_CREDIT_PROBATE_EMAIL = 304;  
+    public static final int PAYMENT_CREDIT_FINREM_EMAIL = 305;  
+    public static final int PAYMENT_DIGITAL_BAR_EMAIL = 306;  
+   
     
     public static final int NOTIFY_DIVORCE_API = 401; 
     public static final int NOTIFY_PROBATE_API = 402; 
@@ -98,6 +106,18 @@ public class StagingProperties {
         case StagingProperties.CCD_PROBATE_CAV_EMAIL:  
         	this.stagingContainerName = "ccdstagingprobatecav";
             break;
+        case StagingProperties.CCD_PROBATE_STS_EMAIL:  
+        	this.stagingContainerName = "ccdstagingprobatests";
+            break;
+        case StagingProperties.CCD_PROBATE_WLL_EMAIL:  
+        	this.stagingContainerName = "ccdstagingprobatewll";
+            break;
+        case StagingProperties.CCD_ET_SINGLE_EMAIL:  
+        	this.stagingContainerName = "ccdstagingetsingle";
+            break;
+        case StagingProperties.CCD_ET_MULTIPLE_EMAIL:  
+        	this.stagingContainerName = "ccdstagingetmultiple";
+            break;
         case StagingProperties.EXE_CTSC_INTERACTIONS_API:  
         	this.stagingContainerName = "exestaging";
             break;
@@ -124,6 +144,15 @@ public class StagingProperties {
             break;
         case StagingProperties.PAYMENT_CREDIT_CMC_EMAIL:  
         	this.stagingContainerName = "paymentstagingcreditcmc";
+            break;
+        case StagingProperties.PAYMENT_CREDIT_PROBATE_EMAIL:  
+        	this.stagingContainerName = "paymentstagingcreditprobate";
+            break;
+        case StagingProperties.PAYMENT_CREDIT_FINREM_EMAIL:  
+        	this.stagingContainerName = "paymentstagingcreditfinrem";
+            break;
+        case StagingProperties.PAYMENT_DIGITAL_BAR_EMAIL:  
+        	this.stagingContainerName = "paymentstagingdigitalbar";
             break;
         case StagingProperties.BILL_API:  
         	this.stagingContainerName = "billapidata";
