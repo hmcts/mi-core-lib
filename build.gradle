@@ -5,8 +5,12 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '0.0.1-SNAPSHOT'
+version = '2.0.0'
 sourceCompatibility = '11'
+
+bootJar {
+	archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+}
 
 repositories {
 	mavenCentral()
