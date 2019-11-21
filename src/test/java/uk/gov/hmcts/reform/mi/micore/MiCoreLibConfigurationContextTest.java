@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MiCoreApplicationTests {
+public class MiCoreLibConfigurationContextTest {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    public void contextLoads() {}
 }
