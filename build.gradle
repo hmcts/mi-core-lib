@@ -1,26 +1,118 @@
 plugins {
+	id 'checkstyle'
+	id 'pmd'
+	id 'jacoco'
 	id 'org.springframework.boot' version '2.2.1.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
+	id 'org.owasp.dependencycheck' version '5.2.4'
+	id 'com.github.ben-manes.versions' version '0.27.0'
+	id 'org.sonarqube' version '2.8'
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '2.0.0'
+version = '1.1.0'
 sourceCompatibility = '11'
 
 bootJar {
+	enabled = true
+}
+
+jar {
+	enabled = false
 	archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
+checkstyle {
+	maxWarnings = 0
+	toolVersion = '8.24'
+	// need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
+	configDir = new File(rootDir, 'config/checkstyle')
+}
+
+pmd {
+	toolVersion = "6.18.0"
+	sourceSets = [sourceSets.main, sourceSets.test]
+	reportsDir = file("$project.buildDir/reports/pmd")
+	// https://github.com/pmd/pmd/issues/876
+	ruleSets = []
+	ruleSetFiles = files("config/pmd/ruleset.xml")
+}
+
+jacocoTestReport {
+	executionData(test)
+	reports {
+		xml.enabled = true
+		csv.enabled = false
+		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+	}
+}
+
+project.tasks['sonarqube'].dependsOn test
+
+sonarqube {
+	properties {
+		property "sonar.projectName", "Reform :: spring-boot-template"
+		property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+		property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+	}
+}
+
+dependencyUpdates.resolutionStrategy {
+	componentSelection { rules ->
+		rules.all {
+			def isNonStable = { String version ->
+				['alpha', 'beta', 'rc', 'cr', 'm', 'preview', 'b', 'ea'].any { qualifier ->
+					version ==~ /(?i).*[.-]\$qualifier[.\\d-+]*/
+				}
+			}
+			if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+				selection.reject('Release candidate')
+			}
+		}
+	}
+}
+
+// https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
+dependencyCheck {
+	// Specifies if the build should be failed if a CVSS score above a specified level is identified.
+	// range of 0-10 fails the build, anything greater and it doesn't fail the build
+	failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
+	suppressionFile = 'config/owasp/suppressions.xml'
+}
+
+dependencyManagement {
+	dependencies {
+		dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
+		// CVE-2018-10237 - Unbounded memory allocation
+		dependencySet(group: 'com.google.guava', version: '28.1-jre') {
+			entry 'guava'
+		}
+	}
+}
+
 repositories {
+	mavenLocal()
+	jcenter()
 	mavenCentral()
+	maven {
+		url "https://dl.bintray.com/hmcts/hmcts-maven"
+	}
 }
 
 ext {
 	set('azureVersion', "2.2.0")
 }
 
+def versions = [
+	azure			: '12.0.0',
+	junit           : '5.5.0',
+	mockito			: '3.1.0',
+	reformLogging   : '5.1.1'
+]
+
 dependencies {
+	// Spring Boot Initial Dependencies
 	implementation 'com.microsoft.azure:azure-active-directory-spring-boot-starter'
 	implementation 'com.microsoft.azure:azure-keyvault-secrets-spring-boot-starter'
 	implementation 'com.microsoft.azure:azure-spring-boot-starter'
@@ -28,6 +120,24 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+
+	// Azure Dependencies
+	compile group: 'com.azure', name: 'azure-storage-blob', version: versions.azure
+	compile group: 'com.azure', name: 'azure-storage-common', version: versions.azure
+
+	// Legacy Dependencies
+	compile group: 'com.microsoft.azure', name: 'azure-storage', version: '8.4.0'
+
+	// Reform Dependencies
+	compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
+	compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+
+	// Test Dependencies
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
+	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
+
+	testCompile group: 'org.mockito', name: 'mockito-core', version: versions.mockito
+	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: versions.mockito
 }
 
 dependencyManagement {

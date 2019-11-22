@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.mi.micore.Identity;
+package uk.gov.hmcts.reform.mi.micore.identity;
 
 /**
  * Interface for Azure authenticating credential methods.
