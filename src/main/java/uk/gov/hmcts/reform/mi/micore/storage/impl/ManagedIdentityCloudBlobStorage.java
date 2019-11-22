@@ -33,8 +33,8 @@ public class ManagedIdentityCloudBlobStorage implements Storage {
     @Autowired
     public ManagedIdentityCloudBlobStorage(AzureClientHelper azureClientHelper,
                                            ManagedIdentityCredentials managedIdentityCredentials) {
-       this.azureClientHelper = azureClientHelper;
-       this.managedIdentityCredentials = managedIdentityCredentials;
+        this.azureClientHelper = azureClientHelper;
+        this.managedIdentityCredentials = managedIdentityCredentials;
     }
 
     public CloudBlobClient retrieveBlobServiceClient(String storageAccountName) {
@@ -94,7 +94,11 @@ public class ManagedIdentityCloudBlobStorage implements Storage {
         }
     }
 
-    public void downloadBlobToFile(String storageAccountName, String containerName, String blobName, String outputPath) {
+    public void downloadBlobToFile(String storageAccountName,
+                                   String containerName,
+                                   String blobName,
+                                   String outputPath) {
+
         try {
             getBlob(storageAccountName, containerName, blobName).downloadToFile(outputPath);
         } catch (IOException | StorageException e) {
@@ -102,7 +106,11 @@ public class ManagedIdentityCloudBlobStorage implements Storage {
         }
     }
 
-    public void uploadBlobToContainer(String storageAccountName, String containerName, String blobName, String inputPath) {
+    public void uploadBlobToContainer(String storageAccountName,
+                                      String containerName,
+                                      String blobName,
+                                      String inputPath) {
+
         try {
             getBlob(storageAccountName, containerName, blobName).uploadFromFile(inputPath);
         } catch (IOException | StorageException e) {

@@ -23,7 +23,7 @@ public class AzureWrapper {
 
     // Identity Section
 
-    public MSICredentials getMSICredentials(AzureEnvironment azureEnvironment) {
+    public MSICredentials getMsiCredentials(AzureEnvironment azureEnvironment) {
         return new MSICredentials(azureEnvironment);
     }
 
@@ -54,7 +54,9 @@ public class AzureWrapper {
         return new CloudBlobClient(baseUri, credentials);
     }
 
-    public CloudStorageAccount getCloudStorageAccount(String connectionString) throws URISyntaxException, InvalidKeyException {
+    public CloudStorageAccount getCloudStorageAccount(String connectionString)
+        throws URISyntaxException, InvalidKeyException {
+
         return CloudStorageAccount.parse(connectionString);
     }
 

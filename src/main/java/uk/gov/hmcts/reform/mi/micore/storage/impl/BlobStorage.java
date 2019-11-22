@@ -60,11 +60,19 @@ public class BlobStorage implements Storage {
         }
     }
 
-    public BlobProperties downloadBlobToFile(BlobServiceClient client, String containerName, String blobName, String outputPath) {
+    public BlobProperties downloadBlobToFile(BlobServiceClient client,
+                                             String containerName,
+                                             String blobName,
+                                             String outputPath) {
+
         return getBlob(client, containerName, blobName).downloadToFile(outputPath);
     }
 
-    public void uploadBlobToContainer(BlobServiceClient client, String containerName, String blobName, String inputPath) {
+    public void uploadBlobToContainer(BlobServiceClient client,
+                                      String containerName,
+                                      String blobName,
+                                      String inputPath) {
+
         getBlob(client, containerName, blobName).uploadFromFile(inputPath);
     }
 }
