@@ -6,6 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class MiCoreLibConfigurationContextTest {
 
+    @SuppressWarnings("PMD")
     @Test
-    public void contextLoads() {}
+    public void contextLoads() {
+        // Spring Boot Test annotation checks context will load.
+    }
 }

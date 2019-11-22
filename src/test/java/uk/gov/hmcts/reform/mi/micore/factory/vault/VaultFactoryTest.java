@@ -1,12 +1,11 @@
 package uk.gov.hmcts.reform.mi.micore.factory.vault;
 
-import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.keyvault.KeyVaultClient;
+import com.microsoft.rest.credentials.ServiceClientCredentials;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import uk.gov.hmcts.reform.mi.micore.identity.impl.ManagedIdentityCredentials;
 import uk.gov.hmcts.reform.mi.micore.utils.AzureWrapper;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,17 +19,15 @@ public class VaultFactoryTest {
     @Mock
     private AzureWrapper azureWrapper;
 
-    @Mock
-    private ManagedIdentityCredentials managedIdentityCredentials;
-
     @InjectMocks
     private VaultFactory vaultFactory;
 
     @Test
     public void givenRequestForKeyVaultClient_whenGet_thenReturnKeyVaultClient() {
-        when(managedIdentityCredentials.getCredentials()).thenReturn(mock(MSICredentials.class));
-        when(azureWrapper.getKeyVaultClient(any(MSICredentials.class))).thenReturn(mock(KeyVaultClient.class));
+        when(azureWrapper.getKeyVaultClient(any(ServiceClientCredentials.class)))
+            .thenReturn(mock(KeyVaultClient.class));
 
-        assertNotNull(vaultFactory.getKeyVaultClient());
+        assertNotNull(vaultFactory.getKeyVaultClient(mock(ServiceClientCredentials.class)),
+            "No Key Vault Client was returned.");
     }
 }

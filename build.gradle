@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '1.0.0'
+version = '2.0.0'
 sourceCompatibility = '11'
 
 bootJar {
@@ -164,6 +164,7 @@ ext {
 def versions = [
 	azure			: '12.0.0',
 	junit			: '5.5.0',
+	lombok			: '1.18.10',
 	mockito			: '3.1.0',
 	reformLogging	: '5.1.1'
 ]
@@ -181,6 +182,10 @@ dependencies {
 	// Azure Dependencies
 	compile group: 'com.azure', name: 'azure-storage-blob', version: versions.azure
 	compile group: 'com.azure', name: 'azure-storage-common', version: versions.azure
+
+	// Lombok
+	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+	compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
 	// Legacy Dependencies
 	compile group: 'com.microsoft.azure', name: 'azure-storage', version: '8.4.0'

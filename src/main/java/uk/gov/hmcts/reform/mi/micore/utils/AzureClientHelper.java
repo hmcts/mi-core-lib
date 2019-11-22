@@ -19,8 +19,12 @@ public class AzureClientHelper {
     private static final String STORAGE_RESOURCE = "https://storage.azure.com/";
     private static final String BLOB_CONNECTION_URI = "https://%s.blob.core.windows.net";
 
+    private final AzureWrapper azureWrapper;
+
     @Autowired
-    private AzureWrapper azureWrapper;
+    public AzureClientHelper(AzureWrapper azureWrapper) {
+        this.azureWrapper = azureWrapper;
+    }
 
     // Storage Section
 
@@ -36,7 +40,7 @@ public class AzureClientHelper {
         return azureWrapper.getBlobServiceClientBuilder().credential(credential).buildClient();
     }
 
-    public CloudBlobClient getCloudBlobClient(String connectionString) {
+    public CloudBlobClient getCloudBlobClientWithConnectionString(String connectionString) {
         try {
             return azureWrapper.getCloudStorageAccount(connectionString).createCloudBlobClient();
         } catch (URISyntaxException | InvalidKeyException e) {
@@ -44,7 +48,7 @@ public class AzureClientHelper {
         }
     }
 
-    public CloudBlobClient getCloudBlobClient(String storageAccountName, String accessToken) {
+    public CloudBlobClient getCloudBlobClientWithAccessToken(String storageAccountName, String accessToken) {
         return azureWrapper.getCloudBlobClient(
             getBlobConnectionUri(storageAccountName),
             azureWrapper.getStorageCredentialsToken(storageAccountName, accessToken)

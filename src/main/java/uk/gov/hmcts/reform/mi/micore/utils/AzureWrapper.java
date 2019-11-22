@@ -18,6 +18,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 
+// Wrapper class on Azure functionality to assist with modularity and testing.
+@SuppressWarnings("PMD")
 @Component
 public class AzureWrapper {
 
