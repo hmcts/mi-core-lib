@@ -17,6 +17,6 @@ public class MsiCredentialsFactory {
     }
 
     public MSICredentials getCredentials() {
-        return azureWrapper.getMSICredentials(AzureEnvironment.AZURE);
+        return azureWrapper.getMsiCredentials(AzureEnvironment.AZURE);
     }
 }

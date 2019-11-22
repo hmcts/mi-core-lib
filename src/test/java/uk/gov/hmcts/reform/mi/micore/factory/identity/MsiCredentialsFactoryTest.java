@@ -23,7 +23,7 @@ public class MsiCredentialsFactoryTest {
 
     @Test
     public void givenRequestForMsiCredentials_whenGet_thenReturnMsiCredentials() {
-        when(azureWrapper.getMSICredentials(AzureEnvironment.AZURE)).thenReturn(mock(MSICredentials.class));
+        when(azureWrapper.getMsiCredentials(AzureEnvironment.AZURE)).thenReturn(mock(MSICredentials.class));
         assertNotNull(msiCredentialsFactory.getCredentials());
     }
 }
