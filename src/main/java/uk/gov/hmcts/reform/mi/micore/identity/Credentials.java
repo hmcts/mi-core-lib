@@ -12,5 +12,5 @@ public interface Credentials<T> {
      *
      * @return credential object to be used for authentication.
      */
-    public T getCredentials();
+    T getCredentials();
 }

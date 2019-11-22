@@ -9,7 +9,7 @@ public final class AuthTokenUtils {
         // Hide constructor
     }
 
-    public static final String addBearerScheme(String authToken) {
+    public static String addBearerScheme(String authToken) {
         if (authToken.startsWith(BEARER_SCHEME)) {
             return authToken.trim();
         }
@@ -17,7 +17,7 @@ public final class AuthTokenUtils {
         return BEARER_SCHEME.concat(authToken).trim();
     }
 
-    public static final String stripBearerScheme(String authToken) {
+    public static String stripBearerScheme(String authToken) {
         return authToken.replaceFirst(BEARER_SCHEME, EMPTY_STRING).trim();
     }
 }

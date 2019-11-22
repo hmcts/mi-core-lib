@@ -4,8 +4,9 @@ import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
-import uk.gov.hmcts.reform.mi.micore.factory.identity.SpCredentialsFactory;
+import uk.gov.hmcts.reform.mi.micore.factory.identity.CredentialsFactory;
 import uk.gov.hmcts.reform.mi.micore.identity.Credentials;
+import uk.gov.hmcts.reform.mi.micore.model.ApplicationCredentialParameters;
 
 import java.util.Objects;
 
@@ -16,17 +17,18 @@ import java.util.Objects;
 @Component
 public class ServicePrincipalCredentials implements Credentials<ApplicationTokenCredentials> {
 
+    private final CredentialsFactory credentialsFactory;
+
     private ApplicationTokenCredentials credentials;
-    private SpCredentialsFactory spCredentialsFactory;
 
     /**
      * Constructor. Setup dependencies.
      *
-     * @param spCredentialsFactory The factory class to determine setup methodology.
+     * @param credentialsFactory The factory class to determine setup methodology.
      */
     @Autowired
-    public ServicePrincipalCredentials(SpCredentialsFactory spCredentialsFactory) {
-        this.spCredentialsFactory = spCredentialsFactory;
+    public ServicePrincipalCredentials(CredentialsFactory credentialsFactory) {
+        this.credentialsFactory = credentialsFactory;
     }
 
     /**
@@ -46,11 +48,9 @@ public class ServicePrincipalCredentials implements Credentials<ApplicationToken
     /**
      * Setup application credentials.
      *
-     * @param clientId The id of the service requesting access.
-     * @param tenantId The id of the Azure Directory the service belongs to.
-     * @param secret The secret associated with the clientId.
+     * @param applicationCredentialParameters An object representing the authentication credentials required.
      */
-    public void setupCredentials(String clientId, String tenantId, String secret) {
-        credentials = spCredentialsFactory.getCredentials(clientId, tenantId, secret);
+    public void setupCredentials(ApplicationCredentialParameters applicationCredentialParameters) {
+        credentials = credentialsFactory.getCredentials(applicationCredentialParameters);
     }
 }

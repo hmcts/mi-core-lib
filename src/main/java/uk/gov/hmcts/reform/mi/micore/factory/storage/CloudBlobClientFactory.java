@@ -8,8 +8,8 @@ import uk.gov.hmcts.reform.mi.micore.utils.AzureClientHelper;
 @Deprecated
 public class CloudBlobClientFactory {
 
-    private AzureClientHelper azureClientHelper;
-    private ManagedIdentityCredentials managedIdentityCredentials;
+    private final AzureClientHelper azureClientHelper;
+    private final ManagedIdentityCredentials managedIdentityCredentials;
 
     @Autowired
     public CloudBlobClientFactory(AzureClientHelper azureClientHelper,
@@ -18,9 +18,13 @@ public class CloudBlobClientFactory {
         this.managedIdentityCredentials = managedIdentityCredentials;
     }
 
-    public CloudBlobClient setupBlobStorageClient(String storageAccountName) {
+    public CloudBlobClient setupBlobStorageClientWithStorageAccount(String storageAccountName) {
         String accessToken = azureClientHelper.getStorageAccessToken(managedIdentityCredentials.getCredentials());
 
-        return azureClientHelper.getCloudBlobClient(storageAccountName, accessToken);
+        return azureClientHelper.getCloudBlobClientWithAccessToken(storageAccountName, accessToken);
+    }
+
+    public CloudBlobClient setupBlobStorageClientWithConnectionString(String connectionString) {
+        return azureClientHelper.getCloudBlobClientWithConnectionString(connectionString);
     }
 }

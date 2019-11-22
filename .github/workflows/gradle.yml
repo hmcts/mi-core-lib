@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: 1.11
       - name: Build
-        run: ./gradlew checkstyleMain
+        run: ./gradlew check
       - name: Release
         env:
           BINTRAY_USER: jenkins-reform-hmcts

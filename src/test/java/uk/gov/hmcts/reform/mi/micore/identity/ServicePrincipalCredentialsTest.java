@@ -6,8 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
-import uk.gov.hmcts.reform.mi.micore.factory.identity.SpCredentialsFactory;
+import uk.gov.hmcts.reform.mi.micore.factory.identity.CredentialsFactory;
 import uk.gov.hmcts.reform.mi.micore.identity.impl.ServicePrincipalCredentials;
+import uk.gov.hmcts.reform.mi.micore.model.ApplicationCredentialParameters;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,18 +23,20 @@ public class ServicePrincipalCredentialsTest {
     private static final String TEST_SECRET = "testSecret";
 
     @Mock
-    SpCredentialsFactory spCredentialsFactory;
+    CredentialsFactory credentialsFactory;
 
     @InjectMocks
     ServicePrincipalCredentials servicePrincipalCredentials;
 
     @Test
     public void givenRequestForManagedIdentityWithSetup_whenGetCredentials_thenReturnCredentials() {
-        when(spCredentialsFactory.getCredentials(TEST_CLIENT_ID, TEST_TENANT_ID, TEST_SECRET))
-            .thenReturn(mock(ApplicationTokenCredentials.class));
+        ApplicationCredentialParameters parameters =
+            new ApplicationCredentialParameters(TEST_CLIENT_ID, TEST_TENANT_ID, TEST_SECRET);
 
-        servicePrincipalCredentials.setupCredentials(TEST_CLIENT_ID, TEST_TENANT_ID, TEST_SECRET);
-        assertNotNull(servicePrincipalCredentials.getCredentials());
+        when(credentialsFactory.getCredentials(parameters)).thenReturn(mock(ApplicationTokenCredentials.class));
+
+        servicePrincipalCredentials.setupCredentials(parameters);
+        assertNotNull(servicePrincipalCredentials.getCredentials(), "No Credentials were returned.");
     }
 
     @Test

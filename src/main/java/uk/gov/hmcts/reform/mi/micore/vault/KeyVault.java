@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.mi.micore.vault;
 
+import com.microsoft.azure.keyvault.KeyVaultClient;
+
 public interface KeyVault {
 
-    public String readSecretFromVault(String keyVaultUrl, String secretName);
+    String readSecretFromVault(KeyVaultClient keyVaultClient, String keyVaultUrl, String secretName);
 
-    public void writeSecretToVault(String keyVaultUrl, String secretName, String secretValue);
+    void writeSecretToVault(KeyVaultClient keyVaultClient, String keyVaultUrl, String secretName, String secretValue);
 }

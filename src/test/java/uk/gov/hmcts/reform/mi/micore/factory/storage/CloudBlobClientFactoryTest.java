@@ -33,8 +33,10 @@ public class CloudBlobClientFactoryTest {
     public void givenRequestForCloudBlobClient_whenSetup_thenReturnCloudBlobClient() {
         when(managedIdentityCredentials.getCredentials()).thenReturn(mock(MSICredentials.class));
         when(azureClientHelper.getStorageAccessToken(any(MSICredentials.class))).thenReturn(TEST_TOKEN);
-        when(azureClientHelper.getCloudBlobClient(TEST_STORAGE_ACCOUNT, TEST_TOKEN)).thenReturn(mock(CloudBlobClient.class));
+        when(azureClientHelper.getCloudBlobClientWithAccessToken(TEST_STORAGE_ACCOUNT, TEST_TOKEN))
+            .thenReturn(mock(CloudBlobClient.class));
 
-        assertNotNull(cloudBlobClientFactory.setupBlobStorageClient(TEST_STORAGE_ACCOUNT));
+        assertNotNull(cloudBlobClientFactory.setupBlobStorageClientWithStorageAccount(TEST_STORAGE_ACCOUNT),
+            "No Blob Client object has been returned.");
     }
 }

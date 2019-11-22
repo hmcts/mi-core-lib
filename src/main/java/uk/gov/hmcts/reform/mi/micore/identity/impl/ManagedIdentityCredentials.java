@@ -3,8 +3,10 @@ package uk.gov.hmcts.reform.mi.micore.identity.impl;
 import com.microsoft.azure.credentials.MSICredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.mi.micore.factory.identity.MsiCredentialsFactory;
+import uk.gov.hmcts.reform.mi.micore.factory.identity.CredentialsFactory;
 import uk.gov.hmcts.reform.mi.micore.identity.Credentials;
+
+import java.util.Objects;
 
 /**
  * Azure managed identity credentials.
@@ -13,16 +15,18 @@ import uk.gov.hmcts.reform.mi.micore.identity.Credentials;
 @Component
 public class ManagedIdentityCredentials implements Credentials<MSICredentials> {
 
-    private MsiCredentialsFactory msiCredentialsFactory;
+    private final CredentialsFactory credentialsFactory;
+
+    private MSICredentials credentials;
 
     /**
      * Constructor. Setup dependencies.
      *
-     * @param msiCredentialsFactory The factory class to determine setup methodology.
+     * @param credentialsFactory The factory class to determine setup methodology.
      */
     @Autowired
-    public ManagedIdentityCredentials(MsiCredentialsFactory msiCredentialsFactory) {
-        this.msiCredentialsFactory = msiCredentialsFactory;
+    public ManagedIdentityCredentials(CredentialsFactory credentialsFactory) {
+        this.credentialsFactory = credentialsFactory;
     }
 
     /**
@@ -32,6 +36,14 @@ public class ManagedIdentityCredentials implements Credentials<MSICredentials> {
      */
     @Override
     public MSICredentials getCredentials() {
-        return msiCredentialsFactory.getCredentials();
+        if (Objects.isNull(credentials)) {
+            credentials = credentialsFactory.getCredentials();
+        }
+
+        return credentials;
+    }
+
+    public void refreshCredentials() {
+        credentials = credentialsFactory.getCredentials();
     }
 }
