@@ -7,16 +7,8 @@ import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.credentials.UserTokenCredentials;
 import com.microsoft.azure.keyvault.KeyVaultClient;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageCredentials;
-import com.microsoft.azure.storage.StorageCredentialsToken;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.rest.credentials.ServiceClientCredentials;
 import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 
 // Wrapper class on Azure functionality to assist with modularity and testing.
 @SuppressWarnings("PMD")
@@ -50,20 +42,6 @@ public class AzureWrapper {
 
     public BlobServiceClientBuilder getBlobServiceClientBuilder() {
         return new BlobServiceClientBuilder();
-    }
-
-    public CloudBlobClient getCloudBlobClient(URI baseUri, StorageCredentials credentials) {
-        return new CloudBlobClient(baseUri, credentials);
-    }
-
-    public CloudStorageAccount getCloudStorageAccount(String connectionString)
-        throws URISyntaxException, InvalidKeyException {
-
-        return CloudStorageAccount.parse(connectionString);
-    }
-
-    public StorageCredentialsToken getStorageCredentialsToken(String accountName, String token) {
-        return new StorageCredentialsToken(accountName, token);
     }
 
     public StorageSharedKeyCredential getStorageSharedKeyCredential(String accountName, String token) {

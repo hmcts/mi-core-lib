@@ -4,9 +4,6 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
 import com.microsoft.azure.credentials.AzureTokenCredentials;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageCredentialsToken;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,9 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,7 +26,6 @@ public class AzureClientHelperTest {
     private static final String TEST_ACCESS_TOKEN = "testAccessToken";
 
     private static final String STORAGE_RESOURCE = "https://storage.azure.com/";
-    private static final String BLOB_CONNECTION_URI = "https://%s.blob.core.windows.net";
 
     @Mock
     private AzureWrapper azureWrapper;
@@ -65,65 +58,6 @@ public class AzureClientHelperTest {
 
         assertNotNull(azureClientHelper.getBlobClientWithAccessToken(TEST_ACCOUNT_NAME, TEST_ACCESS_TOKEN),
             "Blob client was not returned with given storage account and access token.");
-    }
-
-    @Test
-    public void givenConnectionString_whenGetCloudBlobClient_thenReturnBlobClient() throws Exception {
-        CloudStorageAccount mockedStorageAccount = mock(CloudStorageAccount.class);
-        when(azureWrapper.getCloudStorageAccount(TEST_CONNECTION_STRING)).thenReturn(mockedStorageAccount);
-
-        when(mockedStorageAccount.createCloudBlobClient()).thenReturn(mock(CloudBlobClient.class));
-
-        assertNotNull(azureClientHelper.getCloudBlobClientWithConnectionString(TEST_CONNECTION_STRING),
-            "Cloud blob client was not returned with given connection string.");
-    }
-
-    @Test
-    public void givenInvalidUriConnectionString_whenGetCloudBlobClient_thenThrowAccessException() throws Exception {
-        when(azureWrapper.getCloudStorageAccount(TEST_CONNECTION_STRING))
-            .thenThrow(new URISyntaxException("Invalid", "String"));
-
-        assertThrows(AccessException.class,
-            () -> azureClientHelper.getCloudBlobClientWithConnectionString(TEST_CONNECTION_STRING));
-    }
-
-    @Test
-    public void givenInvalidKey_whenGetCloudBlobClient_thenThrowAccessException() throws Exception {
-        when(azureWrapper.getCloudStorageAccount(TEST_CONNECTION_STRING))
-            .thenThrow(new InvalidKeyException("Invalid"));
-
-        assertThrows(AccessException.class,
-            () -> azureClientHelper.getCloudBlobClientWithConnectionString(TEST_CONNECTION_STRING));
-    }
-
-    @Test
-    public void givenStorageAccountAndAccessToken_whenGetCloudBlobClient_thenReturnBlobClient() throws Exception {
-        URI storageAccountUri = new URI(String.format(BLOB_CONNECTION_URI, TEST_ACCOUNT_NAME));
-        StorageCredentialsToken mockedCredential = mock(StorageCredentialsToken.class);
-        when(azureWrapper.getStorageCredentialsToken(TEST_ACCOUNT_NAME, TEST_ACCESS_TOKEN))
-            .thenReturn(mockedCredential);
-
-        when(azureWrapper.getCloudBlobClient(storageAccountUri, mockedCredential))
-            .thenReturn(mock(CloudBlobClient.class));
-
-        assertNotNull(azureClientHelper.getCloudBlobClientWithAccessToken(TEST_ACCOUNT_NAME, TEST_ACCESS_TOKEN),
-            "Cloud blob client was not returned with given storage account and access token.");
-    }
-
-    @Test
-    public void givenUriString_whenGetBlobUriFormat_thenReturnFormattedUriObject() {
-        String expectedUriPath = String.format(BLOB_CONNECTION_URI, TEST_ACCOUNT_NAME);
-
-        URI uri = azureClientHelper.getBlobConnectionUri(TEST_ACCOUNT_NAME);
-
-        assertEquals(expectedUriPath, uri.getScheme() + "://" + uri.getHost(),
-            "URI scheme and host does not match the expected output.");
-    }
-
-    @Test
-    public void givenInvalidUriString_whenGetBlobUriFormat_thenThrowAccessException() {
-        assertThrows(AccessException.class,
-            () -> azureClientHelper.getBlobConnectionUri("$$$$$$###"));
     }
 
     @Test
