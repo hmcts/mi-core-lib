@@ -12,7 +12,6 @@ import com.microsoft.azure.storage.StorageCredentials;
 import com.microsoft.azure.storage.StorageCredentialsToken;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.rest.credentials.ServiceClientCredentials;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -23,11 +22,6 @@ import java.security.InvalidKeyException;
 @SuppressWarnings("PMD")
 @Component
 public class AzureWrapper {
-
-    @Autowired
-    public AzureWrapper() {
-        // No Dependencies
-    }
 
     // Identity Section
 
