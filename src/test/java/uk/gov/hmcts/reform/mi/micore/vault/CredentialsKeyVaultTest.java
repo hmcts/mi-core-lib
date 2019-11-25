@@ -40,7 +40,7 @@ public class CredentialsKeyVaultTest {
 
         assertEquals(TEST_VALUE,
             credentialsKeyVault.readSecretFromVault(mockedKeyVaultClient, TEST_VAULT_URL, TEST_NAME),
-            "Retrieved secret does not match expected result.");
+            "Retrieved secret does not match expected result.AzureClien");
     }
 
     @Test

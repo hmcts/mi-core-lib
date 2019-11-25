@@ -11,10 +11,8 @@ import com.azure.storage.blob.models.BlobProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
-import uk.gov.hmcts.reform.mi.micore.factory.storage.BlobServiceClientFactory;
 import uk.gov.hmcts.reform.mi.micore.storage.impl.BlobStorage;
 
 import java.io.IOException;
@@ -32,16 +30,12 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class BlobStorageTest {
 
-    private static final String TEST_STORAGE_ACCOUNT = "testAccount";
     private static final String TEST_CONTAINER_NAME = "testContainer";
     private static final String TEST_BLOB_NAME = "testBlob";
 
     private static final String TEST_STRING_CONTENT = "A Test String";
     private static final String TEST_OUTPUT_FILEPATH = "fileOutput";
     private static final String TEST_INPUT_FILEPATH = "fileInput";
-
-    @Mock
-    private BlobServiceClientFactory blobServiceClientFactory;
 
     @InjectMocks
     private BlobStorage blobStorage;
@@ -114,7 +108,7 @@ public class BlobStorageTest {
     }
 
     @Test
-    public void givenBlobServiceClientAndContainerNameAndBlobName_whenDownloadBlobToFile() {
+    public void givenBlobServiceClientAndContainerNameAndBlobName_whenDownloadBlobToFile_thenDownloadFile() {
         stubContainerCreation(true);
 
         BlobClient mockedBlobClient = mock(BlobClient.class);
@@ -127,7 +121,7 @@ public class BlobStorageTest {
     }
 
     @Test
-    public void givenBlobServiceClientAndContainerNameAndBlobName_whenUploadBlobToFile() {
+    public void givenBlobServiceClientAndContainerNameAndBlobName_whenUploadBlobToFile_thenDownloadFile() {
         stubContainerCreation(true);
 
         BlobClient mockedBlobClient = mock(BlobClient.class);
@@ -140,14 +134,12 @@ public class BlobStorageTest {
     }
 
     private void stubContainerCreation(boolean exists) {
-        when(blobServiceClientFactory.setupBlobStorageClientWithStorageAccount(TEST_STORAGE_ACCOUNT))
-            .thenReturn(mockedBlobServiceClient);
         when(mockedBlobServiceClient.getBlobContainerClient(TEST_CONTAINER_NAME)).thenReturn(mockedBlobContainerClient);
         when(mockedBlobContainerClient.exists()).thenReturn(exists);
     }
 
     private Iterable<BlobItem> mockIterable(int iteratorSize) {
-        return () -> new Iterator<BlobItem>() {
+        return () -> new Iterator<>() {
             int counter;
 
             @Override
