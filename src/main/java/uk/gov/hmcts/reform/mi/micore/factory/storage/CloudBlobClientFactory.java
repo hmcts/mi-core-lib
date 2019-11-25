@@ -2,10 +2,12 @@ package uk.gov.hmcts.reform.mi.micore.factory.storage;
 
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.mi.micore.identity.impl.ManagedIdentityCredentials;
 import uk.gov.hmcts.reform.mi.micore.utils.AzureClientHelper;
 
 @Deprecated
+@Component
 public class CloudBlobClientFactory {
 
     private final AzureClientHelper azureClientHelper;

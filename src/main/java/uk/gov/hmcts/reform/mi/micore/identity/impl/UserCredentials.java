@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.mi.micore.identity.impl;
 
 import com.microsoft.azure.credentials.UserTokenCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
 import uk.gov.hmcts.reform.mi.micore.factory.identity.CredentialsFactory;
 import uk.gov.hmcts.reform.mi.micore.identity.Credentials;
@@ -13,6 +14,7 @@ import java.util.Objects;
  * Azure user credentials.
  * For manual authentication, i.e. on a local environment or through environment properties.
  */
+@Component
 public class UserCredentials implements Credentials<UserTokenCredentials> {
 
     private final CredentialsFactory credentialsFactory;
