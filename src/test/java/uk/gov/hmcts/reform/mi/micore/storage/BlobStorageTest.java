@@ -8,6 +8,8 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobProperties;
+import com.azure.storage.blob.specialized.AppendBlobClient;
+import com.azure.storage.blob.specialized.BlockBlobClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
 import uk.gov.hmcts.reform.mi.micore.storage.impl.BlobStorage;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -27,6 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("PMD.TooManyMethods")
 @SpringBootTest
 public class BlobStorageTest {
 
@@ -121,13 +125,51 @@ public class BlobStorageTest {
     }
 
     @Test
-    public void givenBlobServiceClientAndContainerNameAndBlobName_whenUploadBlobToFile_thenDownloadFile() {
+    public void givenBlobServiceClientAndContainerNameAndBlobName_whenUploadBlobStream_thenVerifyUpload() {
         stubContainerCreation(true);
 
         BlobClient mockedBlobClient = mock(BlobClient.class);
         when(mockedBlobContainerClient.getBlobClient(TEST_BLOB_NAME)).thenReturn(mockedBlobClient);
 
-        blobStorage.uploadBlobToContainer(
+        BlockBlobClient mockedBlockBlobClient = mock(BlockBlobClient.class);
+        when(mockedBlobClient.getBlockBlobClient()).thenReturn(mockedBlockBlobClient);
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(TEST_STRING_CONTENT.getBytes());
+        long streamSize = TEST_STRING_CONTENT.getBytes().length;
+
+        blobStorage.uploadBlobStreamToContainer(
+            mockedBlobServiceClient, TEST_CONTAINER_NAME, TEST_BLOB_NAME, inputStream, streamSize);
+
+        verify(mockedBlockBlobClient).upload(inputStream, streamSize);
+    }
+
+    @Test
+    public void givenBlobServiceClientAndContainerNameAndBlobName_whenAppendBlobStream_thenVerifyUpload() {
+        stubContainerCreation(true);
+
+        BlobClient mockedBlobClient = mock(BlobClient.class);
+        when(mockedBlobContainerClient.getBlobClient(TEST_BLOB_NAME)).thenReturn(mockedBlobClient);
+
+        AppendBlobClient mockedAppendBlobClient = mock(AppendBlobClient.class);
+        when(mockedBlobClient.getAppendBlobClient()).thenReturn(mockedAppendBlobClient);
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(TEST_STRING_CONTENT.getBytes());
+        long streamSize = TEST_STRING_CONTENT.getBytes().length;
+
+        blobStorage.appendBlobStreamToBlob(
+            mockedBlobServiceClient, TEST_CONTAINER_NAME, TEST_BLOB_NAME, inputStream, streamSize);
+
+        verify(mockedAppendBlobClient).appendBlock(inputStream, streamSize);
+    }
+
+    @Test
+    public void givenBlobServiceClientAndContainerNameAndBlobName_whenUploadFileBlobToFile_thenVerifyUpload() {
+        stubContainerCreation(true);
+
+        BlobClient mockedBlobClient = mock(BlobClient.class);
+        when(mockedBlobContainerClient.getBlobClient(TEST_BLOB_NAME)).thenReturn(mockedBlobClient);
+
+        blobStorage.uploadBlobFileToContainer(
             mockedBlobServiceClient, TEST_CONTAINER_NAME, TEST_BLOB_NAME, TEST_INPUT_FILEPATH);
 
         verify(mockedBlobClient).uploadFromFile(TEST_INPUT_FILEPATH);

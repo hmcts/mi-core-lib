@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.mi.micore.storage.Storage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,10 +69,28 @@ public class BlobStorage implements Storage {
         return getBlob(client, containerName, blobName).downloadToFile(outputPath);
     }
 
-    public void uploadBlobToContainer(BlobServiceClient client,
-                                      String containerName,
-                                      String blobName,
-                                      String inputPath) {
+    public void uploadBlobStreamToContainer(BlobServiceClient client,
+                                            String containerName,
+                                            String blobName,
+                                            InputStream inputStream,
+                                            long streamSize) {
+
+        getBlob(client, containerName, blobName).getBlockBlobClient().upload(inputStream, streamSize);
+    }
+
+    public void appendBlobStreamToBlob(BlobServiceClient client,
+                                       String containerName,
+                                       String blobName,
+                                       InputStream inputStream,
+                                       long streamSize) {
+
+        getBlob(client, containerName, blobName).getAppendBlobClient().appendBlock(inputStream, streamSize);
+    }
+
+    public void uploadBlobFileToContainer(BlobServiceClient client,
+                                          String containerName,
+                                          String blobName,
+                                          String inputPath) {
 
         getBlob(client, containerName, blobName).uploadFromFile(inputPath);
     }
