@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '2.4.0'
+version = '2.4.1'
 sourceCompatibility = '11'
 
 bootJar {
@@ -54,8 +54,8 @@ project.tasks['sonarqube'].dependsOn test
 
 sonarqube {
 	properties {
-		property "sonar.projectName", "Reform :: spring-boot-template"
-		property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+		property "sonar.projectName", "Reform :: MI Core Library"
+		property "sonar.projectKey", "uk.gov.hmcts.reform:mi-core-lib"
 		property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
 	}
 }
