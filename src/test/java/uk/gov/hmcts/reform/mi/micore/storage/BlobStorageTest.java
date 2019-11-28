@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.mi.micore.storage;
 
-import com.azure.core.http.rest.PagedFlux;
 import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobAsyncClient;
 import com.azure.storage.blob.BlobClient;
@@ -75,16 +74,18 @@ public class BlobStorageTest {
     public void givenBlobServiceClientAndContainerName_whenListBlobs_thenReturnListOfBlobItems() {
         stubContainerCreation(true);
 
-        int iteratorSize = 3;
-        PagedFlux<BlobItem> mockPagedFlux = mock(PagedFlux.class);
-        PagedIterable<BlobItem> blobItemIterable = new PagedIterable<>(mockPagedFlux);
+        PagedIterable<BlobItem> mockIterable = mock(PagedIterable.class);
+        Iterator<BlobItem> mockIterator = mock(Iterator.class);
 
-        when(mockPagedFlux.toIterable()).thenReturn(mockIterable(iteratorSize));
-        when(mockedBlobContainerClient.listBlobs()).thenReturn(blobItemIterable);
+        when(mockIterable.iterator()).thenReturn(mockIterator);
+        when(mockIterator.hasNext()).thenReturn(true, true, true, false);
+        when(mockIterator.next()).thenReturn(mock(BlobItem.class));
+
+        when(mockedBlobContainerClient.listBlobs()).thenReturn(mockIterable);
 
         int blobListSize = blobStorage.getListOfBlobs(mockedBlobServiceClient, TEST_CONTAINER_NAME).size();
 
-        assertEquals(iteratorSize, blobListSize,
+        assertEquals(3, blobListSize,
             "Blob list returned does not match the expected blob list size.");
     }
 
@@ -178,26 +179,6 @@ public class BlobStorageTest {
     private void stubContainerCreation(boolean exists) {
         when(mockedBlobServiceClient.getBlobContainerClient(TEST_CONTAINER_NAME)).thenReturn(mockedBlobContainerClient);
         when(mockedBlobContainerClient.exists()).thenReturn(exists);
-    }
-
-    private Iterable<BlobItem> mockIterable(int iteratorSize) {
-        return () -> new Iterator<>() {
-            int counter;
-
-            @Override
-            public boolean hasNext() {
-                if (counter < iteratorSize) {
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public BlobItem next() {
-                counter = counter + 1;
-                return mock(BlobItem.class);
-            }
-        };
     }
 
     private BlobClient mockBlobClientWithContent(String content) {

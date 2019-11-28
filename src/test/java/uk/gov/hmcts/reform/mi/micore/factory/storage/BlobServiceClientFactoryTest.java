@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 public class BlobServiceClientFactoryTest {
 
     private static final String TEST_STORAGE_ACCOUNT = "testAccount";
-    private static final String TEST_TOKEN = "testToken";
     private static final String TEST_CONNECTION_STRING = "testConnectionString=testAccount";
     private static final String TEST_KEY_VAULT_URL = "testKeyVaultUrl";
     private static final String TEST_SECRET_NAME = "testSecretName";
@@ -40,8 +39,7 @@ public class BlobServiceClientFactoryTest {
     @Test
     public void givenRequestForBlobServiceClientWithStorageAccountName_whenSetup_thenReturnBlobServiceClient() {
         when(managedIdentityCredentials.getCredentials()).thenReturn(mock(MSICredentials.class));
-        when(azureClientHelper.getStorageAccessToken(any(MSICredentials.class))).thenReturn(TEST_TOKEN);
-        when(azureClientHelper.getBlobClientWithAccessToken(TEST_STORAGE_ACCOUNT, TEST_TOKEN))
+        when(azureClientHelper.getBlobClientWithAccountName(TEST_STORAGE_ACCOUNT))
             .thenReturn(mock(BlobServiceClient.class));
 
         assertNotNull(blobServiceClientFactory.setupBlobStorageClientWithStorageAccount(TEST_STORAGE_ACCOUNT),

@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '2.4.1'
+version = '2.5.0'
 sourceCompatibility = '11'
 
 bootJar {
@@ -163,6 +163,7 @@ ext {
 
 def versions = [
 	azure			: '12.0.0',
+	azureIdentity	: '1.0.1',
 	junit			: '5.5.0',
 	lombok			: '1.18.10',
 	mockito			: '3.1.0',
@@ -182,6 +183,7 @@ dependencies {
 	// Azure Dependencies
 	compile group: 'com.azure', name: 'azure-storage-blob', version: versions.azure
 	compile group: 'com.azure', name: 'azure-storage-common', version: versions.azure
+	compile group: 'com.azure', name: 'azure-identity', version: versions.azureIdentity
 
 	// Lombok
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok

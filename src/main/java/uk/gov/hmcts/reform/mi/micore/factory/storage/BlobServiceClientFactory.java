@@ -25,8 +25,7 @@ public class BlobServiceClientFactory {
     }
 
     public BlobServiceClient setupBlobStorageClientWithStorageAccount(String storageAccountName) {
-        String accessToken = azureClientHelper.getStorageAccessToken(managedIdentityCredentials.getCredentials());
-        return azureClientHelper.getBlobClientWithAccessToken(storageAccountName, accessToken);
+        return azureClientHelper.getBlobClientWithAccountName(storageAccountName);
     }
 
     public BlobServiceClient setupBlobStorageClientWithConnectionString(String connectionString) {

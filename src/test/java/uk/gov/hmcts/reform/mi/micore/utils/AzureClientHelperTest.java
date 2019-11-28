@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.mi.micore.utils;
 
+import com.azure.identity.ManagedIdentityCredential;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +26,7 @@ public class AzureClientHelperTest {
     private static final String TEST_CONNECTION_STRING = "testConnectionString";
     private static final String TEST_ACCOUNT_NAME = "testAccountName";
     private static final String TEST_ACCESS_TOKEN = "testAccessToken";
+    private static final String TEST_BLOB_CONNECTION_URI = "https://testAccountName.blob.core.windows.net";
 
     private static final String STORAGE_RESOURCE = "https://storage.azure.com/";
 
@@ -58,6 +61,20 @@ public class AzureClientHelperTest {
 
         assertNotNull(azureClientHelper.getBlobClientWithAccessToken(TEST_ACCOUNT_NAME, TEST_ACCESS_TOKEN),
             "Blob client was not returned with given storage account and access token.");
+    }
+
+    @Test
+    public void givenStorageAccountName_whenGetBlobClient_thenReturnBlobClient() {
+        BlobServiceClientBuilder mockedBlobServiceClientBuilder = mock(BlobServiceClientBuilder.class);
+        when(azureWrapper.getBlobServiceClientBuilder()).thenReturn(mockedBlobServiceClientBuilder);
+        when(mockedBlobServiceClientBuilder.endpoint(TEST_BLOB_CONNECTION_URI))
+            .thenReturn(mockedBlobServiceClientBuilder);
+        when(mockedBlobServiceClientBuilder.credential(any(ManagedIdentityCredential.class)))
+            .thenReturn(mockedBlobServiceClientBuilder);
+        when(mockedBlobServiceClientBuilder.buildClient()).thenReturn(mock(BlobServiceClient.class));
+
+        assertNotNull(azureClientHelper.getBlobClientWithAccountName(TEST_ACCOUNT_NAME),
+            "Blob client was not returned with given storage account name.");
     }
 
     @Test
