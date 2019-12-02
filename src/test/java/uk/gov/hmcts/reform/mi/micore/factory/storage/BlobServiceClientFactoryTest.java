@@ -23,6 +23,7 @@ public class BlobServiceClientFactoryTest {
     private static final String TEST_CONNECTION_STRING = "testConnectionString=testAccount";
     private static final String TEST_KEY_VAULT_URL = "testKeyVaultUrl";
     private static final String TEST_SECRET_NAME = "testSecretName";
+    private static final String TEST_CLIENT_ID = "testClientId";
 
     @Mock
     private AzureClientHelper azureClientHelper;
@@ -39,10 +40,10 @@ public class BlobServiceClientFactoryTest {
     @Test
     public void givenRequestForBlobServiceClientWithStorageAccountName_whenSetup_thenReturnBlobServiceClient() {
         when(managedIdentityCredentials.getCredentials()).thenReturn(mock(MSICredentials.class));
-        when(azureClientHelper.getBlobClientWithAccountName(TEST_STORAGE_ACCOUNT))
+        when(azureClientHelper.getBlobClientWithAccountName(TEST_CLIENT_ID, TEST_STORAGE_ACCOUNT))
             .thenReturn(mock(BlobServiceClient.class));
 
-        assertNotNull(blobServiceClientFactory.setupBlobStorageClientWithStorageAccount(TEST_STORAGE_ACCOUNT),
+        assertNotNull(blobServiceClientFactory.setupBlobStorageClientWithStorageAccount(TEST_CLIENT_ID, TEST_STORAGE_ACCOUNT),
             "No Blob Client object has been returned when using storage account credentials.");
     }
 

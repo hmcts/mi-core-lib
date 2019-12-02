@@ -24,8 +24,8 @@ public class BlobServiceClientFactory {
         this.credentialsKeyVault = credentialsKeyVault;
     }
 
-    public BlobServiceClient setupBlobStorageClientWithStorageAccount(String storageAccountName) {
-        return azureClientHelper.getBlobClientWithAccountName(storageAccountName);
+    public BlobServiceClient setupBlobStorageClientWithStorageAccount(String clientId, String storageAccountName) {
+        return azureClientHelper.getBlobClientWithAccountName(clientId, storageAccountName);
     }
 
     public BlobServiceClient setupBlobStorageClientWithConnectionString(String connectionString) {

@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '2.5.0'
+version = '2.6.0'
 sourceCompatibility = '11'
 
 bootJar {
@@ -212,4 +212,5 @@ dependencyManagement {
 
 test {
 	useJUnitPlatform()
+	failFast = true
 }

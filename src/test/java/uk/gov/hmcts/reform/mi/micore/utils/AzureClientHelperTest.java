@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.mi.micore.utils;
 
 import com.azure.identity.ManagedIdentityCredential;
+import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.common.StorageSharedKeyCredential;
@@ -26,8 +27,8 @@ public class AzureClientHelperTest {
     private static final String TEST_CONNECTION_STRING = "testConnectionString";
     private static final String TEST_ACCOUNT_NAME = "testAccountName";
     private static final String TEST_ACCESS_TOKEN = "testAccessToken";
+    private static final String TEST_CLIENT_ID = "testClientId";
     private static final String TEST_BLOB_CONNECTION_URI = "https://testAccountName.blob.core.windows.net";
-
     private static final String STORAGE_RESOURCE = "https://storage.azure.com/";
 
     @Mock
@@ -73,7 +74,7 @@ public class AzureClientHelperTest {
             .thenReturn(mockedBlobServiceClientBuilder);
         when(mockedBlobServiceClientBuilder.buildClient()).thenReturn(mock(BlobServiceClient.class));
 
-        assertNotNull(azureClientHelper.getBlobClientWithAccountName(TEST_ACCOUNT_NAME),
+        assertNotNull(azureClientHelper.getBlobClientWithAccountName(TEST_CLIENT_ID, TEST_ACCOUNT_NAME),
             "Blob client was not returned with given storage account name.");
     }
 

@@ -29,7 +29,7 @@ public class AzureClientHelper {
         return azureWrapper.getBlobServiceClientBuilder().connectionString(connectionString).buildClient();
     }
 
-    // Does not fully work. Please use getBlobClientWithStorageAccount for now.
+    // Does not fully work. Please use getBlobClientWithAccountName for now.
     public BlobServiceClient getBlobClientWithAccessToken(String storageAccountName, String accessToken) {
         StorageSharedKeyCredential credential =
             azureWrapper.getStorageSharedKeyCredential(storageAccountName,
@@ -38,11 +38,11 @@ public class AzureClientHelper {
         return azureWrapper.getBlobServiceClientBuilder().credential(credential).buildClient();
     }
 
-    public BlobServiceClient getBlobClientWithAccountName(String storageAccountName) {
+    public BlobServiceClient getBlobClientWithAccountName(String clientId, String storageAccountName) {
         String endpoint = String.format(BLOB_CONNECTION_URI, storageAccountName);
         return azureWrapper.getBlobServiceClientBuilder()
             .endpoint(endpoint)
-            .credential(new ManagedIdentityCredentialBuilder().build())
+            .credential(new ManagedIdentityCredentialBuilder().clientId(clientId).build())
             .buildClient();
     }
 
