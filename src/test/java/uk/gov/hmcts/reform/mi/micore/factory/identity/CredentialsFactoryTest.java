@@ -5,9 +5,10 @@ import com.microsoft.azure.credentials.ApplicationTokenCredentials;
 import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.credentials.UserTokenCredentials;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.mi.micore.model.ApplicationCredentialParameters;
 import uk.gov.hmcts.reform.mi.micore.model.UserCredentialParameters;
 import uk.gov.hmcts.reform.mi.micore.utils.AzureWrapper;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class CredentialsFactoryTest {
 
     private static final String TEST_CLIENT_ID = "clientId";

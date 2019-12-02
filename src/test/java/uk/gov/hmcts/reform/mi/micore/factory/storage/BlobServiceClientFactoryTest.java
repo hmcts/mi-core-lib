@@ -4,9 +4,10 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.microsoft.azure.credentials.MSICredentials;
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.mi.micore.identity.impl.ManagedIdentityCredentials;
 import uk.gov.hmcts.reform.mi.micore.utils.AzureClientHelper;
 import uk.gov.hmcts.reform.mi.micore.vault.impl.CredentialsKeyVault;
@@ -16,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class BlobServiceClientFactoryTest {
 
     private static final String TEST_STORAGE_ACCOUNT = "testAccount";
