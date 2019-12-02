@@ -43,7 +43,8 @@ public class BlobServiceClientFactoryTest {
         when(azureClientHelper.getBlobClientWithAccountName(TEST_CLIENT_ID, TEST_STORAGE_ACCOUNT))
             .thenReturn(mock(BlobServiceClient.class));
 
-        assertNotNull(blobServiceClientFactory.setupBlobStorageClientWithStorageAccount(TEST_CLIENT_ID, TEST_STORAGE_ACCOUNT),
+        assertNotNull(blobServiceClientFactory
+                .setupBlobStorageClientWithStorageAccount(TEST_CLIENT_ID, TEST_STORAGE_ACCOUNT),
             "No Blob Client object has been returned when using storage account credentials.");
     }
 
