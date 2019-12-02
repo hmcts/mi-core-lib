@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.mi.micore.storage.impl;
 
-import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
@@ -30,12 +29,9 @@ public class BlobStorage implements Storage {
     }
 
     public List<BlobItem> getListOfBlobs(BlobServiceClient client, String containerName) {
-        PagedIterable<BlobItem> blobItemIterable =
-            retrieveBlobContainer(client, containerName).listBlobs();
-
         List<BlobItem> blobItemList = new ArrayList<>();
 
-        for (BlobItem blobItem : blobItemIterable) {
+        for (BlobItem blobItem : retrieveBlobContainer(client, containerName).listBlobs()) {
             blobItemList.add(blobItem);
         }
 
