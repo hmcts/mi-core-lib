@@ -25,10 +25,14 @@ public class ManagedIdentityKeyVault extends CredentialsKeyVault {
                                    String secretName,
                                    String secretValue) {
 
-        readSecretFromVault(getKeyVaultClient(), keyVaultUrl, secretName);
+        writeSecretToVault(getKeyVaultClient(), keyVaultUrl, secretName, secretValue);
     }
 
     public KeyVaultClient getKeyVaultClient() {
         return getKeyVaultClient(managedIdentityCredentials.getCredentials());
+    }
+
+    public KeyVaultClient getKeyVaultClient(String clientId) {
+        return getKeyVaultClient(managedIdentityCredentials.getCredentials().withClientId(clientId));
     }
 }

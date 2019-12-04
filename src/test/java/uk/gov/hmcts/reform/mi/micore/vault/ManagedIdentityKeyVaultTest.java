@@ -25,6 +25,7 @@ public class ManagedIdentityKeyVaultTest {
     private static final String TEST_VAULT_URL = "testVaultUrl";
     private static final String TEST_NAME = "test-secret";
     private static final String TEST_VALUE = "test-value";
+    private static final String TEST_CLIENT_ID = "test-client-id";
 
     @Mock
     private VaultFactory vaultFactory;
@@ -67,5 +68,15 @@ public class ManagedIdentityKeyVaultTest {
 
         managedIdentityKeyVault.getKeyVaultClient();
         verify(vaultFactory).getKeyVaultClient(any(MSICredentials.class));
+    }
+
+    @Test
+    public void givenVaultFactoryWorks_whenSetKeyVaultClientWithClientId_verifyAttemptToGetNewClient() {
+        MSICredentials msiCredentials = mock(MSICredentials.class);
+        when(managedIdentityCredentials.getCredentials()).thenReturn(msiCredentials);
+        when(msiCredentials.withClientId(TEST_CLIENT_ID)).thenReturn(msiCredentials);
+
+        managedIdentityKeyVault.getKeyVaultClient(TEST_CLIENT_ID);
+        verify(vaultFactory).getKeyVaultClient(msiCredentials);
     }
 }
