@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '2.6.4'
+version = '2.6.5'
 sourceCompatibility = '11'
 
 bootJar {
@@ -182,28 +182,28 @@ dependencies {
 	}
 
 	// Azure Dependencies
-	compile group: 'com.azure', name: 'azure-core', version: versions.azureCore
-	compile group: 'com.azure', name: 'azure-storage-blob', version: versions.azureStorage
-	compile group: 'com.azure', name: 'azure-storage-common', version: versions.azureStorage
-	compile group: 'com.azure', name: 'azure-identity', version: versions.azureIdentity
+	implementation group: 'com.azure', name: 'azure-core', version: versions.azureCore
+	implementation group: 'com.azure', name: 'azure-storage-blob', version: versions.azureStorage
+	implementation group: 'com.azure', name: 'azure-storage-common', version: versions.azureStorage
+	implementation group: 'com.azure', name: 'azure-identity', version: versions.azureIdentity
 
 	// Lombok
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
-	compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+	implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
 	// Legacy Dependencies
-	compile group: 'com.microsoft.azure', name: 'azure-storage', version: '8.4.0'
+	implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.4.0'
 
 	// Reform Dependencies
-	compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-	compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+	implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
+	implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
 	// Test Dependencies
 	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
 	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-	testCompile group: 'org.mockito', name: 'mockito-core', version: versions.mockito
-	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: versions.mockito
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: versions.mockito
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: versions.mockito
 }
 
 dependencyManagement {
