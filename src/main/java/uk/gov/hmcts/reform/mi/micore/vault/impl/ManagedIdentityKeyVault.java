@@ -2,9 +2,11 @@ package uk.gov.hmcts.reform.mi.micore.vault.impl;
 
 import com.microsoft.azure.keyvault.KeyVaultClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.mi.micore.factory.vault.VaultFactory;
 import uk.gov.hmcts.reform.mi.micore.identity.impl.ManagedIdentityCredentials;
 
+@Component
 public class ManagedIdentityKeyVault extends CredentialsKeyVault {
 
     private final ManagedIdentityCredentials managedIdentityCredentials;
