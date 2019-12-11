@@ -1,8 +1,17 @@
 parameters:
+  azureSubscriptionEndpoint: ''
+  aksResourceGroup: ''
+  aksCluster: ''
   jobName: ''
   namespace: ''
 
 steps:
+  - task: AzureCLI@1
+    displayName: "AKS Authenticate"
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+      scriptLocation: "inlineScript"
+      inlineScript: az aks get-credentials --admin --overwrite-existing --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
   - bash: |
       timeout=180
       until [[ $SECONDS -gt $timeout ]] \
