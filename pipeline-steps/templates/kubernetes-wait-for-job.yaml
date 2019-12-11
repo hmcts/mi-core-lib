@@ -15,6 +15,6 @@ steps:
         sleep 5
       done
       if [[ $SECONDS -gt $timeout ]]; then
-      	echo "Timed out waiting job ${{ parameters.jobName }} completion"
+        echo "Timed out waiting job ${{ parameters.jobName }} completion"
       fi
   displayName: 'Wait for job completion'
