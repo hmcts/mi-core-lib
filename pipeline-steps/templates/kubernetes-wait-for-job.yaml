@@ -1,14 +1,20 @@
+parameters:
+  jobName: ''
+  namespace: ''
+
 steps:
   - bash: |
       timeout=180
       until [[ $SECONDS -gt $timeout ]] \
-        || [[ $(kubectl get jobs mi-integration-service-job --namespace mi -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == 'True' ]] \
-        || [[ $(kubectl get jobs mi-integration-service-job --namespace mi -o jsonpath='{.status.conditions[?(@.type=="Completed")].status}') == 'True' ]];
+        || [[ $(kubectl get jobs ${{ parameters.jobName }} --namespace ${{ parameters.namespace }} \
+            -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == 'True' ]] \
+        || [[ $(kubectl get jobs ${{ parameters.jobName }} --namespace ${{ parameters.namespace }} \
+            -o jsonpath='{.status.conditions[?(@.type=="Completed")].status}') == 'True' ]];
       do
-        echo "Waiting for Job Completion"
+        echo "Waiting for job ${{ parameters.jobName }} completion"
         sleep 5
       done
       if [[ $SECONDS -gt $timeout ]]; then
-      	echo "Timed out waiting for Job Completion"
+      	echo "Timed out waiting job ${{ parameters.jobName }} completion"
       fi
   displayName: 'Wait for job completion'
