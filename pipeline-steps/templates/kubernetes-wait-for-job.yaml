@@ -2,7 +2,6 @@ parameters:
   azureSubscriptionEndpoint: ''
   aksResourceGroup: ''
   aksCluster: ''
-  jobName: ''
   namespace: ''
 
 steps:
@@ -14,16 +13,18 @@ steps:
       inlineScript: az aks get-credentials --admin --overwrite-existing --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
   - bash: |
       timeout=180
+      job=${{ parameters.jobName }}-$(getDockerTagLowerCase.DOCKER_SHA)-job
       until [[ $SECONDS -gt $timeout ]] \
-        || [[ $(kubectl get jobs ${{ parameters.jobName }} --namespace ${{ parameters.namespace }} \
+        || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
             -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == 'True' ]] \
-        || [[ $(kubectl get jobs ${{ parameters.jobName }} --namespace ${{ parameters.namespace }} \
-            -o jsonpath='{.status.conditions[?(@.type=="Completed")].status}') == 'True' ]];
+        || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
+            -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == 'True' ]];
       do
-        echo "Waiting for job ${{ parameters.jobName }} completion"
+        echo "Waiting for job $job completion"
         sleep 5
       done
       if [[ $SECONDS -gt $timeout ]]; then
-        echo "Timed out waiting job ${{ parameters.jobName }} completion"
+        echo "Timed out waiting job $job completion"
+        exit 1
       fi
     displayName: 'Wait for job completion'
