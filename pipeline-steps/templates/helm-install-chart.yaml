@@ -10,7 +10,7 @@ parameters:
   chartEnv: ''
 
 steps:
-  - template: ./tasks/docker-tag.yaml
+  - template: ./steps/docker-tag.yaml
   - powershell: |
       $azureContainerRegistry = "${{ parameters.azureContainerRegistry }}"
       $azureContainerRegistryName = $azureContainerRegistry.Substring(0, $azureContainerRegistry.IndexOf("."))
