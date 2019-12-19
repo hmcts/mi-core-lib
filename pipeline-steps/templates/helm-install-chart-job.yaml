@@ -30,7 +30,7 @@ steps:
   - task: AzureCLI@1
     displayName: "Helm Install Job Chart"
     env:
-      BUILD_NUMBER: $(Build.BuildNumber)
+      BUILD_NUMBER: $(Build.BuildId)
     inputs:
       azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
       scriptLocation: "inlineScript"
