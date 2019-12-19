@@ -1,0 +1,107 @@
+parameters:
+  env: 'test'
+  applicationName: ''
+  chartEnv: 'preview'
+  product: ''
+  azureContainerRegistry: $(azure.container.registry)
+  azureAksCluster: $(azure.aks.cluster)
+  azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+  azureAksResourcegroup: $(azure.aks.resourcegroup)
+  azurePromAcr: $(azure.prom.acr)
+  azurePromSubscriptionEndpoint: $(azure.prom.subscription.endpoint)
+  azureKeyMapping: {}
+  azureSecreKeys: '*' # coma separated azure keys
+  azureVault: ''
+
+stages:
+- stage: BuildAndDeploy
+  jobs:
+    - job: BuildAndTestApplication
+      # condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+
+      pool:
+        vmImage: 'Ubuntu-16.04'
+      variables:
+        aptDependencies: 'qtbase5-dev'
+        env: ${{ parameters.env }}
+      steps:
+        - template: ./steps/build-gradle-application.yaml
+        - template: ./publish-tests.yaml
+        - template: ./steps/publish-artifact.yaml
+        - template: ./docker-build.yaml
+          parameters:
+            azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+            azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
+            applicationName:  ${{ parameters.applicationName }}
+
+    - job: DeployBuild
+      dependsOn: BuildAndTestApplication
+      condition: succeeded()
+      pool:
+        vmImage: 'Ubuntu-16.04'
+      variables:
+        env: ${{ parameters.env }}
+      steps:
+        - template: ./helm-install-chart-job.yaml
+          parameters:
+            azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+            azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
+            applicationName:  ${{ parameters.applicationName }}
+            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
+            aksCluster:  ${{ parameters.azureAksCluster }}
+            jobName:  ${{ parameters.applicationName }}
+            namespace: ${{ parameters.product }}
+            chartEnv: ${{ parameters.chartEnv }}
+        - template: ./kubernetes-wait-for-job.yaml
+          parameters:
+            azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
+            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
+            aksCluster:  ${{ parameters.azureAksCluster }}
+            jobName:  ${{ parameters.applicationName }}
+            namespace:  ${{ parameters.product }}
+            projectName: ${{ parameters.applicationName }}
+    
+    - job: IntegrationTest
+      dependsOn: DeployBuild
+      condition: succeeded()
+      variables:
+        env: ${{ parameters.env }}
+      steps:
+        - task: AzureKeyVault@1
+          displayName: 'Get secrets from Keyvault'
+          inputs:
+            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+            keyVaultName: ${{ parameters.azureVault }}
+            secretsFilter: ${{ parameters.azureSecreKeys }}
+        - task: Gradle@2
+          env:
+            ${{ each pair in parameters.azureKeyMapping }}:
+              ${{ pair.key }}: $(${{ pair.value }})
+          inputs:
+            workingDirectory: ''
+            gradleWrapperFile: 'gradlew'
+            gradleOptions: '-Xmx3072m'
+            javaHomeOption: 'JDKVersion'
+            jdkVersionOption: '1.11'
+            jdkArchitectureOption: 'x64'
+            publishJUnitResults: true
+            testResultsFiles: '**/TEST-*.xml'
+            options: '--info --rerun-tasks'
+            tasks: 'functional'
+        - template: ./publish-tests.yaml
+
+    - job: PromoteBuild
+      dependsOn: IntegrationTest
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+      pool:
+        vmImage: 'Ubuntu-16.04'
+      variables:
+        env: ${{ parameters.env }}
+      steps:
+        - template: ./promote-build.yaml
+          parameters:
+            azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+            applicationName: ${{ parameters.applicationName }}
+            azureDestinyContainerRegistry:  ${{ parameters.azurePromAcr }}
+            azureProdSubscription: $(azure.prom.subscription.endpoint)
