@@ -16,25 +16,8 @@ parameters:
 stages:
 - stage: BuildAndDeploy
   jobs:
-    - job: Test
-      pool:
-        vmImage: 'Ubuntu-16.04'
-      variables:
-        env: ${{ parameters.env }}
-      steps:
-        - template: ./helm-install-chart-job.yaml
-          parameters:
-            azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
-            azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
-            applicationName:  ${{ parameters.applicationName }}
-            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-            aksCluster:  ${{ parameters.azureAksCluster }}
-            jobName:  ${{ parameters.applicationName }}
-            namespace: ${{ parameters.product }}
-            chartEnv: ${{ parameters.chartEnv }}
-
     - job: BuildAndTestApplication
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+      # condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
 
       pool:
         vmImage: 'Ubuntu-16.04'

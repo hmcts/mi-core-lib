@@ -29,13 +29,10 @@ steps:
       IMAGE_NAME: '${{ parameters.azureContainerRegistry }}/${{ parameters.applicationName }}:$(imageTag)'
   - task: AzureCLI@1
     displayName: "Helm Install Job Chart"
-    env:
-      BUILD_NUMBER: $(Build.BuildId)
     inputs:
       azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
       scriptLocation: "inlineScript"
       inlineScript: |
-        echo "the build number is : $(Build.BuildId)"
         helm repo add ${{ parameters.helmRepo }} https://${{ parameters.helmRepo }}.azurecr.io/helm/v1/repo
         helm dependency update charts/${{ parameters.applicationName }}
-        helm install ${{ parameters.jobName }}-$(imageSha)-$(Build.BuildId) charts/${{ parameters.applicationName }} --namespace ${{ parameters.namespace }} -f charts/${{ parameters.applicationName }}/values.yaml -f charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml 
+        helm install ${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId) charts/${{ parameters.applicationName }} --namespace ${{ parameters.namespace }} -f charts/${{ parameters.applicationName }}/values.yaml -f charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml 
