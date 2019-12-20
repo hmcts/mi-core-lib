@@ -70,7 +70,7 @@ stages:
       steps:
         - template: ./steps/vault-secrets.yaml
           parameters: 
-            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+            azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
             secretsFilter: ${{ parameters.azureSecreKeys }}
         - template: ./steps/gradle-task.yaml
