@@ -1,11 +1,11 @@
 parameters:
-  azureSubscriptionEndpoint: ''
-  keyVaultName: ''
   azureKeyMapping: {}
   gradleTasks: ''
   testResultsFiles: '**/TEST-*.xml'
+  execute: true
 steps:
   - task: Gradle@2
+    condition: eq('${{ parameters.execute }}', true))
     env:
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})

@@ -12,7 +12,8 @@ parameters:
   azureKeyMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
-  pre: ''
+  preIntegrationTest: false
+  postIntegrationTest: false
 
 stages:
 - stage: BuildAndDeploy
@@ -43,6 +44,17 @@ stages:
       variables:
         env: ${{ parameters.env }}
       steps:
+        - template: ./steps/vault-secrets.yaml
+          parameters: 
+            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+            keyVaultName: ${{ parameters.azureVault }}
+            secretsFilter: ${{ parameters.azureSecreKeys }}
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
+            displayName: 'Run Pre Integration Test Setup'
+            gradleTasks: 'integrationPreTest'
+            execute: ${{ parametesr.preIntegrationTest }}
         - template: ./helm-install-chart-job.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
@@ -70,13 +82,15 @@ stages:
       steps:
         - template: ./steps/vault-secrets.yaml
           parameters: 
-            azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
             secretsFilter: ${{ parameters.azureSecreKeys }}
         - template: ./steps/gradle-task.yaml
           parameters:
+            displayName: 'Run Integration Test'
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
-            gradleTasks: 'functional'
+            testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
+            gradleTasks: 'integrationPostTest'
         - template: ./publish-tests.yaml
 
     - job: PromoteBuild
