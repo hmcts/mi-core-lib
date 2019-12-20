@@ -8,6 +8,8 @@ parameters:
   pmd: false
   checkstyle: false
   publishTest: false
+  extraOptions: ''
+  sonar: false
 steps:
   - task: Gradle@2
     displayName: ${{ parameters.displayName }}
@@ -25,7 +27,8 @@ steps:
       publishJUnitResults: ${{ parameters.parameters }}
       testRunTitle: ${{ parameters.testRunTitle }}
       testResultsFiles: ${{ parameters.testResultsFiles }}
-      options: '--info --rerun-tasks'
+      options: '--info --rerun-tasks ${{ parameters.extraOptions }}'
       tasks: ${{ parameters.gradleTasks }}
+      sonarQubeRunAnalysis: ${{ parameters.sonar }}
       checkStyleRunAnalysis: ${{ parameters.checkstyle }}
       pmdRunAnalysis: ${{ parameters.pmd }}
