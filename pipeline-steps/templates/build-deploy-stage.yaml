@@ -13,7 +13,7 @@ parameters:
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   preIntegrationTest: false
-  postIntegrationTest: false
+  postIntegrationTest: true
 
 stages:
 - stage: BuildAndDeploy
@@ -54,7 +54,7 @@ stages:
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
             displayName: 'Run Pre Integration Test Setup'
             gradleTasks: 'integrationPreTest'
-            execute: ${{ parametesr.preIntegrationTest }}
+            execute: ${{ parameters.preIntegrationTest }}
         - template: ./helm-install-chart-job.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
