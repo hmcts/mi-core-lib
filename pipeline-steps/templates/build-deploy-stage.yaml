@@ -34,9 +34,7 @@ stages:
             gradleTasks: 'build'
             testRunTitle: 'Unit and functional test'
             displayName: 'Package application'
-        # - template: ./publish-tests.yaml
-        #   parameters:
-        #     testRunTitle: 'Unit and functional test'
+            publishJUnitResults: true
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
@@ -63,7 +61,6 @@ stages:
             displayName: 'Run Pre Integration Test Setup'
             gradleTasks: 'integrationPreTest'
             execute: ${{ parameters.preIntegrationTest }}
-            publishJUnitResults: false
         - template: ./helm-install-chart-job.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
@@ -100,11 +97,8 @@ stages:
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
             gradleTasks: 'integrationPostTest'
-            publishJUnitResults: false
-        - template: ./publish-tests.yaml
-          parameters:
+            publishJUnitResults: true
             testRunTitle: 'Integration test'
-            testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
 
     - job: PromoteBuild
       dependsOn: IntegrationTest
