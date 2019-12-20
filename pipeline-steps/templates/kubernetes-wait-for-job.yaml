@@ -14,7 +14,7 @@ steps:
       inlineScript: az aks get-credentials --admin --overwrite-existing --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
   - bash: |
       timeout=300
-      job=${{ parameters.jobName }}-$(imageSha)-job
+      job=${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)-job
       until [[ $SECONDS -gt $timeout ]] \
         || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
             -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == 'True' ]] \

@@ -35,4 +35,4 @@ steps:
       inlineScript: |
         helm repo add ${{ parameters.helmRepo }} https://${{ parameters.helmRepo }}.azurecr.io/helm/v1/repo
         helm dependency update charts/${{ parameters.applicationName }}
-        helm install ${{ parameters.jobName }}-$(imageSha)-$(Build.BuildNumber) charts/${{ parameters.applicationName }} --namespace ${{ parameters.namespace }} -f charts/${{ parameters.applicationName }}/values.yaml -f charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml 
+        helm install ${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId) charts/${{ parameters.applicationName }} --namespace ${{ parameters.namespace }} -f charts/${{ parameters.applicationName }}/values.yaml -f charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml 
