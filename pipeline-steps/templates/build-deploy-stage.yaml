@@ -94,7 +94,7 @@ stages:
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
             gradleTasks: 'integrationPostTest'
         - template: ./publish-tests.yaml
-            parameters:
+          parameters:
             testRunTitle: 'Integration test'
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
 
