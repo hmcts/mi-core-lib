@@ -27,10 +27,16 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
-        - template: ./steps/build-gradle-application.yaml
-        - template: ./publish-tests.yaml
+        - template: ./steps/gradle-task.yaml
           parameters:
+            checkstyle: true
+            pmd: true
+            gradleTasks: 'build'
             testRunTitle: 'Unit and functional test'
+            displayName: 'Package application'
+        # - template: ./publish-tests.yaml
+        #   parameters:
+        #     testRunTitle: 'Unit and functional test'
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
@@ -57,6 +63,7 @@ stages:
             displayName: 'Run Pre Integration Test Setup'
             gradleTasks: 'integrationPreTest'
             execute: ${{ parameters.preIntegrationTest }}
+            publishJUnitResults: false
         - template: ./helm-install-chart-job.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
@@ -93,6 +100,7 @@ stages:
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
             gradleTasks: 'integrationPostTest'
+            publishJUnitResults: false
         - template: ./publish-tests.yaml
           parameters:
             testRunTitle: 'Integration test'
