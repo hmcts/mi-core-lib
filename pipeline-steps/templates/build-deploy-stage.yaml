@@ -12,8 +12,8 @@ parameters:
   azureKeyMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
-  preIntegrationTest: false
-  postIntegrationTest: true
+  preIntegrationTest: 'false'
+  postIntegrationTest: 'true'
 
 stages:
 - stage: BuildAndDeploy
