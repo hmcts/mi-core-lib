@@ -12,6 +12,8 @@ parameters:
   azureKeyMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
+  preIntegrationTest: false
+  postIntegrationTest: true
 
 stages:
 - stage: BuildAndDeploy
@@ -42,6 +44,17 @@ stages:
       variables:
         env: ${{ parameters.env }}
       steps:
+        - template: ./steps/vault-secrets.yaml
+          parameters: 
+            azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+            keyVaultName: ${{ parameters.azureVault }}
+            secretsFilter: ${{ parameters.azureSecreKeys }}
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
+            displayName: 'Run Pre Integration Test Setup'
+            gradleTasks: 'integrationPreTest'
+            execute: ${{ parameters.preIntegrationTest }}
         - template: ./helm-install-chart-job.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
@@ -67,27 +80,17 @@ stages:
       variables:
         env: ${{ parameters.env }}
       steps:
-        - task: AzureKeyVault@1
-          displayName: 'Get secrets from Keyvault'
-          inputs:
-            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+        - template: ./steps/vault-secrets.yaml
+          parameters: 
+            azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
             secretsFilter: ${{ parameters.azureSecreKeys }}
-        - task: Gradle@2
-          env:
-            ${{ each pair in parameters.azureKeyMapping }}:
-              ${{ pair.key }}: $(${{ pair.value }})
-          inputs:
-            workingDirectory: ''
-            gradleWrapperFile: 'gradlew'
-            gradleOptions: '-Xmx3072m'
-            javaHomeOption: 'JDKVersion'
-            jdkVersionOption: '1.11'
-            jdkArchitectureOption: 'x64'
-            publishJUnitResults: true
-            testResultsFiles: '**/TEST-*.xml'
-            options: '--info --rerun-tasks'
-            tasks: 'functional'
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            displayName: 'Run Integration Test'
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
+            testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
+            gradleTasks: 'integrationPostTest'
         - template: ./publish-tests.yaml
 
     - job: PromoteBuild
