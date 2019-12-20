@@ -2,12 +2,12 @@ parameters:
   azureKeyMapping: {}
   gradleTasks: ''
   testResultsFiles: '**/TEST-*.xml'
-  execute: 'true'
+  execute: true
   displayName: ''
 steps:
   - task: Gradle@2
     displayName: ${{ parameters.displayName }}
-    condition: eq('${{ parameters.execute }}', 'true'))
+    condition: eq('${{ parameters.execute }}', true)
     env:
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
