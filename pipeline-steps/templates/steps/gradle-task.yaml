@@ -1,0 +1,22 @@
+parameters:
+  azureSubscriptionEndpoint: ''
+  keyVaultName: ''
+  azureKeyMapping: {}
+  gradleTasks: ''
+  testResultsFiles: '**/TEST-*.xml'
+steps:
+  - task: Gradle@2
+    env:
+      ${{ each pair in parameters.azureKeyMapping }}:
+        ${{ pair.key }}: $(${{ pair.value }})
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.11'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: ${{ parameters.testResultsFiles }}
+      options: '--info --rerun-tasks'
+      tasks: ${{ parameters.gradleTasks }}

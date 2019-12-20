@@ -12,6 +12,7 @@ parameters:
   azureKeyMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
+  pre: ''
 
 stages:
 - stage: BuildAndDeploy
@@ -67,27 +68,15 @@ stages:
       variables:
         env: ${{ parameters.env }}
       steps:
-        - task: AzureKeyVault@1
-          displayName: 'Get secrets from Keyvault'
-          inputs:
+        - template: ./steps/vault-secrets.yaml
+          parameters: 
             azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
             secretsFilter: ${{ parameters.azureSecreKeys }}
-        - task: Gradle@2
-          env:
-            ${{ each pair in parameters.azureKeyMapping }}:
-              ${{ pair.key }}: $(${{ pair.value }})
-          inputs:
-            workingDirectory: ''
-            gradleWrapperFile: 'gradlew'
-            gradleOptions: '-Xmx3072m'
-            javaHomeOption: 'JDKVersion'
-            jdkVersionOption: '1.11'
-            jdkArchitectureOption: 'x64'
-            publishJUnitResults: true
-            testResultsFiles: '**/TEST-*.xml'
-            options: '--info --rerun-tasks'
-            tasks: 'functional'
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
+            gradleTasks: 'functional'
         - template: ./publish-tests.yaml
 
     - job: PromoteBuild
