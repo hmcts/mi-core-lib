@@ -71,7 +71,7 @@ public class BlobStorage implements Storage {
                                             InputStream inputStream,
                                             long streamSize) {
 
-        getBlob(client, containerName, blobName).getBlockBlobClient().upload(inputStream, streamSize);
+        getBlob(client, containerName, blobName).getBlockBlobClient().upload(inputStream, streamSize, true);
     }
 
     public void appendBlobStreamToBlob(BlobServiceClient client,
@@ -88,6 +88,6 @@ public class BlobStorage implements Storage {
                                           String blobName,
                                           String inputPath) {
 
-        getBlob(client, containerName, blobName).uploadFromFile(inputPath);
+        getBlob(client, containerName, blobName).uploadFromFile(inputPath, true);
     }
 }

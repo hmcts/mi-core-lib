@@ -142,7 +142,7 @@ public class BlobStorageTest {
         blobStorage.uploadBlobStreamToContainer(
             mockedBlobServiceClient, TEST_CONTAINER_NAME, TEST_BLOB_NAME, inputStream, streamSize);
 
-        verify(mockedBlockBlobClient).upload(inputStream, streamSize);
+        verify(mockedBlockBlobClient).upload(inputStream, streamSize, true);
     }
 
     @Test
@@ -174,7 +174,7 @@ public class BlobStorageTest {
         blobStorage.uploadBlobFileToContainer(
             mockedBlobServiceClient, TEST_CONTAINER_NAME, TEST_BLOB_NAME, TEST_INPUT_FILEPATH);
 
-        verify(mockedBlobClient).uploadFromFile(TEST_INPUT_FILEPATH);
+        verify(mockedBlobClient).uploadFromFile(TEST_INPUT_FILEPATH, true);
     }
 
     private void stubContainerCreation(boolean exists) {
