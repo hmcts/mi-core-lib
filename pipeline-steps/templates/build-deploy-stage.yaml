@@ -42,7 +42,7 @@ stages:
           inputs:
             scannerMode: 'Other'
             organization: 'hmcts'
-            SonarCloud: ${{ parameters.azureSubscriptionEndpoint }}
+            SonarCloud: 'HMCTS_SonarCloud'
         - template: ./steps/sonarcloud-build-breaker.yaml
         - task: SonarCloudPublish@1
           inputs:
