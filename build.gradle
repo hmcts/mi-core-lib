@@ -164,7 +164,7 @@ ext {
 def versions = [
 	azureCore		: '1.0.0',
 	azureIdentity	: '1.0.0',
-	azureStorage	: '12.0.0',
+	azureStorage	: '12.2.0-beta.1',
 	junit			: '5.5.0',
 	lombok			: '1.18.10',
 	mockito			: '3.1.0',
