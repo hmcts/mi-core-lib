@@ -36,7 +36,7 @@ stages:
             displayName: 'Package application'
             publishJUnitResults: true
             sonar: true
-            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts'
+            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts -Dsonar.branch.name=$(Build.SourceBranchName)'
         - template: ./steps/sonarcloud-build-breaker.yaml
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
