@@ -39,6 +39,10 @@ stages:
             sonar: true
             extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/sonarcloud-build-breaker.yaml
+        - task: SonarCloudPublish@1
+          inputs:
+            pollingTimeoutSec: '300'
+        - task: sonarcloud-buildbreaker@2
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
