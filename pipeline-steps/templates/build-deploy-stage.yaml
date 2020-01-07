@@ -38,6 +38,11 @@ stages:
             publishJUnitResults: true
             sonar: true
             extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
+        - task: SonarCloudPrepare@1
+          inputs:
+            scannerMode: 'Other'
+            organization: 'hmcts'
+            SonarCloud: ${{ parameters.azureSubscriptionEndpoint }}
         - template: ./steps/sonarcloud-build-breaker.yaml
         - task: SonarCloudPublish@1
           inputs:
