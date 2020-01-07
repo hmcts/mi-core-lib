@@ -27,6 +27,7 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
+        - template: ./steps/sonar-pr-option.yaml
         - template: ./steps/gradle-task.yaml
           parameters:
             checkstyle: true
@@ -36,7 +37,7 @@ stages:
             displayName: 'Package application'
             publishJUnitResults: true
             sonar: true
-            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts -Dsonar.branch.name=$(Build.SourceBranchName)'
+            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/sonarcloud-build-breaker.yaml
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
