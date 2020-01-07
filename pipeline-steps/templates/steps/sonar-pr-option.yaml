@@ -4,6 +4,6 @@ parameters:
 steps:
   # On PR: Set the tag to the PR number
   - bash: |
-      echo "##vso[task.setvariable variable=sonarPr]sonar.pullrequest.key=$(System.PullRequest.PullRequestNumber)"
+      echo "##vso[task.setvariable variable=sonarPr]-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber)"
     displayName: 'Set sonar pr config: Pull Request'
     condition: eq(variables['Build.Reason'], 'PullRequest')
