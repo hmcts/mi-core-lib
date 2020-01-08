@@ -5,13 +5,6 @@ parameters:
   namespace: ''
 
 steps:
-  # - template: ./steps/docker-tag.yaml
-  # - task: AzureCLI@1
-  #   displayName: "AKS Authenticate"
-  #   inputs:
-  #     azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
-  #     scriptLocation: "inlineScript"
-  #     inlineScript: az aks get-credentials --admin --overwrite-existing --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
   - bash: |
       timeout=300
       job=${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)-job
