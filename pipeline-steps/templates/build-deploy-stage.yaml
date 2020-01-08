@@ -15,6 +15,7 @@ parameters:
   azureVault: ''
   preIntegrationTest: false
   postIntegrationTest: true
+  functionalTest: false
 
 stages:
 - stage: BuildAndDeploy
@@ -34,9 +35,28 @@ stages:
             checkstyle: true
             pmd: true
             gradleTasks: 'build'
-            testRunTitle: 'Unit and functional test'
+            testRunTitle: 'Unit tests'
             displayName: 'Package application'
             publishJUnitResults: true
+        - ${{ if eq(parameters.functionalTest, 'true') }}:
+          - template: ./steps/acr-login.yaml
+            parameters:
+              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+              aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
+              aksCluster:  ${{ parameters.azureAksCluster }}
+              azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+          - template: ./steps/gradle-task.yaml
+            parameters:
+              gradleTasks: 'functional'
+              testRunTitle: 'Functional tests'
+              displayName: 'Functional test'
+              publishJUnitResults: true
+              testResultsFiles: '**/test-results/functional/**/TEST-*.xml'
+              azureKeyMapping: ${{ parameters.azureKeyMapping }}
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            gradleTasks: 'properties'
+            displayName: 'Sonar analysis'
             sonar: true
             extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
