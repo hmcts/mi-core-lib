@@ -2,8 +2,14 @@ parameters:
   azureKeyMapping: {}
   gradleTasks: ''
   testResultsFiles: '**/TEST-*.xml'
+  testRunTitle: 'Gradle test'
   execute: true
   displayName: ''
+  pmd: false
+  checkstyle: false
+  publishJUnitResults: false
+  extraOptions: ''
+  sonar: false
 steps:
   - task: Gradle@2
     displayName: ${{ parameters.displayName }}
@@ -18,7 +24,11 @@ steps:
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '1.11'
       jdkArchitectureOption: 'x64'
-      publishJUnitResults: true
+      publishJUnitResults: ${{ parameters.publishJUnitResults }}
+      testRunTitle: ${{ parameters.testRunTitle }}
       testResultsFiles: ${{ parameters.testResultsFiles }}
-      options: '--info --rerun-tasks'
+      options: '--info --rerun-tasks ${{ parameters.extraOptions }}'
       tasks: ${{ parameters.gradleTasks }}
+      sonarQubeRunAnalysis: ${{ parameters.sonar }}
+      checkStyleRunAnalysis: ${{ parameters.checkstyle }}
+      pmdRunAnalysis: ${{ parameters.pmd }}

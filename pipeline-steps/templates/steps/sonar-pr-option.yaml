@@ -1,0 +1,13 @@
+parameters:
+  env: $(env)
+
+steps:
+  # On PR: Set the tag to the PR number
+  - bash: |
+      echo "##vso[task.setvariable variable=sonarPr]-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber) -Dsonar.pullrequest.branch=$(Build.SourceBranch) -Dsonar.pullrequest.base=master"
+    displayName: 'Set sonar pr config: Pull Request'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+  - bash: |
+            echo "##vso[task.setvariable variable=sonarPr]"
+    displayName: 'Ommit Pr on Branch'
+    condition: ne(variables['Build.Reason'], 'PullRequest')

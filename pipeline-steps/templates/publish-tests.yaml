@@ -1,8 +1,13 @@
 
+parameters:
+    testResultsFiles: '**/TEST-*.xml'
+    testRunTitle: 'Publish tests'
+
 steps:
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
-    testResultsFiles: '**/TEST-*.xml'
-    testRunTitle: 'Publish tests'
+    testResultsFiles: ${{ parameters.testResultsFiles }}
+    testRunTitle: ${{ parameters.testRunTitle }}
+    mergeTestResults: true

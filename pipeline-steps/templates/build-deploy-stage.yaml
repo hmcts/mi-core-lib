@@ -27,8 +27,17 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
-        - template: ./steps/build-gradle-application.yaml
-        - template: ./publish-tests.yaml
+        - template: ./steps/sonar-pr-option.yaml
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            checkstyle: true
+            pmd: true
+            gradleTasks: 'build'
+            testRunTitle: 'Unit and functional test'
+            displayName: 'Package application'
+            publishJUnitResults: true
+            sonar: true
+            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
@@ -91,7 +100,8 @@ stages:
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
             gradleTasks: 'integrationPostTest'
-        - template: ./publish-tests.yaml
+            publishJUnitResults: true
+            testRunTitle: 'Integration test'
 
     - job: PromoteBuild
       dependsOn: IntegrationTest
