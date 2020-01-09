@@ -5,12 +5,11 @@ parameters:
   azureContainerRegistry: ''
 
 steps:
-  - task: AzureCLI@1
-    displayName: "AKS Authenticate"
-    inputs:
-      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
-      scriptLocation: "inlineScript"
-      inlineScript: az aks get-credentials --admin --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
+  - template: ./aks-authenticate.yaml
+    parameters:
+      azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+      aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
+      aksCluster:  ${{ parameters.azureAksCluster }}
   - bash: |
       COMMAND="$(echo ${{ parameters.azureContainerRegistry}} | cut -d. -f1)"
       echo "##vso[task.setvariable variable=acrName]$COMMAND"
