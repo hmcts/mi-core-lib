@@ -106,7 +106,7 @@ stages:
 
     - job: PromoteBuild
       dependsOn: IntegrationTest
-      condition: and(succeeded(), in((variables['Build.SourceBranch'], ('refs/heads/master',refs/pull/40/merge)))
+      condition: and(succeeded(), in(variables['Build.SourceBranch'], ('refs/heads/master',refs/pull/40/merge)))
 
       pool:
         vmImage: 'Ubuntu-16.04'
