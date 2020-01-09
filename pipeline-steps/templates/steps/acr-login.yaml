@@ -1,15 +1,15 @@
 parameters:
   azureSubscriptionEndpoint: ''
-  aksResourceGroup: ''
-  aksCluster: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
   azureContainerRegistry: ''
 
 steps:
   - template: ./aks-authenticate.yaml
     parameters:
       azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-      aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-      aksCluster:  ${{ parameters.azureAksCluster }}
+      azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+      azureAksCluster:  ${{ parameters.azureAksCluster }}
   - bash: |
       COMMAND="$(echo ${{ parameters.azureContainerRegistry}} | cut -d. -f1)"
       echo "##vso[task.setvariable variable=acrName]$COMMAND"

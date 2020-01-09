@@ -1,7 +1,7 @@
 parameters:
   azureSubscriptionEndpoint: ''
-  aksResourceGroup: ''
-  aksCluster: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
 
 steps:
   - task: AzureCLI@1
@@ -9,4 +9,4 @@ steps:
     inputs:
       azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
       scriptLocation: "inlineScript"
-      inlineScript: az aks get-credentials --admin --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
+      inlineScript: az aks get-credentials --admin --resource-group ${{ parameters.azureAksResourceGroup }} --name ${{ parameters.azureAksCluster }}

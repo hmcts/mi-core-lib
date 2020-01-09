@@ -3,8 +3,8 @@ parameters:
   azureContainerRegistry: ''
   azureSubscriptionEndpoint: ''
   applicationName: ''
-  aksResourceGroup: ''
-  aksCluster: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
   jobName: ''
   namespace: ''
   chartEnv: ''
@@ -24,8 +24,8 @@ steps:
   - template: ./steps/aks-authenticate.yaml
     parameters:
       azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-      aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-      aksCluster:  ${{ parameters.azureAksCluster }}
+      azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+      azureAksCluster:  ${{ parameters.azureAksCluster }}
   - script: |
       envsubst < charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.template.yaml > charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml
     displayName: 'Replace Image Name In Chart Values'

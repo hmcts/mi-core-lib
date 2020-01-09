@@ -7,7 +7,7 @@ parameters:
   azureContainerRegistry: $(azure.container.registry)
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-  azureAksResourcegroup: $(azure.aks.resourcegroup)
+  azureAksResourceGroup: $(azure.aks.resourcegroup)
   azurePromAcr: $(azure.prom.acr)
   azurePromSubscriptionEndpoint: $(azure.prom.subscription.endpoint)
   azureKeyMapping: {}
@@ -43,8 +43,8 @@ stages:
           - template: ./steps/acr-login.yaml
             parameters:
               azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-              aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-              aksCluster:  ${{ parameters.azureAksCluster }}
+              azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+              azureAksCluster:  ${{ parameters.azureAksCluster }}
               azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
           - template: ./steps/gradle-task.yaml
             parameters:
@@ -90,16 +90,16 @@ stages:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
             azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
             applicationName:  ${{ parameters.applicationName }}
-            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-            aksCluster:  ${{ parameters.azureAksCluster }}
+            azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+            azureAksCluster:  ${{ parameters.azureAksCluster }}
             jobName:  ${{ parameters.applicationName }}
             namespace: ${{ parameters.product }}
             chartEnv: ${{ parameters.chartEnv }}
         - template: ./kubernetes-wait-for-job.yaml
           parameters:
             azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
-            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-            aksCluster:  ${{ parameters.azureAksCluster }}
+            azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+            azureAksCluster:  ${{ parameters.azureAksCluster }}
             jobName:  ${{ parameters.applicationName }}
             namespace:  ${{ parameters.product }}
             projectName: ${{ parameters.applicationName }}
