@@ -15,7 +15,7 @@ parameters:
   azureVault: ''
   preIntegrationTest: false
   postIntegrationTest: true
-  requireAcrLogin: false
+  functionalTest: false
 
 stages:
 - stage: BuildAndDeploy
@@ -29,24 +29,36 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
-        - ${{ if eq(parameters.requireAcrLogin, 'true') }}:
-          - template: ./steps/acr-login.yaml
-            parameters:
-              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-              aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-              aksCluster:  ${{ parameters.azureAksCluster }}
-              azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
         - template: ./steps/sonar-pr-option.yaml
         - template: ./steps/gradle-task.yaml
           parameters:
             checkstyle: true
             pmd: true
             gradleTasks: 'build'
-            testRunTitle: 'Unit and functional tests'
+            testRunTitle: 'Unit tests'
             displayName: 'Package application'
             publishJUnitResults: true
-            sonar: true
-            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
+            extraOptions: '--build-cache'
+        - ${{ if eq(parameters.functionalTest, 'true') }}:
+          - template: ./steps/acr-login.yaml
+            parameters:
+              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+              aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
+              aksCluster:  ${{ parameters.azureAksCluster }}
+              azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+          - template: ./steps/gradle-task.yaml
+            parameters:
+              gradleTasks: 'functional'
+              testRunTitle: 'Functional tests'
+              displayName: 'Functional test'
+              publishJUnitResults: true
+              testResultsFiles: '**/test-results/functional/**/TEST-*.xml'
+              extraOptions: '--build-cache'
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            gradleTasks: 'sonarqube'
+            displayName: 'Sonar analysis'
+            extraOptions: '--build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
