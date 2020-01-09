@@ -3,7 +3,7 @@ parameters:
   applicationName: ''
   azureProdSubscription: ''
   azureDestinyContainerRegistry: ''
-
+  promEnv: ''
 steps:
   - template: ./steps/docker-tag.yaml
   - task: AzureCLI@1
@@ -13,5 +13,5 @@ steps:
       scriptLocation: "inlineScript"
       inlineScript: |
         sourceImage=${{ parameters.azureContainerRegistry }}/${{ parameters.applicationName }}:$(imageTag)
-        targetImage=${{ parameters.applicationName }}:$(imageTag)
+        targetImage=${{ parameters.applicationName }}:${{ parameters.promEnv }}$(imageSha)
         az acr import -n  ${{ parameters.azureDestinyContainerRegistry }} --source $sourceImage --image $targetImage --username  $(sp.user) --password $(sp.password) 

@@ -1,7 +1,8 @@
 parameters:
   env: 'test'
+  promEnv: 'stg'
   applicationName: ''
-  chartEnv: 'preview'
+  chartEnv: 'test'
   product: ''
   azureContainerRegistry: $(azure.container.registry)
   azureAksCluster: $(azure.aks.cluster)
@@ -111,6 +112,7 @@ stages:
         vmImage: 'Ubuntu-16.04'
       variables:
         env: ${{ parameters.env }}
+
       steps:
         - template: ./promote-build.yaml
           parameters:
@@ -118,3 +120,4 @@ stages:
             applicationName: ${{ parameters.applicationName }}
             azureDestinyContainerRegistry:  ${{ parameters.azurePromAcr }}
             azureProdSubscription: $(azure.prom.subscription.endpoint)
+            promEnv: ${{ parameters.promEnv }}
