@@ -1,7 +1,7 @@
 parameters:
   azureSubscriptionEndpoint: ''
-  aksResourceGroup: ''
-  aksCluster: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
   namespace: ''
 
 steps:

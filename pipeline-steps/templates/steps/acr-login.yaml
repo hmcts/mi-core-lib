@@ -1,0 +1,23 @@
+parameters:
+  azureSubscriptionEndpoint: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
+  azureContainerRegistry: ''
+
+steps:
+  - template: ./aks-authenticate.yaml
+    parameters:
+      azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+      azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+      azureAksCluster:  ${{ parameters.azureAksCluster }}
+  - bash: |
+      COMMAND="$(echo ${{ parameters.azureContainerRegistry}} | cut -d. -f1)"
+      echo "##vso[task.setvariable variable=acrName]$COMMAND"
+    displayName: 'Extract acr name from registry url'
+  - task: AzureCLI@1
+    displayName: "ACR Login"
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        az acr login --name $(acrName)

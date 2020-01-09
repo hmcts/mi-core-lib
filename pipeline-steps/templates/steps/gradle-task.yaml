@@ -10,6 +10,7 @@ parameters:
   publishJUnitResults: false
   extraOptions: ''
   sonar: false
+
 steps:
   - task: Gradle@2
     displayName: ${{ parameters.displayName }}

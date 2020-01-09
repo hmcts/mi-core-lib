@@ -7,7 +7,7 @@ parameters:
   azureContainerRegistry: $(azure.container.registry)
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-  azureAksResourcegroup: $(azure.aks.resourcegroup)
+  azureAksResourceGroup: $(azure.aks.resourcegroup)
   azurePromAcr: $(azure.prom.acr)
   azurePromSubscriptionEndpoint: $(azure.prom.subscription.endpoint)
   azureKeyMapping: {}
@@ -15,6 +15,7 @@ parameters:
   azureVault: ''
   preIntegrationTest: false
   postIntegrationTest: true
+  functionalTest: false
 
 stages:
 - stage: BuildAndDeploy
@@ -34,11 +35,30 @@ stages:
             checkstyle: true
             pmd: true
             gradleTasks: 'build'
-            testRunTitle: 'Unit and functional test'
+            testRunTitle: 'Unit tests'
             displayName: 'Package application'
             publishJUnitResults: true
-            sonar: true
-            extraOptions: '-Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
+            extraOptions: '--build-cache'
+        - ${{ if eq(parameters.functionalTest, 'true') }}:
+          - template: ./steps/acr-login.yaml
+            parameters:
+              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+              azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+              azureAksCluster:  ${{ parameters.azureAksCluster }}
+              azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+          - template: ./steps/gradle-task.yaml
+            parameters:
+              gradleTasks: 'functional'
+              testRunTitle: 'Functional tests'
+              displayName: 'Functional test'
+              publishJUnitResults: true
+              testResultsFiles: '**/test-results/functional/**/TEST-*.xml'
+              extraOptions: '--build-cache'
+        - template: ./steps/gradle-task.yaml
+          parameters:
+            gradleTasks: 'sonarqube'
+            displayName: 'Sonar analysis'
+            extraOptions: '--build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
@@ -70,16 +90,16 @@ stages:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
             azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
             applicationName:  ${{ parameters.applicationName }}
-            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-            aksCluster:  ${{ parameters.azureAksCluster }}
+            azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+            azureAksCluster:  ${{ parameters.azureAksCluster }}
             jobName:  ${{ parameters.applicationName }}
             namespace: ${{ parameters.product }}
             chartEnv: ${{ parameters.chartEnv }}
         - template: ./kubernetes-wait-for-job.yaml
           parameters:
             azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
-            aksResourceGroup:  ${{ parameters.azureAksResourcegroup }}
-            aksCluster:  ${{ parameters.azureAksCluster }}
+            azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+            azureAksCluster:  ${{ parameters.azureAksCluster }}
             jobName:  ${{ parameters.applicationName }}
             namespace:  ${{ parameters.product }}
             projectName: ${{ parameters.applicationName }}

@@ -3,8 +3,8 @@ parameters:
   azureContainerRegistry: ''
   azureSubscriptionEndpoint: ''
   applicationName: ''
-  aksResourceGroup: ''
-  aksCluster: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
   jobName: ''
   namespace: ''
   chartEnv: ''
@@ -16,12 +16,11 @@ steps:
     displayName: 'Install Helm ${{ parameters.helmVersion }}'
     inputs:
       helmVersionToInstall: ${{ parameters.helmVersion }}
-  - task: AzureCLI@1
-    displayName: "AKS Authenticate"
-    inputs:
-      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
-      scriptLocation: "inlineScript"
-      inlineScript: az aks get-credentials --admin --resource-group ${{ parameters.aksResourceGroup }} --name ${{ parameters.aksCluster }}
+  - template: ./steps/aks-authenticate.yaml
+    parameters:
+      azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+      azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+      azureAksCluster:  ${{ parameters.azureAksCluster }}
   - script: |
       envsubst < charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.template.yaml > charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml
     displayName: 'Replace Image Name In Chart Values'
