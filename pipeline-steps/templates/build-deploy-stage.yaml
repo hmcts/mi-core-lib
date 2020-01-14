@@ -16,6 +16,7 @@ parameters:
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
+  mutationTest: false
 
 stages:
 - stage: BuildAndDeploy
@@ -59,11 +60,13 @@ stages:
             gradleTasks: 'pitest'
             displayName: 'Pitest analisys'
             extraOptions: '--build-cache'
+            execute: ${{ parameters.mutationTest }}}
         - task: PublishPipelineArtifact@1
           condition: succeededOrFailed()
           inputs:
             path: '$(System.DefaultWorkingDirectory)/build/reports/'
             artifact: reports
+            displayName: 'Publish reports on artifact'
         - template: ./steps/gradle-task.yaml
           parameters:
             gradleTasks: 'sonarqube'
