@@ -60,6 +60,7 @@ stages:
             displayName: 'Pitest analisys'
             extraOptions: '--build-cache'
         - task: PublishTestResults@2
+          condition: succeededOrFailed()
           inputs:
             #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
             testResultsFiles: '**/mutations.xml' 
