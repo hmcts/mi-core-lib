@@ -59,11 +59,11 @@ stages:
               testResultsFiles: '**/test-results/functional/**/TEST-*.xml'
               extraOptions: '--build-cache'
         - template: ./steps/gradle-task.yaml
+          condition: and(succeeded(), eq(variables['Build.Reason'], 'Schedule'))
           parameters:
             gradleTasks: 'pitest'
             displayName: 'Pitest analisys'
             extraOptions: '--build-cache'
-            execute: ${{ parameters.mutationTest }}}
         - task: PublishPipelineArtifact@1
           condition: succeededOrFailed()
           inputs:
