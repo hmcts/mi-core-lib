@@ -55,6 +55,22 @@ stages:
               testResultsFiles: '**/test-results/functional/**/TEST-*.xml'
               extraOptions: '--build-cache'
         - template: ./steps/gradle-task.yaml
+            parameters:
+              gradleTasks: 'pitest'
+              displayName: 'Pitest analisys'
+              extraOptions: '--build-cache'
+        - task: PublishTestResults@2
+            inputs:
+              #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+              testResultsFiles: '**/mutations.xml' 
+              #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+              #mergeTestResults: false # Optional
+              #failTaskOnFailedTests: false # Optional
+              testRunTitle: 'mutationTest'
+              #buildPlatform: # Optional
+              #buildConfiguration: # Optional
+              publishRunAttachments: true # Optional
+        - template: ./steps/gradle-task.yaml
           parameters:
             gradleTasks: 'sonarqube'
             displayName: 'Sonar analysis'
