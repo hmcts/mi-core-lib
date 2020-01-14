@@ -63,7 +63,7 @@ stages:
             gradleTasks: 'pitest'
             displayName: 'Pitest analisys'
             extraOptions: '--build-cache'
-            execute: ${{ parameters.mutationTest }}}
+            execute: ${{ parameters.mutationTest }}
         - task: PublishPipelineArtifact@1
           condition: succeededOrFailed()
           inputs:
