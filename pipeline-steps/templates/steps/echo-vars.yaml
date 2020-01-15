@@ -1,0 +1,7 @@
+parameters:
+  elemToPrint: ''
+
+steps:
+  - bash: |
+        echo "Test parameter value is: ${{ parameters.elemToPrint}}"
+    displayName: 'Print test variable'
