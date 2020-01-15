@@ -9,5 +9,5 @@ steps:
     condition: eq(variables['Build.Reason'], 'PullRequest')
   - bash: |
             echo "##vso[task.setvariable variable=sonarPr]"
-    displayName: 'Sonar branch config'
+    displayName: 'Branch config for sonar'
     condition: ne(variables['Build.Reason'], 'PullRequest')

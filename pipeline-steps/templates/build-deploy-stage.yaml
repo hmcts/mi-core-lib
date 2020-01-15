@@ -30,9 +30,6 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
-        - template: ./steps/echo-vars.yaml
-          parameters:
-            elemToPrint: ${{ parameters.mutationTest }}
         - template: ./steps/sonar-pr-option.yaml
         - template: ./steps/gradle-task.yaml
           parameters:
