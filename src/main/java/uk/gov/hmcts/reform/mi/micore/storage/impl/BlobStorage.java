@@ -4,7 +4,9 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.models.BlobItem;
+import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.BlobProperties;
+import com.azure.storage.blob.models.ListBlobsOptions;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
 import uk.gov.hmcts.reform.mi.micore.storage.Storage;
@@ -31,7 +33,8 @@ public class BlobStorage implements Storage {
     public List<BlobItem> getListOfBlobs(BlobServiceClient client, String containerName) {
         List<BlobItem> blobItemList = new ArrayList<>();
 
-        for (BlobItem blobItem : retrieveBlobContainer(client, containerName).listBlobs()) {
+        ListBlobsOptions options = new ListBlobsOptions().setDetails(new BlobListDetails().setRetrieveMetadata(true));
+        for (BlobItem blobItem : retrieveBlobContainer(client, containerName).listBlobs(options, null)) {
             blobItemList.add(blobItem);
         }
 
