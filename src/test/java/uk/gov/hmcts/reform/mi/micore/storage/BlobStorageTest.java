@@ -25,6 +25,8 @@ import java.util.Iterator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -82,7 +84,8 @@ public class BlobStorageTest {
         when(mockIterator.hasNext()).thenReturn(true, true, true, false);
         when(mockIterator.next()).thenReturn(mock(BlobItem.class));
 
-        when(mockedBlobContainerClient.listBlobs()).thenReturn(mockIterable);
+        when(mockedBlobContainerClient.listBlobs(argThat(options -> options.getDetails().getRetrieveMetadata()), eq(null)))
+            .thenReturn(mockIterable);
 
         int blobListSize = blobStorage.getListOfBlobs(mockedBlobServiceClient, TEST_CONTAINER_NAME).size();
 
