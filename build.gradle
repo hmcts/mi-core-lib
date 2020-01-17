@@ -22,7 +22,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '3.0.0'
+version = '3.0.1'
 sourceCompatibility = '11'
 
 bootJar {
@@ -237,7 +237,8 @@ test {
 }
 
 pitest {
-	targetClasses = ['uk.gov.hmcts.reform.mi.micore.exception.*',
+	targetClasses = ['uk.gov.hmcts.reform.mi.micore.component.*',
+					 'uk.gov.hmcts.reform.mi.micore.exception.*',
 					 'uk.gov.hmcts.reform.mi.micore.factory.*',
 					 'uk.gov.hmcts.reform.mi.micore.utils.AuthTokenUtils*']
 	testSourceSets = [sourceSets.test]

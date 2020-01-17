@@ -4,7 +4,6 @@ import com.azure.identity.ManagedIdentityCredentialBuilder;
 import com.azure.storage.blob.BlobServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import uk.gov.hmcts.reform.mi.micore.utils.AzureWrapper;
 
 /**
