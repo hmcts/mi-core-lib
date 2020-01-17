@@ -1,7 +1,14 @@
 parameters:
   jobName: ''
   azureSubscriptionEndpoint: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
 steps:
+- template: ./steps/aks-authenticate.yaml
+  parameters:
+    azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+    azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+    azureAksCluster:  ${{ parameters.azureAksCluster }}
 - template: ./docker-tag.yaml
 - task: AzureCLI@1
   condition: succeeded()

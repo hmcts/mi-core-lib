@@ -139,9 +139,10 @@ stages:
         - template: ./steps/helm-delete-chart.yaml
           parameters:
             displayName: 'Delete deployment'
-            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             jobName:  ${{ parameters.applicationName }}
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+            azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+            azureAksCluster:  ${{ parameters.azureAksCluster }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
