@@ -2,7 +2,7 @@ parameters:
   jobName: ''
 
 steps:
-- template: ./steps/docker-tag.yaml
+- template: .docker-tag.yaml
 - task: AzureCLI@1
   condition: succeeded()
   displayName: "Helm delete Job Chart"
