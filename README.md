@@ -2,4 +2,4 @@
 
 ### Core libraries and utilities for the MI services
 
-Under Construction
+Library for Azure authentication based on entered details.

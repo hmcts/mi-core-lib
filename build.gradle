@@ -1,3 +1,11 @@
+buildscript {
+	configurations.maybeCreate("pitest")
+	dependencies {
+		classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.5'
+		pitest 'org.pitest:pitest-junit5-plugin:0.10'
+	}
+}
+
 plugins {
 	id 'checkstyle'
 	id 'pmd'
@@ -10,10 +18,11 @@ plugins {
 	id 'org.owasp.dependencycheck' version '5.2.4'
 	id 'com.github.ben-manes.versions' version '0.27.0'
 	id 'org.sonarqube' version '2.8'
+	id 'info.solidsoft.pitest' version '1.4.6'
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '2.8.2'
+version = '3.0.0'
 sourceCompatibility = '11'
 
 bootJar {
@@ -46,17 +55,24 @@ jacocoTestReport {
 	reports {
 		xml.enabled = true
 		csv.enabled = false
-		xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+		xml.destination file("${buildDir}/reports/jacoco/jacocoTestReport.xml")
+		html.destination file("${buildDir}/reports/jacoco/jacocoTestReport.html")
 	}
 }
 
 project.tasks['sonarqube'].dependsOn test
 
+def sonarExclusions = [
+	'**uk/gov/hmcts/reform/mi/micore/MiCoreLibConfigurationContext.java',
+	'**uk/gov.hmcts/reform/mi/micore/utils/AzureWrapper.java'
+]
+
 sonarqube {
 	properties {
 		property "sonar.projectName", "Reform :: MI Core Library"
 		property "sonar.projectKey", "uk.gov.hmcts.reform:mi-core-lib"
-		property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+		property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/jacocoTestReport.xml"
+		property "sonar.exclusions", sonarExclusions.join(", ")
 	}
 }
 
@@ -115,7 +131,7 @@ publishing {
 
 			pom {
 				name = 'mi-core-lib'
-				description = 'HMCTS MI Core Libraries and Utilities'
+				description = 'HMCTS Management Information Core Libraries and Utilities'
 				url = gitRepo
 				licenses {
 					license {
@@ -162,13 +178,16 @@ ext {
 }
 
 def versions = [
-	azureCore	: '1.0.0',
-	azureIdentity	: '1.0.0',
-	azureStorage	: '12.2.0-beta.1',
-	junit		: '5.5.0',
-	lombok		: '1.18.10',
-	mockito		: '3.1.0',
-	reformLogging	: '5.1.1'
+	azureCore	  : '1.2.0',
+	azureIdentity : '1.0.3',
+	azureStorage  : '12.2.0',
+	junit		  : '5.5.2',
+	lombok		  : '1.18.10',
+	mockito		  : '3.2.4',
+	piTest        : '1.4.10',
+	piTestGradle  : '1.4.5',
+	piTestSonar   : '0.5',
+	reformLogging : '5.1.1'
 ]
 
 dependencies {
@@ -181,18 +200,15 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
-	// Azure Dependencies
-	implementation group: 'com.azure', name: 'azure-core', version: versions.azureCore
-	implementation group: 'com.azure', name: 'azure-storage-blob', version: versions.azureStorage
-	implementation group: 'com.azure', name: 'azure-storage-common', version: versions.azureStorage
-	implementation group: 'com.azure', name: 'azure-identity', version: versions.azureIdentity
+	// Azure Dependencies - Transitive
+	api group: 'com.azure', name: 'azure-core', version: versions.azureCore
+	api group: 'com.azure', name: 'azure-storage-blob', version: versions.azureStorage
+	api group: 'com.azure', name: 'azure-storage-common', version: versions.azureStorage
+	api group: 'com.azure', name: 'azure-identity', version: versions.azureIdentity
 
 	// Lombok
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 	implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
-
-	// Legacy Dependencies
-	implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.4.0'
 
 	// Reform Dependencies
 	implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
@@ -204,6 +220,10 @@ dependencies {
 
 	testImplementation group: 'org.mockito', name: 'mockito-core', version: versions.mockito
 	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: versions.mockito
+
+	testImplementation group: 'org.pitest', name: 'pitest', version: versions.piTest
+	testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.piTestGradle
+	testImplementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.piTestSonar
 }
 
 dependencyManagement {
@@ -214,5 +234,17 @@ dependencyManagement {
 
 test {
 	useJUnitPlatform()
-	failFast = true
+}
+
+pitest {
+	targetClasses = ['uk.gov.hmcts.reform.mi.micore.exception.*',
+					 'uk.gov.hmcts.reform.mi.micore.factory.*',
+					 'uk.gov.hmcts.reform.mi.micore.utils.AuthTokenUtils*']
+	testSourceSets = [sourceSets.test]
+	threads = 10
+	outputFormats = ['XML', 'HTML']
+	timestampedReports = false
+	mutationThreshold = 80
+	verbose = true
+	testPlugin = "junit5"
 }

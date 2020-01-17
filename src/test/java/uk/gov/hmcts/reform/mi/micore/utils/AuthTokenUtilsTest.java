@@ -11,25 +11,21 @@ public class AuthTokenUtilsTest {
 
     @Test
     public void givenBearerToken_whenStripBearerScheme_thenReturnNonBearerToken() {
-        assertEquals(TOKEN, AuthTokenUtils.stripBearerScheme(BEARER_TOKEN),
-            "Output has not been stripped of the Bearer prefix.");
+        assertEquals(TOKEN, AuthTokenUtils.stripBearerScheme(BEARER_TOKEN));
     }
 
     @Test
     public void givenNonBearerToken_whenStripBearerScheme_thenReturnNonBearerToken() {
-        assertEquals(TOKEN, AuthTokenUtils.stripBearerScheme(TOKEN),
-            "Output has been incorrectly modified to be with Bearer prefix.");
+        assertEquals(TOKEN, AuthTokenUtils.stripBearerScheme(TOKEN));
     }
 
     @Test
     public void givenNonBearerToken_whenAddBearerScheme_thenReturnBearerToken() {
-        assertEquals(BEARER_TOKEN, AuthTokenUtils.addBearerScheme(TOKEN),
-            "Output has not been prefixed with Bearer.");
+        assertEquals(BEARER_TOKEN, AuthTokenUtils.addBearerScheme(TOKEN));
     }
 
     @Test
     public void givenBearerToken_whenAddBearerScheme_thenReturnBearerToken() {
-        assertEquals(BEARER_TOKEN, AuthTokenUtils.addBearerScheme(BEARER_TOKEN),
-            "Output has been incorrectly modified to be without Bearer prefix.");
+        assertEquals(BEARER_TOKEN, AuthTokenUtils.addBearerScheme(BEARER_TOKEN));
     }
 }
