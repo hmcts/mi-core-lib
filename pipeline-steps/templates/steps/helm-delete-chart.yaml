@@ -2,9 +2,10 @@ parameters:
   jobName: ''
 
 steps:
-  condition: succeeded()
 - template: ./steps/docker-tag.yaml
+  condition: succeeded()
 - task: AzureCLI@1
+  condition: succeeded()
   displayName: "Helm delete Job Chart"
   inputs:
     azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
