@@ -1,0 +1,13 @@
+parameters:
+  jobName: ''
+
+steps:
+  condition: succeeded()
+  - template: ./steps/docker-tag.yaml
+  - task: AzureCLI@1
+    displayName: "Helm delete Job Chart"
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        helm delete ${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)  

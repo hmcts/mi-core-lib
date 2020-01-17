@@ -136,7 +136,11 @@ stages:
             gradleTasks: 'integrationPostTest'
             publishJUnitResults: true
             testRunTitle: 'Integration test'
-
+        - template: ./steps/helm-delete-chart.yaml
+          parameters:
+            displayName: 'Delete deployment'
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
+            jobName:  ${{ parameters.applicationName }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
