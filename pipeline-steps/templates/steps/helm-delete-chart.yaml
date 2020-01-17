@@ -3,7 +3,13 @@ parameters:
   azureSubscriptionEndpoint: ''
   azureAksResourceGroup: ''
   azureAksCluster: ''
+  helmVersion: '3.0.0'
+  
 steps:
+- task: HelmInstaller@1
+  displayName: 'Install Helm ${{ parameters.helmVersion }}'
+  inputs:
+    helmVersionToInstall: ${{ parameters.helmVersion }}
 - template: ./aks-authenticate.yaml
   parameters:
     azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
