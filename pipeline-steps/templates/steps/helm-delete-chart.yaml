@@ -4,7 +4,7 @@ parameters:
   azureAksResourceGroup: ''
   azureAksCluster: ''
 steps:
-- template: ./steps/aks-authenticate.yaml
+- template: ./aks-authenticate.yaml
   parameters:
     azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
     azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
