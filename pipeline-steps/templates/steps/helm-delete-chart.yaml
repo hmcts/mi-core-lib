@@ -4,6 +4,7 @@ parameters:
   azureAksResourceGroup: ''
   azureAksCluster: ''
   helmVersion: '3.0.0'
+  namespace: ''
   
 steps:
 - task: HelmInstaller@1
@@ -23,4 +24,4 @@ steps:
     azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
     scriptLocation: "inlineScript"
     inlineScript: |
-      helm delete ${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)  
+      helm delete ${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)  --namespace ${{ parameters.namespace }}

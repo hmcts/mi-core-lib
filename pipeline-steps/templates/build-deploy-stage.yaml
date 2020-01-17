@@ -143,6 +143,7 @@ stages:
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
             azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
             azureAksCluster:  ${{ parameters.azureAksCluster }}
+            namespace: ${{ parameters.product }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
