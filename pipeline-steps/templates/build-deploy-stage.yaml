@@ -141,6 +141,7 @@ stages:
             displayName: 'Delete deployment'
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
             jobName:  ${{ parameters.applicationName }}
+            azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

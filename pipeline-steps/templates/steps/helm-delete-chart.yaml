@@ -1,6 +1,6 @@
 parameters:
   jobName: ''
-
+  azureSubscriptionEndpoint: ''
 steps:
 - template: ./docker-tag.yaml
 - task: AzureCLI@1
