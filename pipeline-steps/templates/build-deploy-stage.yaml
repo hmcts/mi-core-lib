@@ -17,7 +17,7 @@ parameters:
   postIntegrationTest: true
   functionalTest: false
   mutationTest: false
-  helmRepo: 'ssprivatetest'
+  helmRepo: ''
 
 stages:
 - stage: BuildAndDeploy
