@@ -17,7 +17,6 @@ parameters:
   postIntegrationTest: true
   functionalTest: false
   mutationTest: false
-  helmRepo: ''
 
 stages:
 - stage: BuildAndDeploy
@@ -109,7 +108,6 @@ stages:
             jobName:  ${{ parameters.applicationName }}
             namespace: ${{ parameters.product }}
             chartEnv: ${{ parameters.chartEnv }}
-            helmRepo: ${{ parameters.helmRepo }}
         - template: ./kubernetes-wait-for-job.yaml
           parameters:
             azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
