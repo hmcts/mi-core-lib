@@ -27,4 +27,4 @@ steps:
     azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
     scriptLocation: "inlineScript"
     inlineScript: |
-      helm delete $(jobName)  --namespace ${{ parameters.namespace }}
+      helm delete $(deploymentName)  --namespace ${{ parameters.namespace }}
