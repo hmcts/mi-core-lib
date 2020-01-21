@@ -1,0 +1,30 @@
+parameters:
+  jobName: ''
+  azureSubscriptionEndpoint: ''
+  azureAksResourceGroup: ''
+  azureAksCluster: ''
+  helmVersion: '3.0.0'
+  namespace: ''
+  
+steps:
+- task: HelmInstaller@1
+  displayName: 'Install Helm ${{ parameters.helmVersion }}'
+  inputs:
+    helmVersionToInstall: ${{ parameters.helmVersion }}
+- template: ./aks-authenticate.yaml
+  parameters:
+    azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+    azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+    azureAksCluster:  ${{ parameters.azureAksCluster }}
+- template: ./docker-tag.yaml
+- template: ./helm-job-name.yaml
+  parameters:
+    applicationName: ${{ parameters.jobName }}
+- task: AzureCLI@1
+  condition: succeeded()
+  displayName: "Helm delete Job Chart"
+  inputs:
+    azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+    scriptLocation: "inlineScript"
+    inlineScript: |
+      helm delete $(jobName)  --namespace ${{ parameters.namespace }}

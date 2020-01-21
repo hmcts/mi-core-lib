@@ -17,6 +17,7 @@ parameters:
   postIntegrationTest: true
   functionalTest: false
   mutationTest: false
+  helmRepo: 'hmctspublic'
 
 stages:
 - stage: BuildAndDeploy
@@ -108,6 +109,7 @@ stages:
             jobName:  ${{ parameters.applicationName }}
             namespace: ${{ parameters.product }}
             chartEnv: ${{ parameters.chartEnv }}
+            helmRepo: ${{ parameters.helmRepo }}
         - template: ./kubernetes-wait-for-job.yaml
           parameters:
             azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
@@ -136,7 +138,14 @@ stages:
             gradleTasks: 'integrationPostTest'
             publishJUnitResults: true
             testRunTitle: 'Integration test'
-
+        - template: ./steps/helm-delete-chart.yaml
+          parameters:
+            displayName: 'Delete deployment'
+            jobName:  ${{ parameters.applicationName }}
+            azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+            azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
+            azureAksCluster:  ${{ parameters.azureAksCluster }}
+            namespace: ${{ parameters.product }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
