@@ -17,7 +17,7 @@ steps:
     azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
     azureAksCluster:  ${{ parameters.azureAksCluster }}
 - template: ./docker-tag.yaml
-- template: ./steps/helm-job-name.yaml
+- template: ./helm-job-name.yaml
   parameters:
     applicationName: ${{ parameters.jobName }}
 - task: AzureCLI@1
