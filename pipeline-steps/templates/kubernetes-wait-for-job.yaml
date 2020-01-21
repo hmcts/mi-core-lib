@@ -5,9 +5,12 @@ parameters:
   namespace: ''
 
 steps:
+  - template: ./steps/helm-job-name.yaml
+    parameters:
+      applicationName: ${{ parameters.jobName }}
   - bash: |
       timeout=300
-      job=${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)-job
+      job=$(jobName)
       until [[ $SECONDS -gt $timeout ]] \
         || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
             -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == 'True' ]] \

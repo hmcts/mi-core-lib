@@ -17,6 +17,9 @@ steps:
     azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
     azureAksCluster:  ${{ parameters.azureAksCluster }}
 - template: ./docker-tag.yaml
+- template: ./steps/helm-job-name.yaml
+  parameters:
+    applicationName: ${{ parameters.jobName }}
 - task: AzureCLI@1
   condition: succeeded()
   displayName: "Helm delete Job Chart"
@@ -24,4 +27,4 @@ steps:
     azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
     scriptLocation: "inlineScript"
     inlineScript: |
-      helm delete ${{ parameters.jobName }}-$(imageSha)-b$(Build.BuildId)  --namespace ${{ parameters.namespace }}
+      helm delete $(jobName)  --namespace ${{ parameters.namespace }}
