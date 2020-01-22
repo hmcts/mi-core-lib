@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.mi.micore.component.impl;
 import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.models.BlobContainerItem;
+import com.azure.storage.blob.models.BlobContainerListDetails;
+import com.azure.storage.blob.models.ListBlobContainersOptions;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.mi.micore.component.IterableToListComponent;
 
@@ -22,8 +24,11 @@ public class ContainerIterableToListComponent implements IterableToListComponent
     }
 
     public List<BlobContainerItem> getContainersAsList(BlobServiceClient blobServiceClient) {
+        ListBlobContainersOptions listBlobContainersOptions
+            = new ListBlobContainersOptions().setDetails(new BlobContainerListDetails().setRetrieveMetadata(true));
+
         return getIterableAsList(
-            blobServiceClient.listBlobContainers()
+            blobServiceClient.listBlobContainers(listBlobContainersOptions, null)
         );
     }
 }
