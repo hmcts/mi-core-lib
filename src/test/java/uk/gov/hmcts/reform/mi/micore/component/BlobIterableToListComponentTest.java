@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -54,7 +56,8 @@ public class BlobIterableToListComponentTest {
 
         PagedIterable<BlobItem> blobItems = mock(PagedIterable.class);
 
-        when(blobContainerClient.listBlobs()).thenReturn(blobItems);
+        when(blobContainerClient.listBlobs(argThat(options -> options.getDetails().getRetrieveMetadata()), eq(null)))
+            .thenReturn(blobItems);
 
         Iterator<BlobItem> blobIterator = mock(Iterator.class);
 
