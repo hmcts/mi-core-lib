@@ -9,7 +9,7 @@ steps:
     parameters:
       applicationName: ${{ parameters.jobName }}
   - bash: |
-      timeout=300
+      timeout=600
       job=$(jobName)
       until [[ $SECONDS -gt $timeout ]] \
         || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
