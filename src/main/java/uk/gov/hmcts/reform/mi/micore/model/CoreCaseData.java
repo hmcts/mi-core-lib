@@ -1,14 +1,16 @@
 package uk.gov.hmcts.reform.mi.micore.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Value;
 
 import java.util.Map;
 
 /**
  * Base model for CoreCaseData read from Data Extractor output.
  */
-@Getter
+@Builder
+@Value
 public class CoreCaseData {
 
     @JsonProperty("extraction_date")
