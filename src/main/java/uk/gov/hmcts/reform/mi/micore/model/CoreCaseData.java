@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.mi.micore.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 /**
  * Base model for CoreCaseData read from Data Extractor output.
  */
+@AllArgsConstructor
 @Getter
 public class CoreCaseData {
 
