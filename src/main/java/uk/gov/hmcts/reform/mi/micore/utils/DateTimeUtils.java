@@ -12,10 +12,9 @@ public final class DateTimeUtils {
     static final DateTimeFormatter CCD_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
+     * date format yyyyMMdd.
      *
-     * date format yyyyMMdd
-     *
-     * @param date
+     * @param date LocalDate to parse
      * @return
      */
     public static String dateToString(LocalDate date) {
@@ -23,8 +22,9 @@ public final class DateTimeUtils {
     }
 
     /**
-     * Local date format yyyyMMdd
-     * @param date
+     * Local date format yyyyMMdd.
+     *
+     * @param date Date in string format
      * @return
      */
     public static LocalDate stringToLocalDate(String date) {
@@ -32,9 +32,9 @@ public final class DateTimeUtils {
     }
 
     /**
-     * CCD date format yyyy-MM-dd
+     * String to CCD data format.
      *
-     * @param date
+     * @param date Date in ccd string format
      * @return
      */
     public static LocalDate stringToCcdDate(String date) {
