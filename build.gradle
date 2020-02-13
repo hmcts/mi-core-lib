@@ -22,7 +22,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '3.0.4'
+version = '3.0.6'
 sourceCompatibility = '11'
 
 bootJar {
