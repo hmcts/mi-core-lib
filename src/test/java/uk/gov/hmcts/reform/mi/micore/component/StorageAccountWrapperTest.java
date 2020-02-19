@@ -139,7 +139,7 @@ class StorageAccountWrapperTest {
 
         assertThrows(
             NoSuchElementException.class,
-            () -> classToTest.getBlockInputStream(CONTAINER_NAME, BLOB_NAME)
+            () -> classToTest.getBlobInputStream(CONTAINER_NAME, BLOB_NAME)
         );
     }
 
@@ -149,7 +149,7 @@ class StorageAccountWrapperTest {
         when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME).getBlobClient(BLOB_NAME)).thenReturn(blobClient);
         when(blobClient.openInputStream()).thenReturn(inputStream);
         when(blobClient.exists()).thenReturn(true);
-        assertEquals(inputStream, classToTest.getBlockInputStream(CONTAINER_NAME, BLOB_NAME), "Valid stream");
+        assertEquals(inputStream, classToTest.getBlobInputStream(CONTAINER_NAME, BLOB_NAME), "Valid stream");
     }
 
     @Test

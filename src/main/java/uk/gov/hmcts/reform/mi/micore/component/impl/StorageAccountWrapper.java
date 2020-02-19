@@ -70,7 +70,7 @@ public class StorageAccountWrapper {
         return blobClient.exists();
     }
 
-    public InputStream getBlockInputStream(String containerName, String blobName) {
+    public InputStream getBlobInputStream(String containerName, String blobName) {
         BlobClient blobClient = blobServiceClient.getBlobContainerClient(containerName)
             .getBlobClient(blobName);
         if (!blobClient.exists()) {
