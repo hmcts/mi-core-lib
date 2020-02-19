@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.mi.micore.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import uk.gov.hmcts.reform.mi.micore.model.StorageAccountConfig;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -42,6 +44,6 @@ public final class DateTimeUtils {
     }
 
     private DateTimeUtils() {
-
+        new StorageAccountConfig("","");
     }
 }
