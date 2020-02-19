@@ -133,24 +133,23 @@ class StorageAccountWrapperTest {
     }
 
     @Test
-    void testGetBlockBlobInputStreamNotExist() {
+    void testGetBlobInputStreamNotExist() {
         defaultMock();
         when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME).getBlobClient(BLOB_NAME)).thenReturn(blobClient);
 
         assertThrows(
             NoSuchElementException.class,
-            () -> classToTest.getBlockBlobInputStream(CONTAINER_NAME, BLOB_NAME)
+            () -> classToTest.getBlockInputStream(CONTAINER_NAME, BLOB_NAME)
         );
     }
 
     @Test
-    void testGetBlockBlobInputStream() {
+    void testGetBlobInputStream() {
         defaultMock();
         when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME).getBlobClient(BLOB_NAME)).thenReturn(blobClient);
-        when(blobClient.getBlockBlobClient()).thenReturn(blockBlobClient);
-        when(blockBlobClient.openInputStream()).thenReturn(inputStream);
+        when(blobClient.openInputStream()).thenReturn(inputStream);
         when(blobClient.exists()).thenReturn(true);
-        assertEquals(inputStream, classToTest.getBlockBlobInputStream(CONTAINER_NAME, BLOB_NAME), "Valid stream");
+        assertEquals(inputStream, classToTest.getBlockInputStream(CONTAINER_NAME, BLOB_NAME), "Valid stream");
     }
 
     @Test

@@ -70,13 +70,14 @@ public class StorageAccountWrapper {
         return blobClient.exists();
     }
 
-    public InputStream getBlockBlobInputStream(String containerName, String blobName) {
+    public InputStream getBlockInputStream(String containerName, String blobName) {
         BlobClient blobClient = blobServiceClient.getBlobContainerClient(containerName)
             .getBlobClient(blobName);
         if (!blobClient.exists()) {
             throw new NoSuchElementException(String.format("Blob [%s] not exist", blobName));
         }
-        return blobClient.getBlockBlobClient().openInputStream();
+
+        return blobClient.openInputStream();
     }
 
     public void uploadBlockBlob(String targetContainer, String targetName, InputStream data, long length) {

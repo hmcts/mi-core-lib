@@ -50,7 +50,7 @@ public class StorageAccountWrapperFactoryTest {
     public void givenEmptyClientId_thenUseConnectionString() {
         classToTest = new StorageAccountWrapperFactory(StringUtils.EMPTY, blobServiceClientFactory);
 
-        when(blobServiceClientFactory.getBlobClientWithConnectionString( CONNECTION_STRING))
+        when(blobServiceClientFactory.getBlobClientWithConnectionString(CONNECTION_STRING))
             .thenReturn(blobServiceClient);
 
         assertEquals(
