@@ -146,7 +146,7 @@ stages:
             azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
             azureAksCluster:  ${{ parameters.azureAksCluster }}
             namespace: ${{ parameters.product }}
-    - job: PromoteBuild Ithc
+    - job: PromoteBuildIthc
       dependsOn: IntegrationTest
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/ithc'), ne(variables['Build.Reason'], 'Schedule')))
 
