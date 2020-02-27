@@ -3,6 +3,7 @@ parameters:
   azureVault: ''
   azureSecreKeys: '*'
   
+steps:
  - task: AzureCLI@1
     displayName: "Set vault secrests"
     inputs:
