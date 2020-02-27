@@ -10,4 +10,4 @@ steps:
         azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
         scriptLocation: "inlineScript"
         inlineScript: |
-        az keyvault secret set --name sppasssword --vault-name ${{ parameters.azureVault }} --value $env:SP_PASSWORD
+            az keyvault secret set --name sppasssword --vault-name ${{ parameters.azureVault }} --value $env:SP_PASSWORD
