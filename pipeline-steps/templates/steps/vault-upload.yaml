@@ -5,9 +5,9 @@ parameters:
   
 steps:
  - task: AzureCLI@1
-    displayName: "Set vault secrests"
-    inputs:
-      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
-      scriptLocation: "inlineScript"
-      inlineScript: |
+   displayName: "Set vault secrests"
+   inputs:
+        azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+        scriptLocation: "inlineScript"
+        inlineScript: |
         az keyvault secret set --name sppasssword --vault-name ${{ parameters.azureVault }} --value $env:SP_PASSWORD
