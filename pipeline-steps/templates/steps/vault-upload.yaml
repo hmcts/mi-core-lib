@@ -10,7 +10,7 @@ steps:
         azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
         scriptLocation: "inlineScript"
         inlineScript: |
-            az keyvault secret set --name ccdro-password --vault-name ${{ parameters.azureVault }} --value $CCD_RO_PASSWORD
+            az keyvault secret set --name ccdro-password --vault-name ${{ parameters.azureVault }} --value "'$CCD_RO_PASSWORD'"
             # az keyvault secret set --name ccdro-user --vault-name ${{ parameters.azureVault }} --value $CCD_RO_USER
             # az keyvault secret set --name appinsights-instrumentationkey --vault-name ${{ parameters.azureVault }} --value $APPINSIGHTS_INSTRUMENTATION_KEY
             # az keyvault secret set --name archive-password --vault-name ${{ parameters.azureVault }} --value $ARCHIVE_PASSWORD
