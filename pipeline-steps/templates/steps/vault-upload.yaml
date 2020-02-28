@@ -16,5 +16,5 @@ steps:
             # az keyvault secret set --name archive-password --vault-name ${{ parameters.azureVault }} --value $ARCHIVE_PASSWORD
             # az keyvault secret set --name gov-uk-notify-api-key --vault-name ${{ parameters.azureVault }} --value $GOV_NOTIFY_API_KEY
             # az keyvault secret set --name mailing-targets --vault-name ${{ parameters.azureVault }} --value $MAILING_TARGETS  
-    env:
+   env:
         CCD_PASSWORD: $(CCD_RO_PASSWORD)        
