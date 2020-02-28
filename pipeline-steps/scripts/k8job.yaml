@@ -36,6 +36,7 @@ stages:
             azureSubscriptionEndpoint: $(azure.subscription.endpoint)
             azureResourceGroup: $(azureAksResourceGroup)
             kubernetesCluster: $(azureAksCluster)
-            command: 'get azureidentities --all-namespaces'
+            command: 'get'
+            arguments: 'azureidentities --all-namespaces'
             useConfigurationFile: false
      
