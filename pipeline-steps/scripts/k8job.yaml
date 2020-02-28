@@ -16,9 +16,9 @@ variables:
   azureAksResourceGroup:  'ss_$(environment)_kubernetes_resource_group'
   azureAksCluster: 'ss_aks_$(environment)'
 stages:
-- stage: DeployAzureVaultSecrets
+- stage: Execk8
   jobs:
-    - job: DeployAzureVaultSecrets
+    - job: Execk8
       pool:
         vmImage: 'Ubuntu-16.04'
       variables:
