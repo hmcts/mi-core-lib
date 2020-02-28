@@ -1,0 +1,46 @@
+name: '$(SourceBranchName)-$(Build.SourceVersion) Build-$(Build.BuildId)'
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+
+variables:
+  #  group: pipeline-env-variables
+
+  environment: 'ithc' #Use test and promoting to stg until prod is ready
+  env.upper: 'ITHC'
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-$(env.upper)'
+  azure.aks.cluster: 'ss_aks_$(environment)'
+  azureAksResourceGroup:  'ss_$(environment)_kubernetes_resource_group'
+  azureAksCluster: 'ss_aks_$(environment)'
+stages:
+- stage: DeployAzureVaultSecrets
+  jobs:
+    - job: DeployAzureVaultSecrets
+      pool:
+        vmImage: 'Ubuntu-16.04'
+      variables:
+        env: $(environment)
+      steps:
+        - template: ../templates/steps/vault-upload.yaml
+          parameters:
+            env: $(environment)
+            azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+            azureVault: $(vault)
+        - template: ../templates/steps/aks-authenticate.yaml
+          parameters:
+            azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+            azureAksResourceGroup:  $(azureAksResourceGroup)
+            azureAksCluster:  $(azureAksCluster)
+        - task: Kubernetes@1
+          displayName: kubectl list pod identity
+          inputs:
+            connectionType: Azure Resource Manager
+            azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+            azureResourceGroup: $(azureAksResourceGroup)
+            kubernetesCluster: $(azureAksCluster)
+            command: 'get azureidentities --all-namespaces'
+            useConfigurationFile: false
+     
