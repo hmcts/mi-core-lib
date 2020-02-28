@@ -32,7 +32,7 @@ stages:
         - task: AzureCLI@1
           displayName: "AKS list"
           inputs:
-            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+            azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
             inlineScript: kubectl get   azureidentities --all-namespaces
         - task: Kubernetes@1
