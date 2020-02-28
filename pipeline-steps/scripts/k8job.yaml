@@ -24,11 +24,6 @@ stages:
       variables:
         env: $(environment)
       steps:
-        - template: ../templates/steps/vault-upload.yaml
-          parameters:
-            env: $(environment)
-            azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-            azureVault: $(vault)
         - template: ../templates/steps/aks-authenticate.yaml
           parameters:
             azureSubscriptionEndpoint: $(azure.subscription.endpoint)
