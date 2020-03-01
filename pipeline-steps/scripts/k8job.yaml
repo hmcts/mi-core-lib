@@ -42,7 +42,7 @@ stages:
             azureSubscriptionEndpoint: $(azure.subscription.endpoint)
             azureResourceGroup: $(azureAksResourceGroup)
             kubernetesCluster: $(azureAksCluster)
-            command: 'get'
-            arguments: 'azureidentities --all-namespaces'
+            command: 'describe'
+            arguments: 'pod  mi-extraction-service-smoketests-job -n mi'
             useConfigurationFile: false
      
