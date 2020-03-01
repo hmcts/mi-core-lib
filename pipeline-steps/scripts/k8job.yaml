@@ -30,8 +30,20 @@ stages:
             azureAksResourceGroup:  $(azureAksResourceGroup)
             azureAksCluster:  $(azureAksCluster)
         - task: AzureCLI@1
-          displayName: "AKS list"
+          displayName: "AKS list identities"
           inputs:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
-            inlineScript: kubectl describe pod mi-house-keeping-service-job-smoketests-job -n mi
+            inlineScript: kubectl get AzureIdentity --all-namespaces -o yaml
+        - task: AzureCLI@1
+          displayName: "AKS list identity bindings"
+          inputs:
+            azureSubscription: $(azure.subscription.endpoint)
+            scriptLocation: "inlineScript"
+            inlineScript: kubectl get AzureIdentityBinding --all-namespaces -o yaml
+        - task: AzureCLI@1
+          displayName: "AKS get assigned identities"
+          inputs:
+            azureSubscription: $(azure.subscription.endpoint)
+            scriptLocation: "inlineScript"
+            inlineScript: kubectl get AzureAssignedIdentities --all-namespaces -o yaml
