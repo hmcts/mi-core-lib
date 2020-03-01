@@ -34,15 +34,4 @@ stages:
           inputs:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
-            inlineScript: kubectl get   azureidentities --all-namespaces
-        - task: Kubernetes@1
-          displayName: kubectl list pod identity
-          inputs:
-            connectionType: Azure Resource Manager
-            azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-            azureResourceGroup: $(azureAksResourceGroup)
-            kubernetesCluster: $(azureAksCluster)
-            command: 'describe'
-            arguments: 'pod  mi-extraction-service-smoketests-job -n mi'
-            useConfigurationFile: false
-     
+            inlineScript: kubectl describe pod mi-extraction-service-smoketests-job -n mi
