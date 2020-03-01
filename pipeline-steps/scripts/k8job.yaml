@@ -34,4 +34,4 @@ stages:
           inputs:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
-            inlineScript: kubectl describe pod mi-extraction-service-smoketests-job -n mi
+            inlineScript: kubectl describe pod mi-house-keeping-service-job-smoketests-job -n mi
