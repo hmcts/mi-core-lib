@@ -1,6 +1,7 @@
 parameters:
   env: 'test'
   promEnv: 'stg'
+
   applicationName: ''
   chartEnv: 'test'
   product: ''
@@ -18,7 +19,10 @@ parameters:
   functionalTest: false
   mutationTest: false
   helmRepo: 'hmctspublic'
-
+  ithcEnv: 'ithc'
+  ithcAcr: 'ssprivateithc'
+  ithcSubscriptionEndpoint: 'DTS-SHAREDSERVICES-ITHC'
+  
 stages:
 - stage: BuildAndDeploy
   jobs:
@@ -160,9 +164,9 @@ stages:
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
             applicationName: ${{ parameters.applicationName }}
-            azureDestinyContainerRegistry:  ${{ parameters.azurePromAcr }}
-            azureProdSubscription: $(azure.prom.subscription.endpoint)
-            promEnv: ${{ parameters.promEnv }}
+            azureDestinyContainerRegistry:  ${{ parameters.ithcAcr }}
+            azureProdSubscription: ${{ parameters.ithcSubscriptionEndpoint }}
+            promEnv: ${{ parameters.ithcEnv }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'Schedule')))
