@@ -1,6 +1,7 @@
 parameters:
   env: 'test'
   promEnv: 'stg'
+
   applicationName: ''
   chartEnv: 'test'
   product: ''
@@ -18,7 +19,10 @@ parameters:
   functionalTest: false
   mutationTest: false
   helmRepo: 'hmctspublic'
-
+  ithcEnv: 'ithc'
+  ithcAcr: 'ssprivateithc'
+  ithcSubscriptionEndpoint: 'DTS-SHAREDSERVICES-ITHC'
+  
 stages:
 - stage: BuildAndDeploy
   jobs:
@@ -146,6 +150,23 @@ stages:
             azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
             azureAksCluster:  ${{ parameters.azureAksCluster }}
             namespace: ${{ parameters.product }}
+    - job: PromoteBuildIthc
+      dependsOn: IntegrationTest
+      condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/ithc'), ne(variables['Build.Reason'], 'Schedule')))
+
+      pool:
+        vmImage: 'Ubuntu-16.04'
+      variables:
+        env: ${{ parameters.env }}
+
+      steps:
+        - template: ./promote-build.yaml
+          parameters:
+            azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+            applicationName: ${{ parameters.applicationName }}
+            azureDestinyContainerRegistry:  ${{ parameters.ithcAcr }}
+            azureProdSubscription: ${{ parameters.ithcSubscriptionEndpoint }}
+            promEnv: ${{ parameters.ithcEnv }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'Schedule')))
