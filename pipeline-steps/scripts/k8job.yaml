@@ -54,6 +54,7 @@ stages:
             scriptLocation: "inlineScript"
             inlineScript: |
               kubectl get cronjobs -n mi
-              kubectl create job --from=cronjob/data-extractor-test-job  data-extractor-test-job-test-job-manual-$(Build.BuildId) -n mi
-              kubectl create job --from=cronjob/mi-extraction-service-test-job  mi-extraction-service-test-job-manual-$(Build.BuildId) -n mi
+              # kubectl create job --from=cronjob/data-extractor-test-job  data-extractor-test-job-test-job-manual-$(Build.BuildId) -n mi
+              kubectl create job --from=cronjob/mi-integration-service-test-job  mi-integration-service-test-job-manual-$(Build.BuildId) -n mi
+              # kubectl create job --from=cronjob/mi-extraction-service-test-job  mi-extraction-service-test-job-manual-$(Build.BuildId) -n mi
 
