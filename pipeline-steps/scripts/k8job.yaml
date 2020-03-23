@@ -9,8 +9,8 @@ trigger:
 variables:
   #  group: pipeline-env-variables
 
-  environment: 'ithc' #Use test and promoting to stg until prod is ready
-  env.upper: 'ITHC'
+  environment: 'stg' #Use test and promoting to stg until prod is ready
+  env.upper: 'STG'
   azure.subscription.endpoint: 'DTS-SHAREDSERVICES-$(env.upper)'
   azure.aks.cluster: 'ss_aks_$(environment)'
   azureAksResourceGroup:  'ss_$(environment)_kubernetes_resource_group'
@@ -22,19 +22,21 @@ stages:
       pool:
         vmImage: 'Ubuntu-16.04'
       variables:
-        env: $(environment)
+        env: 
+          K8_POD: $(TARGET_POD)
+          K8_NAMESPCE: $(TARGET_NAMESPACE)
       steps:
         - template: ../templates/steps/aks-authenticate.yaml
           parameters:
             azureSubscriptionEndpoint: $(azure.subscription.endpoint)
             azureAksResourceGroup:  $(azureAksResourceGroup)
             azureAksCluster:  $(azureAksCluster)
-        # - task: AzureCLI@1
-        #   displayName: "AKS list identities"
-        #   inputs:
-        #     azureSubscription: $(azure.subscription.endpoint)
-        #     scriptLocation: "inlineScript"
-        #     inlineScript: kubectl get AzureIdentity --all-namespaces -o yaml
+        - task: AzureCLI@1
+          displayName: "AKS list identities"
+          inputs:
+            azureSubscription: $(azure.subscription.endpoint)
+            scriptLocation: "inlineScript"
+            inlineScript: kubectl delete $(TARGET_POD) -n $(TARGET_NAMESPACE)
         # - task: AzureCLI@1
         #   displayName: "AKS list identity bindings"
         #   inputs:
@@ -47,14 +49,14 @@ stages:
         #     azureSubscription: $(azure.subscription.endpoint)
         #     scriptLocation: "inlineScript"
         #     inlineScript: kubectl get AzureAssignedIdentities --all-namespaces -o yaml
-        - task: AzureCLI@1
-          displayName: "AKS execute job"
-          inputs:
-            azureSubscription: $(azure.subscription.endpoint)
-            scriptLocation: "inlineScript"
-            inlineScript: |
-              kubectl get cronjobs -n mi
-              kubectl create job --from=cronjob/data-extractor-test-job  data-extractor-test-job-test-job-manual-$(Build.BuildId) -n mi
+        # - task: AzureCLI@1
+        #   displayName: "AKS execute job"
+        #   inputs:
+        #     azureSubscription: $(azure.subscription.endpoint)
+        #     scriptLocation: "inlineScript"
+        #     inlineScript: |
+        #       kubectl get cronjobs -n mi
+        #       kubectl create job --from=cronjob/data-extractor-test-job  data-extractor-test-job-test-job-manual-$(Build.BuildId) -n mi
               # kubectl create job --from=cronjob/mi-integration-service-test-job  mi-integration-service-test-job-manual-$(Build.BuildId) -n mi
               # kubectl create job --from=cronjob/mi-extraction-service-test-job  mi-extraction-service-test-job-manual-$(Build.BuildId) -n mi
               # kubectl create job --from=cronjob/mi-staging-service-test-job  mi-staging-service-test-job-manual-$(Build.BuildId) -n mi
