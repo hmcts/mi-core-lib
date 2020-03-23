@@ -1,10 +1,7 @@
 name: '$(SourceBranchName)-$(Build.SourceVersion) Build-$(Build.BuildId)'
 
-trigger:
-  batch: true
-  branches:
-    include:
-      - master
+trigger: none
+pr: none
 
 variables:
   #  group: pipeline-env-variables
@@ -23,8 +20,6 @@ stages:
         vmImage: 'Ubuntu-16.04'
       variables:
         env: 
-          K8_POD: $(TARGET_POD)
-          K8_NAMESPCE: $(TARGET_NAMESPACE)
       steps:
         - template: ../templates/steps/aks-authenticate.yaml
           parameters:
@@ -37,6 +32,9 @@ stages:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
             inlineScript: kubectl delete $(TARGET_POD) -n $(TARGET_NAMESPACE)
+          env:
+              K8_POD: $(TARGET_POD)
+              K8_NAMESPCE: $(TARGET_NAMESPACE)
         # - task: AzureCLI@1
         #   displayName: "AKS list identity bindings"
         #   inputs:
