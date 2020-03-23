@@ -31,7 +31,7 @@ stages:
           inputs:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
-            inlineScript: kubectl delete $(TARGET_POD) -n $(TARGET_NAMESPACE)
+            inlineScript: kubectl delete pod $(TARGET_POD) -n $(TARGET_NAMESPACE)
           env:
               K8_POD: $(TARGET_POD)
               K8_NAMESPCE: $(TARGET_NAMESPACE)
