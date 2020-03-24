@@ -36,6 +36,7 @@ stages:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
             inlineScript: |
+              kubectl config set-context --current --namespace=mi
               helm list --namespace mi --short| xargs helm delete
         # - task: AzureCLI@1
         #   displayName: "AKS list identities"
