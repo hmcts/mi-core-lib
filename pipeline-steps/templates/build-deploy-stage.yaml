@@ -144,7 +144,7 @@ stages:
             testRunTitle: 'Integration test'
 
    - job: CleanResources
-      dependsOn: IntegrationTest
+      dependsOn: DeployBuild
       condition: succeededOrFailed()
       variables:
         env: ${{ parameters.env }}
