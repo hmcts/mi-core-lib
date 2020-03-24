@@ -143,7 +143,6 @@ stages:
             publishJUnitResults: true
             testRunTitle: 'Integration test'
         - template: ./steps/helm-delete-chart.yaml
-          condition: succeededOrFailed()
           parameters:
             displayName: 'Delete deployment'
             jobName:  ${{ parameters.applicationName }}
