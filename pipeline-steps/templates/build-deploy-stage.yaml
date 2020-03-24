@@ -142,6 +142,13 @@ stages:
             gradleTasks: 'integrationPostTest'
             publishJUnitResults: true
             testRunTitle: 'Integration test'
+
+   - job: CleanResources
+      dependsOn: IntegrationTest
+      condition: succeededOrFailed()
+      variables:
+        env: ${{ parameters.env }}
+      steps:
         - template: ./steps/helm-delete-chart.yaml
           parameters:
             displayName: 'Delete deployment'
@@ -150,6 +157,7 @@ stages:
             azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
             azureAksCluster:  ${{ parameters.azureAksCluster }}
             namespace: ${{ parameters.product }}
+
     - job: PromoteBuildIthc
       dependsOn: IntegrationTest
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/ithc'), ne(variables['Build.Reason'], 'Schedule')))
@@ -158,7 +166,6 @@ stages:
         vmImage: 'Ubuntu-16.04'
       variables:
         env: ${{ parameters.env }}
-
       steps:
         - template: ./promote-build.yaml
           parameters:

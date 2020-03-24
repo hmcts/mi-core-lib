@@ -8,7 +8,6 @@ parameters:
   
 steps:
 - task: HelmInstaller@1
-  condition: succeededOrFailed()
   displayName: 'Install Helm ${{ parameters.helmVersion }}'
   inputs:
     helmVersionToInstall: ${{ parameters.helmVersion }}
