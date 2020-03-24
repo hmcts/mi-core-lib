@@ -143,7 +143,7 @@ stages:
             publishJUnitResults: true
             testRunTitle: 'Integration test'
 
-   - job: CleanResources
+    - job: CleanResources
       dependsOn: DeployBuild
       condition: succeededOrFailed()
       variables:
@@ -157,7 +157,7 @@ stages:
             azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
             azureAksCluster:  ${{ parameters.azureAksCluster }}
             namespace: ${{ parameters.product }}
-
+            
     - job: PromoteBuildIthc
       dependsOn: IntegrationTest
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/ithc'), ne(variables['Build.Reason'], 'Schedule')))
