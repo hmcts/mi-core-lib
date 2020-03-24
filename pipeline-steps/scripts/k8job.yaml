@@ -26,15 +26,26 @@ stages:
             azureSubscriptionEndpoint: $(azure.subscription.endpoint)
             azureAksResourceGroup:  $(azureAksResourceGroup)
             azureAksCluster:  $(azureAksCluster)
+        - task: HelmInstaller@1 
+          displayName: 'Install Helm 3.0.0'
+          inputs:
+            helmVersionToInstall: '3.0.0'
         - task: AzureCLI@1
-          displayName: "AKS list identities"
+          displayName: "Clean deployments"
           inputs:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
-            inlineScript: kubectl delete pod $(TARGET_POD) -n $(TARGET_NAMESPACE)
-          env:
-              K8_POD: $(TARGET_POD)
-              K8_NAMESPCE: $(TARGET_NAMESPACE)
+            inlineScript: |
+              helm list --namespace mi --short
+        # - task: AzureCLI@1
+        #   displayName: "AKS list identities"
+        #   inputs:
+        #     azureSubscription: $(azure.subscription.endpoint)
+        #     scriptLocation: "inlineScript"
+        #     inlineScript: kubectl delete pod $(TARGET_POD) -n $(TARGET_NAMESPACE)
+        #   env:
+        #       K8_POD: $(TARGET_POD)
+        #       K8_NAMESPCE: $(TARGET_NAMESPACE)
         # - task: AzureCLI@1
         #   displayName: "AKS list identity bindings"
         #   inputs:
