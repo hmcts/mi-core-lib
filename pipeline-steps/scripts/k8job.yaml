@@ -6,8 +6,8 @@ pr: none
 variables:
   #  group: pipeline-env-variables
 
-  environment: 'stg' #Use test and promoting to stg until prod is ready
-  env.upper: 'STG'
+  # environment: 'stg' #Use test and promoting to stg until prod is ready
+  # env.upper: 'STG'
   azure.subscription.endpoint: 'DTS-SHAREDSERVICES-$(env.upper)'
   azure.aks.cluster: 'ss_aks_$(environment)'
   azureAksResourceGroup:  'ss_$(environment)_kubernetes_resource_group'
@@ -36,8 +36,8 @@ stages:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
             inlineScript: |
-              kubectl config set-context --current --namespace=mi
-              helm list --namespace mi --short| xargs helm delete
+              kubectl config set-context --current --namespace=$(TARGET_NAMESPACE)
+        # kubectl create job --from=cronjob/data-extractor-job <job-name>
         # - task: AzureCLI@1
         #   displayName: "AKS list identities"
         #   inputs:
