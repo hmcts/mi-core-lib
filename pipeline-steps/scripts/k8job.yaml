@@ -26,10 +26,10 @@ stages:
             azureSubscriptionEndpoint: $(azure.subscription.endpoint)
             azureAksResourceGroup:  $(azureAksResourceGroup)
             azureAksCluster:  $(azureAksCluster)
-        - task: HelmInstaller@1 
-          displayName: 'Install Helm 3.0.0'
-          inputs:
-            helmVersionToInstall: '3.0.0'
+        # - task: HelmInstaller@1 
+        #   displayName: 'Install Helm 3.0.0'
+        #   inputs:
+        #     helmVersionToInstall: '3.0.0'
         - task: AzureCLI@1
           displayName: "Clean deployments"
           inputs:
@@ -37,7 +37,7 @@ stages:
             scriptLocation: "inlineScript"
             inlineScript: |
               kubectl config set-context --current --namespace=$(TARGET_NAMESPACE)
-        # kubectl create job --from=cronjob/data-extractor-job <job-name>
+              kubectl create job --from=cronjob/data-extractor-job $(JOB_NAME)
         # - task: AzureCLI@1
         #   displayName: "AKS list identities"
         #   inputs:
