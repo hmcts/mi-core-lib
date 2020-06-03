@@ -12,6 +12,7 @@ parameters:
   azurePromAcr: $(azure.prom.acr)
   azurePromSubscriptionEndpoint: $(azure.prom.subscription.endpoint)
   azureKeyMapping: {}
+  envMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   preIntegrationTest: false
@@ -138,6 +139,7 @@ stages:
           parameters:
             displayName: 'Run Integration Test'
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
+            envMapping: ${{ parameters.envMapping }}
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
             gradleTasks: 'integrationPostTest'
             publishJUnitResults: true
