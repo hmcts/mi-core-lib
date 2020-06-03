@@ -1,5 +1,6 @@
 parameters:
   azureKeyMapping: {}
+  envMapping: {}
   gradleTasks: ''
   testResultsFiles: '**/TEST-*.xml'
   testRunTitle: 'Gradle test'
@@ -16,6 +17,8 @@ steps:
     displayName: ${{ parameters.displayName }}
     condition: and(succeeded(), eq('${{ parameters.execute }}', true))
     env:
+      ${{ each pair in parameters.envMapping }}:
+        ${{ pair.key }}: $(${{ pair.value }})
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
     inputs:
