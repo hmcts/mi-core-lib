@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class StorageAccountWrapperFactoryTest {
+class StorageAccountWrapperFactoryTest {
 
     private static final String STORAGE_ACCOUNT_NAME = "testStorageAccount";
     private static final String CLIENT_ID = "testClientId";
@@ -31,7 +31,7 @@ public class StorageAccountWrapperFactoryTest {
     private StorageAccountWrapperFactory classToTest;
 
     @Test
-    public void givenClientId_thenUseManageIdentity() {
+    void givenClientId_thenUseManageIdentity() {
         classToTest = new StorageAccountWrapperFactory(CLIENT_ID, blobServiceClientFactory);
 
         when(blobServiceClientFactory.getBlobClientWithManagedIdentity(CLIENT_ID, STORAGE_ACCOUNT_NAME))
@@ -47,7 +47,7 @@ public class StorageAccountWrapperFactoryTest {
     }
 
     @Test
-    public void givenEmptyClientId_thenUseConnectionString() {
+    void givenEmptyClientId_thenUseConnectionString() {
         classToTest = new StorageAccountWrapperFactory(StringUtils.EMPTY, blobServiceClientFactory);
 
         when(blobServiceClientFactory.getBlobClientWithConnectionString(CONNECTION_STRING))

@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AccessExceptionTest {
+class AccessExceptionTest {
 
     @Test
-    public void givenAccessException_thenRuntimeExceptionIsThrown() {
+    void givenAccessException_thenRuntimeExceptionIsThrown() {
         assertThrows(RuntimeException.class, () -> {
             throwException();
         });

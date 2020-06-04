@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class BlobServiceClientFactoryTest {
+class BlobServiceClientFactoryTest {
 
     private static final String TEST_CONNECTION_STRING = "testConnectionString=testAccount";
 
@@ -35,7 +35,7 @@ public class BlobServiceClientFactoryTest {
     private BlobServiceClientFactory underTest;
 
     @Test
-    public void givenConnectionString_whenGetBlobClientWithConnectionString_thenReturnBlobServiceClient() {
+    void givenConnectionString_whenGetBlobClientWithConnectionString_thenReturnBlobServiceClient() {
         BlobServiceClientBuilder mockBlobServiceClientBuilder = mock(BlobServiceClientBuilder.class);
         when(azureWrapper.getBlobServiceClientBuilder()).thenReturn(mockBlobServiceClientBuilder);
 
@@ -46,7 +46,7 @@ public class BlobServiceClientFactoryTest {
     }
 
     @Test
-    public void givenClientIdAndStorageAccountName_whenGetBlobClientWithManagedIdentity_thenReturnBlobServiceClient() {
+    void givenClientIdAndStorageAccountName_whenGetBlobClientWithManagedIdentity_thenReturnBlobServiceClient() {
         BlobServiceClientBuilder mockBlobServiceClientBuilder = mock(BlobServiceClientBuilder.class);
         when(azureWrapper.getBlobServiceClientBuilder()).thenReturn(mockBlobServiceClientBuilder);
 
@@ -58,7 +58,7 @@ public class BlobServiceClientFactoryTest {
     }
 
     @Test
-    public void givenClientIdAndHttpUrl_whenGetBlobClientWithManagedIdentity_thenReturnBlobServiceClient() {
+    void givenClientIdAndHttpUrl_whenGetBlobClientWithManagedIdentity_thenReturnBlobServiceClient() {
         BlobServiceClientBuilder mockBlobServiceClientBuilder = mock(BlobServiceClientBuilder.class);
         when(azureWrapper.getBlobServiceClientBuilder()).thenReturn(mockBlobServiceClientBuilder);
 
@@ -70,7 +70,7 @@ public class BlobServiceClientFactoryTest {
     }
 
     @Test
-    public void givenClientIdAndHttpsUrl_whenGetBlobClientWithManagedIdentity_thenReturnBlobServiceClient() {
+    void givenClientIdAndHttpsUrl_whenGetBlobClientWithManagedIdentity_thenReturnBlobServiceClient() {
         BlobServiceClientBuilder mockBlobServiceClientBuilder = mock(BlobServiceClientBuilder.class);
         when(azureWrapper.getBlobServiceClientBuilder()).thenReturn(mockBlobServiceClientBuilder);
 

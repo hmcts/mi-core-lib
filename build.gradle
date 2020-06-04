@@ -22,7 +22,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '3.0.8'
+version = '3.1.0'
 sourceCompatibility = '11'
 
 bootJar {
@@ -99,16 +99,6 @@ dependencyCheck {
 	suppressionFile = 'config/owasp/suppressions.xml'
 }
 
-dependencyManagement {
-	dependencies {
-		dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
-		// CVE-2018-10237 - Unbounded memory allocation
-		dependencySet(group: 'com.google.guava', version: '28.1-jre') {
-			entry 'guava'
-		}
-	}
-}
-
 task sourcesJar(type: Jar) {
 	archiveClassifier = 'sources'
 	from sourceSets.main.allJava
@@ -177,6 +167,19 @@ ext {
 	set('azureVersion', "2.2.0")
 }
 
+dependencyManagement {
+	dependencies {
+		dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
+		// CVE-2018-10237 - Unbounded memory allocation
+		dependencySet(group: 'com.google.guava', version: '28.1-jre') {
+			entry 'guava'
+		}
+	}
+	imports {
+		mavenBom "com.microsoft.azure:azure-spring-boot-bom:${azureVersion}"
+	}
+}
+
 def versions = [
 	azureCore	  : '1.2.0',
 	azureIdentity : '1.0.3',
@@ -184,6 +187,7 @@ def versions = [
 	junit		  : '5.5.2',
 	lombok		  : '1.18.10',
 	mockito		  : '3.2.4',
+	openCsv       : '5.0',
 	piTest        : '1.4.10',
 	piTestGradle  : '1.4.5',
 	piTestSonar   : '0.5',
@@ -206,6 +210,9 @@ dependencies {
 	api group: 'com.azure', name: 'azure-storage-common', version: versions.azureStorage
 	api group: 'com.azure', name: 'azure-identity', version: versions.azureIdentity
 
+	// CSV Dependencies
+	implementation group: 'com.opencsv', name: 'opencsv', version: versions.openCsv
+
 	// Lombok
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 	implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
@@ -224,12 +231,6 @@ dependencies {
 	testImplementation group: 'org.pitest', name: 'pitest', version: versions.piTest
 	testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.piTestGradle
 	testImplementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.piTestSonar
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "com.microsoft.azure:azure-spring-boot-bom:${azureVersion}"
-	}
 }
 
 test {

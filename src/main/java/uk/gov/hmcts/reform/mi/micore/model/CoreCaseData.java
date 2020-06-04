@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Base model for CoreCaseData read from Data Extractor output.
  */
-@Builder
+@Builder(toBuilder = true)
 @Value
 public class CoreCaseData {
 
