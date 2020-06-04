@@ -4,9 +4,9 @@ import com.azure.storage.blob.BlobAsyncClient;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.mi.micore.component.impl.ByteArrayBlobDownloadComponent;
 import uk.gov.hmcts.reform.mi.micore.exception.AccessException;
@@ -19,17 +19,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class ByteArrayBlobDownloadComponentTest {
+class ByteArrayBlobDownloadComponentTest {
 
     private static final String TEST_CONTAINER_NAME = "testContainer";
     private static final String TEST_BLOB_NAME = "testBlob";
     private static final String TEST_STRING_CONTENT = "A Test String";
 
-    @InjectMocks
     private ByteArrayBlobDownloadComponent underTest;
 
+    @BeforeEach
+    void setUp() {
+        underTest = new ByteArrayBlobDownloadComponent();
+    }
+
     @Test
-    public void givenBlobServiceClientAndContainerNameAndBlobName_whenDownloadBlob_thenReturnByteStream() {
+    void givenBlobServiceClientAndContainerNameAndBlobName_whenDownloadBlob_thenReturnByteStream() {
         BlobServiceClient mockBlobServiceClient = mock(BlobServiceClient.class);
 
         BlobContainerClient mockBlobContainerClient = mock(BlobContainerClient.class);

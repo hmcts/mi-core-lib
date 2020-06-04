@@ -4,9 +4,9 @@ import com.azure.core.http.rest.PagedIterable;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.models.BlobItem;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.mi.micore.component.impl.BlobIterableToListComponent;
 
@@ -15,23 +15,27 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class BlobIterableToListComponentTest {
+class BlobIterableToListComponentTest {
 
     private static final String TEST_CONTAINER_NAME = "test-container";
 
-    @InjectMocks
     private BlobIterableToListComponent underTest;
 
+    @BeforeEach
+    void setUp() {
+        underTest = new BlobIterableToListComponent();
+    }
+
     @Test
-    public void givenPagedIterableBlobItems_whenGetIterableAsList_thenReturnListOfBlobItems() {
+    void givenPagedIterableBlobItems_whenGetIterableAsList_thenReturnListOfBlobItems() {
         PagedIterable<BlobItem> blobItems = mock(PagedIterable.class);
         Iterator<BlobItem> blobIterator = mock(Iterator.class);
 
@@ -48,7 +52,7 @@ public class BlobIterableToListComponentTest {
     }
 
     @Test
-    public void givenBlobServiceClientAndContainerName_whenGetContainersAsList_thenReturnListOfBlobItems() {
+    void givenBlobServiceClientAndContainerName_whenGetContainersAsList_thenReturnListOfBlobItems() {
         BlobServiceClient blobServiceClient = mock(BlobServiceClient.class);
         BlobContainerClient blobContainerClient = mock(BlobContainerClient.class);
 
