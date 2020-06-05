@@ -59,8 +59,4 @@ public class NotificationOutput {
     @CsvBindByName(column = "completed_timestamp")
     @CsvBindByPosition(position = 11)
     private String completedTimestamp;
-
-    @CsvBindByName(column = "estimated_timestamp")
-    @CsvBindByPosition(position = 12)
-    private String estimatedTimestamp;
 }

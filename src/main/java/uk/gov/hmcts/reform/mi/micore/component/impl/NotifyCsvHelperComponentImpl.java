@@ -16,7 +16,7 @@ public class NotifyCsvHelperComponentImpl implements CsvHelperComponent {
         String[] headers = {
             "extraction_date", "notification_id", "service", "reference", "type",
             "template_id", "template_version", "template_name",
-            "status", "created_timestamp", "sent_timestamp", "completed_timestamp", "estimated_timestamp"
+            "status", "created_timestamp", "sent_timestamp", "completed_timestamp"
         };
 
         // Wrap headers in quotation marks to be consistent with data format.
