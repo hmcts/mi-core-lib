@@ -22,7 +22,7 @@ class NotifyCsvHelperComponentImplTest {
     void whenGenerateHeadersForNotify_thenReturnHeadersAsString() {
         String expectedHeader = "\"extraction_date\",\"notification_id\",\"service\",\"reference\",\"type\","
                 + "\"template_id\",\"template_version\",\"template_name\","
-                + "\"status\",\"created_timestamp\",\"sent_timestamp\",\"completed_timestamp\",\"estimated_timestamp\"";
+                + "\"status\",\"created_timestamp\",\"sent_timestamp\",\"completed_timestamp\"";
 
         assertEquals(expectedHeader, underTest.generateHeaderString());
     }
