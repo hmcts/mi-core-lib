@@ -11,6 +11,7 @@ import java.util.Map;
  */
 @Builder(toBuilder = true)
 @Value
+@SuppressWarnings("PMD.TooManyFields")
 public class CoreCaseData {
 
     @JsonProperty("extraction_date")
@@ -33,6 +34,30 @@ public class CoreCaseData {
 
     @JsonProperty("ce_state_id")
     String ceStateId;
+
+    @JsonProperty("ce_state_name")
+    String ceStateName;
+
+    @JsonProperty("ce_summary")
+    String summary;
+
+    @JsonProperty("ce_description")
+    String description;
+
+    @JsonProperty("ce_event_id")
+    String ceEventId;
+
+    @JsonProperty("ce_event_name")
+    String ceEventName;
+
+    @JsonProperty("ce_user_id")
+    String ceUserId;
+
+    @JsonProperty("ce_user_first_name")
+    String ceUserFirstName;
+
+    @JsonProperty("ce_user_last_name")
+    String ceUserLastName;
 
     @JsonProperty("ce_data")
     Map<String, Object> ceData;
