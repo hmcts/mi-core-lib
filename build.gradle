@@ -173,17 +173,17 @@ dependencyManagement {
 }
 
 def versions = [
-	azureCore		: '1.5.1',
-	azureIdentity	: '1.0.7',
-	azureStorage	: '12.6.1',
-	junit			: '5.5.2',
-	lombok			: '1.18.10',
-	mockito			: '3.2.4',
-	openCsv			: '5.0',
-	piTest			: '1.5.1',
-	piTestGradle	: '1.4.7',
-	piTestSonar		: '0.5',
-	reformLogging	: '5.1.1'
+	azureCore     : '1.5.1',
+	azureIdentity : '1.0.7',
+	azureStorage  : '12.6.1',
+	junit         : '5.5.2',
+	lombok        : '1.18.10',
+	mockito       : '3.2.4',
+	openCsv       : '5.0',
+	piTest        : '1.5.1',
+	piTestGradle  : '1.4.7',
+	piTestSonar   : '0.5',
+	reformLogging : '5.1.1'
 ]
 
 dependencies {
