@@ -14,9 +14,9 @@ public class NotifyTemplate {
     @JsonProperty("version")
     private String version;
 
-    @JsonProperty("name")
-    private String name;
-
     @JsonProperty("uri")
     private String uri;
+
+    @JsonProperty("name")
+    private String name;
 }
