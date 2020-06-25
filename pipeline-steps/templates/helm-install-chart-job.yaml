@@ -29,7 +29,7 @@ steps:
     displayName: 'Replace Image Name In Chart Values'
     env:
       IMAGE_NAME: '${{ parameters.azureContainerRegistry }}/${{ parameters.applicationName }}:$(imageTag)'
-      BUILD_VERSION: 'PR-$(System.PullRequest.PullRequestNumber)'
+      BUILD_VERSION: '$(Build.BuildId)'
   - task: AzureCLI@1
     displayName: "Helm Install Job Chart"
     inputs:
