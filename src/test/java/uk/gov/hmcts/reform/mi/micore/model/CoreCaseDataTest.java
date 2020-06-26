@@ -1,63 +1,66 @@
 package uk.gov.hmcts.reform.mi.micore.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
+
+import uk.gov.hmcts.reform.mi.micore.test.utils.FileTestUtils;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CoreCaseDataTest {
 
-    private static final String DATA_SAMPLE = "{\n"
-        + "\t\"extraction_date\": \"20200608-1150\",\n"
-        + "\t\"case_metadata_event_id\": 1,\n"
-        + "\t\"ce_case_data_id\": 1,\n"
-        + "\t\"ce_created_date\": 1576021546000,\n"
-        + "\t\"ce_case_type_id\": \"test\",\n"
-        + "\t\"ce_case_type_version\": \"1\",\n"
-        + "\t\"ce_state_id\": \"created\",\n"
-        + "\t\"ce_state_name\": \"stateName\",\n"
-        + "\t\"ce_event_id\": \"eventId\",\n"
-        + "\t\"ce_event_name\": \"eventName\",\n"
-        + "\t\"ce_summary\": \"summary\",\n"
-        + "\t\"ce_description\": \"description\",\n"
-        + "\t\"ce_user_id\": \"userId\",\n"
-        + "\t\"ce_user_first_name\": \"userFirstName\",\n"
-        + "\t\"ce_user_last_name\": \"userLastName\",\n"
-        + "\t\"ce_data\": {\n"
-        + "\t\t\"name\": \"A1\",\n"
-        + "\t\t\"subject\": {\n"
-        + "\t\t\t\"address\": \"a1Address\"\n"
-        + "\t\t}\n"
-        + "\t}\n"
-        + "}";
-
+    public static final String PUBLIC_CLASSIFICATION = "PUBLIC";
+    public static final String NAME = "name";
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public void parseData() throws JsonProcessingException {
+    public void parseData() throws IOException {
+        Map<String, Object> caseData = ImmutableMap.of(NAME, "A1",
+            "subject", ImmutableMap.of("address", "a1Address"));
+
+        Map<String, Object> classification = ImmutableMap.of(NAME, PUBLIC_CLASSIFICATION,
+            "subject", ImmutableMap.of("value", Collections.emptyList(),
+                "classification", PUBLIC_CLASSIFICATION));
         CoreCaseData expected = CoreCaseData.builder()
             .extractionDate("20200608-1150")
-            .caseMetadataEventId(1)
-            .ceCaseDataId(1)
+            .caseMetadataEventId(4_662_541)
+            .ceCaseDataId(1_264_925)
             .ceCreatedDate(1_576_021_546_000L)
             .ceCaseTypeId("test")
-            .ceCaseTypeVersion(1)
+            .ceCaseTypeVersion(33)
             .ceStateId("created")
             .ceStateName("stateName")
             .ceEventId("eventId")
             .ceEventName("eventName")
-            .summary("summary")
-            .description("description")
+            .ceSummary("summary")
+            .ceDescription("description")
             .ceUserId("userId")
             .ceUserFirstName("userFirstName")
             .ceUserLastName("userLastName")
-            .ceData(ImmutableMap.of("name", "A1",
-                "subject", ImmutableMap.of("address", "a1Address")))
+            .ceData(caseData)
+            .ceDataClassification(classification)
+            .ceSecurityClassification(PUBLIC_CLASSIFICATION)
+            .cdSecurityClassification(PUBLIC_CLASSIFICATION)
+            .cdReference(1_593_043_372_164_377L)
+            .cdCaseDataId(1_264_925)
+            .cdData(caseData)
+            .cdLatestState("stateName")
+            .cdJurisdiction("jurisdiction")
+            .cdLastModified(1_593_043_372_162L)
+            .cdCreatedDate(1_593_043_372_161L)
+            .cdLastStateModifiedDate(1_593_043_372_161L)
+            .cdDataClassification(classification)
             .build();
-        CoreCaseData result = objectMapper.readValue(DATA_SAMPLE, CoreCaseData.class);
+
+        String dataSample = FileTestUtils.getDataFromFile("data-sample.json");
+        CoreCaseData result = objectMapper.readValue(dataSample, CoreCaseData.class);
+
         assertEquals(expected, result);
     }
 

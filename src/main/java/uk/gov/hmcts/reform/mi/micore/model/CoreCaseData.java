@@ -39,10 +39,10 @@ public class CoreCaseData {
     String ceStateName;
 
     @JsonProperty("ce_summary")
-    String summary;
+    String ceSummary;
 
     @JsonProperty("ce_description")
-    String description;
+    String ceDescription;
 
     @JsonProperty("ce_event_id")
     String ceEventId;
@@ -61,4 +61,43 @@ public class CoreCaseData {
 
     @JsonProperty("ce_data")
     Map<String, Object> ceData;
+
+    @JsonProperty("cd_case_data_id")
+    long cdCaseDataId;
+
+    @JsonProperty("cd_created_date")
+    long cdCreatedDate;
+
+    @JsonProperty("cd_last_modified")
+    long cdLastModified;
+
+    @JsonProperty("cd_jurisdiction")
+    String cdJurisdiction;
+
+    @JsonProperty("cd_latest_state")
+    String cdLatestState;
+
+    @JsonProperty("cd_reference")
+    long cdReference;
+
+    @JsonProperty("cd_security_classification")
+    String cdSecurityClassification;
+
+    @JsonProperty("cd_version")
+    long cdVersion;
+
+    @JsonProperty("cd_data")
+    Map<String, Object> cdData;
+
+    @JsonProperty("cd_last_state_modified_date")
+    long cdLastStateModifiedDate;
+
+    @JsonProperty("cd_data_classification")
+    Map<String, Object> cdDataClassification;
+
+    @JsonProperty("ce_data_classification")
+    Map<String, Object> ceDataClassification;
+
+    @JsonProperty("ce_security_classification")
+    String ceSecurityClassification;
 }
