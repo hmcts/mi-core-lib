@@ -7,22 +7,9 @@
   "cd_latest_state": "stateName",
   "cd_reference": 1593043372164377,
   "cd_security_classification": "PUBLIC",
-  "cd_version": 0,
-  "cd_data": {
-    "name": "A1",
-    "subject": {
-      "address": "a1Address"
-    }
-  },
+  "cd_version": 2,
   "cd_last_state_modified_date": 1593043372161,
-  "cd_data_classification": {
-    "name": "PUBLIC",
-    "subject": {
-      "value": [],
-      "classification": "PUBLIC"
-    }
-  },
-  "case_metadata_event_id": 4662541,
+  "ce_id": 4662541,
   "ce_created_date": 1576021546000,
   "ce_event_id": "eventId",
   "ce_case_data_id": 1264925,
