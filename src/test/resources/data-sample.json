@@ -1,0 +1,40 @@
+{
+  "extraction_date": "20200608-1150",
+  "cd_case_data_id": 1264925,
+  "cd_created_date": 1593043372161,
+  "cd_last_modified": 1593043372162,
+  "cd_jurisdiction": "jurisdiction",
+  "cd_latest_state": "stateName",
+  "cd_reference": 1593043372164377,
+  "cd_security_classification": "PUBLIC",
+  "cd_version": 2,
+  "cd_last_state_modified_date": 1593043372161,
+  "ce_id": 4662541,
+  "ce_created_date": 1576021546000,
+  "ce_event_id": "eventId",
+  "ce_case_data_id": 1264925,
+  "ce_summary": "summary",
+  "ce_description": "description",
+  "ce_user_id": "userId",
+  "ce_case_type_id": "test",
+  "ce_case_type_version": 33,
+  "ce_state_id": "created",
+  "ce_data": {
+    "name": "A1",
+    "subject": {
+      "address": "a1Address"
+    }
+  },
+  "ce_user_first_name": "userFirstName",
+  "ce_user_last_name": "userLastName",
+  "ce_event_name": "eventName",
+  "ce_state_name": "stateName",
+  "ce_data_classification": {
+    "name": "PUBLIC",
+    "subject": {
+      "value": [],
+      "classification": "PUBLIC"
+    }
+  },
+  "ce_security_classification": "PUBLIC"
+}
