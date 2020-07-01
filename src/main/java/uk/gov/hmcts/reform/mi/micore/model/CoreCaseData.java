@@ -20,6 +20,9 @@ public class CoreCaseData {
     @JsonProperty("ce_id")
     Long ceId;
 
+    @JsonProperty("case_metadata_event_id")
+    Long caseMetadataEventId;
+
     @JsonProperty("ce_case_data_id")
     Long ceCaseDataId;
 
@@ -61,9 +64,6 @@ public class CoreCaseData {
 
     @JsonProperty("ce_data")
     Map<String, Object> ceData;
-
-    @JsonProperty("cd_case_data_id")
-    Long cdCaseDataId;
 
     @JsonProperty("cd_created_date")
     Long cdCreatedDate;

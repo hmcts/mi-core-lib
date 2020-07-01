@@ -48,7 +48,6 @@ public class CoreCaseDataTest {
             .ceSecurityClassification(PUBLIC_CLASSIFICATION)
             .cdSecurityClassification(PUBLIC_CLASSIFICATION)
             .cdReference(1_593_043_372_164_377L)
-            .cdCaseDataId(1_264_925L)
             .cdVersion(2L)
             .cdLatestState("stateName")
             .cdJurisdiction("jurisdiction")
