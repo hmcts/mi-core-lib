@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
+import java.time.OffsetDateTime;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ public class CoreCaseData {
     Long ceCaseDataId;
 
     @JsonProperty("ce_created_date")
-    Long ceCreatedDate;
+    OffsetDateTime ceCreatedDate;
 
     @JsonProperty("ce_case_type_id")
     String ceCaseTypeId;
@@ -66,10 +67,10 @@ public class CoreCaseData {
     Map<String, Object> ceData;
 
     @JsonProperty("cd_created_date")
-    Long cdCreatedDate;
+    OffsetDateTime cdCreatedDate;
 
     @JsonProperty("cd_last_modified")
-    Long cdLastModified;
+    OffsetDateTime cdLastModified;
 
     @JsonProperty("cd_jurisdiction")
     String cdJurisdiction;
@@ -87,7 +88,7 @@ public class CoreCaseData {
     Long cdVersion;
 
     @JsonProperty("cd_last_state_modified_date")
-    Long cdLastStateModifiedDate;
+    OffsetDateTime cdLastStateModifiedDate;
 
     @JsonProperty("ce_data_classification")
     Map<String, Object> ceDataClassification;
