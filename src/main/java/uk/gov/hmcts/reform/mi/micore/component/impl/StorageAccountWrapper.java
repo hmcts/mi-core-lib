@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import static java.lang.Boolean.TRUE;
+
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class StorageAccountWrapper {
@@ -73,7 +75,7 @@ public class StorageAccountWrapper {
     public InputStream getBlobInputStream(String containerName, String blobName) {
         BlobClient blobClient = blobServiceClient.getBlobContainerClient(containerName)
             .getBlobClient(blobName);
-        if (!blobClient.exists()) {
+        if (!TRUE.equals(blobClient.exists())) {
             throw new NoSuchElementException(String.format("Blob [%s] not exist", blobName));
         }
 
