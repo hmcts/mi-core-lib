@@ -29,7 +29,7 @@ steps:
       FILE=charts/${{ parameters.applicationName }}/requirements_template.yaml
       if test -f "$FILE"; then
         echo 'Replacing requirement template.'
-        envsubst < charts/${{ parameters.applicationName }}/requirements_templates.yaml > charts/${{ parameters.applicationName }}/requirements.yaml
+        envsubst < $FILE > charts/${{ parameters.applicationName }}/requirements.yaml
       else
         echo 'Template file not available $FILE'
       fi
