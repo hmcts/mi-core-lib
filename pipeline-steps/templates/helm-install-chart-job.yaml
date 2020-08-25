@@ -26,10 +26,12 @@ steps:
       azureAksCluster:  ${{ parameters.azureAksCluster }}
   - script: |
       envsubst < charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.template.yaml > charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml
-      FILE=/${{ parameters.applicationName }}/requirements_templates.yaml
+      FILE=charts/${{ parameters.applicationName }}/requirements_template.yaml
       if test -f "$FILE"; then
         echo 'Replacing requirement template.'
         envsubst < charts/${{ parameters.applicationName }}/requirements_templates.yaml > charts/${{ parameters.applicationName }}/requirements.yaml
+      else
+        echo 'Template file not available $FILE'
       fi
 
     displayName: 'Replace Image Name In Chart Values'
