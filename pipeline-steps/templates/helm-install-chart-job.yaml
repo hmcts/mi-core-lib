@@ -26,16 +26,25 @@ steps:
       azureAksCluster:  ${{ parameters.azureAksCluster }}
   - script: |
       envsubst < charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.template.yaml > charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml
+      FILE=charts/${{ parameters.applicationName }}/requirements_template.yaml
+      if test -f "$FILE"; then
+        echo 'Replacing requirement template.'
+        envsubst < $FILE > charts/${{ parameters.applicationName }}/requirements.yaml
+      else
+        echo 'Template file not available $FILE'
+      fi
+
     displayName: 'Replace Image Name In Chart Values'
     env:
       IMAGE_NAME: '${{ parameters.azureContainerRegistry }}/${{ parameters.applicationName }}:$(imageTag)'
       BUILD_VERSION: '$(Build.BuildId)'
+      HELM_REPO: '${{ parameters.helmRepo }}'
   - task: AzureCLI@1
     displayName: "Helm Install Job Chart"
     inputs:
       azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
       scriptLocation: "inlineScript"
       inlineScript: |
-        helm repo add ${{ parameters.helmRepo }} https://${{ parameters.helmRepo }}.azurecr.io/helm/v1/repo
+        az acr helm repo add --name ${{ parameters.helmRepo }} 
         helm dependency update charts/${{ parameters.applicationName }}
         helm install $(deploymentName) charts/${{ parameters.applicationName }} --namespace ${{ parameters.namespace }} -f charts/${{ parameters.applicationName }}/values.yaml -f charts/${{ parameters.applicationName }}/values.${{ parameters.chartEnv }}.yaml 
