@@ -10,11 +10,12 @@ steps:
       applicationName: ${{ parameters.jobName }}
   - bash: |
       timeout=600
-      job=$(jobName)
+      deploymentBuild=$(deploymentName)
+      job=$(kubectl get jobs --namespace ${{ parameters.namespace }} -o name | grep $deploymentBuild -m1)
       until [[ $SECONDS -gt $timeout ]] \
-        || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
+        || [[ $(kubectl get $job --namespace ${{ parameters.namespace }} \
             -o jsonpath='{.status.conditions[?(@.type=="Failed")].status}') == 'True' ]] \
-        || [[ $(kubectl get jobs $job --namespace ${{ parameters.namespace }} \
+        || [[ $(kubectl get $job --namespace ${{ parameters.namespace }} \
             -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}') == 'True' ]];
       do
         echo "Waiting for job $job completion"
