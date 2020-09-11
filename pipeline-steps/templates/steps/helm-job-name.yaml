@@ -7,12 +7,10 @@ steps:
   - bash: |
       buildName=${{ parameters.applicationName }}-$(imageSha)-b$(Build.BuildId)
       echo "##vso[task.setvariable variable=deploymentName]${buildName}"
-      echo "##vso[task.setvariable variable=jobName]${buildName}-mi-job"
-    displayName: 'Set job name'
+    displayName: 'Set deployment name'
   # Everything else: Set the tag to the environment name
 
   - bash: |
-        echo "Job name is: $(jobName)"
         echo "Deplyment name is: $(deploymentName)"
 
-    displayName: 'Display Job name'
+    displayName: 'Display Deployment name'
