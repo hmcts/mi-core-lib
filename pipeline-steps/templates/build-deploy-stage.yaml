@@ -37,6 +37,7 @@ stages:
         env: ${{ parameters.env }}
       steps:
         - template: ./steps/sonar-pr-option.yaml
+        - template: ./steps/dependency-check.yaml
         - template: ./steps/gradle-task.yaml
           parameters:
             checkstyle: true

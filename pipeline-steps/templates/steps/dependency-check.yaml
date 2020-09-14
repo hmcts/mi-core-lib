@@ -1,0 +1,5 @@
+steps:
+  - task: Gradle@2
+    displayName: OWASP Dependency Check
+    inputs:
+      tasks: dependencyCheck
