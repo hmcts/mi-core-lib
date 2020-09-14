@@ -6,4 +6,4 @@ steps:
     displayName: OWASP Dependency Check
     condition: eq('${{ parameters.execute }}', true)
     inputs:
-      tasks: dependencyCheck
+      tasks: dependencyCheckAnalyze
