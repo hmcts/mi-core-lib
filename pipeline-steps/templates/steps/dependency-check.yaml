@@ -1,5 +1,9 @@
+parameters:
+  execute: true
+
 steps:
   - task: Gradle@2
     displayName: OWASP Dependency Check
+    condition: eq('${{ parameters.execute }}', true)
     inputs:
       tasks: dependencyCheck
