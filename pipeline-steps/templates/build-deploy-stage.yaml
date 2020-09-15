@@ -15,6 +15,7 @@ parameters:
   envMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
+  dependencyCheck: true
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
@@ -37,6 +38,9 @@ stages:
         env: ${{ parameters.env }}
       steps:
         - template: ./steps/sonar-pr-option.yaml
+        - template: ./steps/dependency-check.yaml
+          parameters:
+            execute: ${{ parameters.dependencyCheck }}
         - template: ./steps/gradle-task.yaml
           parameters:
             checkstyle: true
