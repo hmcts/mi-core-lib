@@ -104,6 +104,15 @@ class StorageAccountWrapperTest {
     }
 
     @Test
+    void testListAllContainerBlobsWithOptions() {
+        defaultMock();
+        ListBlobsOptions listBlobsOptions = mock(ListBlobsOptions.class);
+        PagedIterable<BlobItem> expected = mock(PagedIterable.class);
+        when(blobContainerClient.listBlobs(listBlobsOptions, null)).thenReturn(expected);
+        assertEquals(expected, classToTest.listAllContainerBlobs(CONTAINER_NAME, listBlobsOptions), "Valid blob list with options");
+    }
+
+    @Test
     void testListAllContainerBlobsWithMetadata() {
         defaultMock();
         PagedIterable<BlobItem> expected = mock(PagedIterable.class);
@@ -113,6 +122,18 @@ class StorageAccountWrapperTest {
 
         when(blobContainerClient.listBlobs(argThat(new ListBlobOptionMatcher(options)), isNull())).thenReturn(expected);
         assertEquals(expected, classToTest.listAllContainerBlobsWithMetadata(CONTAINER_NAME), "Valid blob list");
+    }
+
+    @Test
+    void testListAllContainerBlobsWithVersions() {
+        defaultMock();
+        PagedIterable<BlobItem> expected = mock(PagedIterable.class);
+        ListBlobsOptions options = new ListBlobsOptions()
+                .setDetails(new BlobListDetails()
+                        .setRetrieveVersions(true));
+
+        when(blobContainerClient.listBlobs(argThat(new ListBlobOptionMatcher(options)), isNull())).thenReturn(expected);
+        assertEquals(expected, classToTest.listAllContainerBlobsWithVersions(CONTAINER_NAME), "Valid blob list with versions");
     }
 
     @Test

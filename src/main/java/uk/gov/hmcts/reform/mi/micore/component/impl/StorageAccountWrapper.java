@@ -48,12 +48,24 @@ public class StorageAccountWrapper {
         return blobServiceClient.getBlobContainerClient(containerName).listBlobs();
     }
 
+    public PagedIterable<BlobItem> listAllContainerBlobs(String containerName, ListBlobsOptions listBlobsOptions) {
+        return blobServiceClient.getBlobContainerClient(containerName).listBlobs(listBlobsOptions, null);
+    }
+
     public PagedIterable<BlobItem> listAllContainerBlobsWithMetadata(String containerName) {
         ListBlobsOptions options = new ListBlobsOptions();
         BlobListDetails blobListDetails = new BlobListDetails();
         blobListDetails.setRetrieveMetadata(true);
         options.setDetails(blobListDetails);
-        return blobServiceClient.getBlobContainerClient(containerName).listBlobs(options, null);
+        return listAllContainerBlobs(containerName, options);
+    }
+
+    public PagedIterable<BlobItem> listAllContainerBlobsWithVersions(String containerName) {
+        ListBlobsOptions options = new ListBlobsOptions();
+        BlobListDetails blobListDetails = new BlobListDetails();
+        blobListDetails.setRetrieveVersions(true);
+        options.setDetails(blobListDetails);
+        return listAllContainerBlobs(containerName, options);
     }
 
     public PagedIterable<BlobContainerItem> listAllContainers() {

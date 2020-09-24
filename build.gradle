@@ -14,7 +14,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '3.4.5'
+version = '3.5.0'
 sourceCompatibility = '11'
 
 bootJar {
@@ -175,7 +175,7 @@ dependencyManagement {
 def versions = [
 	azureCore     : '1.5.1',
 	azureIdentity : '1.0.7',
-	azureStorage  : '12.6.1',
+	azureStorage  : '12.8.0',
 	junit         : '5.5.2',
 	lombok        : '1.18.10',
 	mockito       : '3.2.4',
