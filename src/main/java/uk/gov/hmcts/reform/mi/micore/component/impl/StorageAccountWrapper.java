@@ -78,6 +78,13 @@ public class StorageAccountWrapper {
             .delete();
     }
 
+    public void deleteBlobVersion(String containerName, String blobName, String versionId) {
+        blobServiceClient.getBlobContainerClient(containerName)
+            .getBlobClient(blobName)
+            .getVersionClient(versionId)
+            .delete();
+    }
+
     public boolean existBlob(String containerName, String blobName) {
         BlobClient blobClient = blobServiceClient.getBlobContainerClient(containerName)
             .getBlobClient(blobName);

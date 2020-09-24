@@ -154,6 +154,18 @@ class StorageAccountWrapperTest {
     }
 
     @Test
+    void testDeleteBlobVersion() {
+        final String versionId = "versionId";
+        defaultMock();
+        when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME)
+                .getBlobClient(BLOB_NAME)).thenReturn(blobClient);
+        BlobClient versionedBlobClient = mock(BlobClient.class);
+        when(blobClient.getVersionClient(versionId)).thenReturn(versionedBlobClient);
+        classToTest.deleteBlobVersion(CONTAINER_NAME, BLOB_NAME, versionId);
+        verify(versionedBlobClient, times(1)).delete();
+    }
+
+    @Test
     void testGetBlobInputStreamNotExist() {
         defaultMock();
         when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME).getBlobClient(BLOB_NAME)).thenReturn(blobClient);
