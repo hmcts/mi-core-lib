@@ -152,7 +152,7 @@ stages:
         - task: PublishPipelineArtifact@1
           condition: succeededOrFailed()
           inputs:
-            path: '$(System.DefaultWorkingDirectory)/build/reports/'
+            path: '$(System.DefaultWorkingDirectory)/build/reports/integrationPostTest'
             artifact: reports
             displayName: 'Publish updated reports on artifact'
 
