@@ -153,8 +153,8 @@ stages:
           condition: succeededOrFailed()
           inputs:
             path: '$(System.DefaultWorkingDirectory)/build/reports/tests/integrationPostTest'
-            artifact: reports
-            displayName: 'Publish updated reports on artifact'
+            artifact: integrationTest
+            displayName: 'Publish integration test report'
 
     - job: CleanResources
       dependsOn: IntegrationTest
