@@ -145,10 +145,16 @@ stages:
             displayName: 'Run Integration Test'
             azureKeyMapping: ${{ parameters.azureKeyMapping }}
             envMapping: ${{ parameters.envMapping }}
+            publishJUnitResults: true
             testResultsFiles: '**/test-results/integrationPostTest/**/TEST-*.xml'
             gradleTasks: 'integrationPostTest'
-            publishJUnitResults: true
             testRunTitle: 'Integration test'
+        - task: PublishPipelineArtifact@1
+          condition: succeededOrFailed()
+          inputs:
+            path: '$(System.DefaultWorkingDirectory)/build/reports/tests/integrationPostTest'
+            artifact: integrationTest
+            displayName: 'Publish integration test report'
 
     - job: CleanResources
       dependsOn: IntegrationTest
