@@ -1,0 +1,14 @@
+parameters:
+  azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+  azureVault: ''
+  keyMapping: []
+
+steps:
+  - ${{ each pair in parameters.keyMapping }}:
+      - task: AzureCLI@1
+        displayName: "Set vault secrets ${{ pair.secret_name }}"
+        inputs:
+          azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+          scriptLocation: "inlineScript"
+          inlineScript: |
+            az keyvault secret set --name ${{ pair.secret_name }} --vault-name ${{ parameters.azureVault }}  --value $(${{ pair.env_var_name }})
