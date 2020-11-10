@@ -34,7 +34,7 @@ stages:
       pool:
         vmImage: 'Ubuntu-16.04'
       variables:
-        aptDependencies: 'qtbase5-dev'
+        aptDependencies: 'qtbase5-dev gettext'
         env: ${{ parameters.env }}
       steps:
         - template: ./steps/sonar-pr-option.yaml
