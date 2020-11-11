@@ -98,7 +98,7 @@ stages:
       steps:
         - template: ./add-dependencies.yaml
           parameters:
-            aptDependencies: 'qtbase5-dev'
+            aptDependencies: 'gettext'
         - template: ./steps/vault-secrets.yaml
           parameters: 
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
