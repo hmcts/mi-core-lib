@@ -34,7 +34,7 @@ stages:
       pool:
         vmImage: 'Ubuntu-16.04'
       variables:
-        aptDependencies: 'qtbase5-dev gettext'
+        aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
         - template: ./steps/sonar-pr-option.yaml
@@ -92,11 +92,13 @@ stages:
     - job: DeployBuild
       dependsOn: BuildAndTestApplication
       condition: succeeded()
-      pool:
-        vmImage: 'Ubuntu-16.04'
+      pool: 'hmcts-ss-sandbox'
       variables:
         env: ${{ parameters.env }}
       steps:
+        - template: ./add-dependencies.yaml
+          parameters:
+            aptDependencies: 'qtbase5-dev'
         - template: ./steps/vault-secrets.yaml
           parameters: 
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
