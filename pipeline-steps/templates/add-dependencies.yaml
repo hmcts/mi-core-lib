@@ -5,7 +5,7 @@ parameters:
 steps:
 
 - script: |
-    sudo apt-get update
-    sudo apt-get install -y ${{ parameters.aptDependencies }}
+    apt-get update
+    apt-get install -y ${{ parameters.aptDependencies }}
   displayName: 'add dependencies'
 
