@@ -24,6 +24,7 @@ parameters:
   ithcEnv: 'ithc'
   ithcAcr: 'ssprivateithc'
   ithcSubscriptionEndpoint: 'DTS-SHAREDSERVICES-ITHC'
+  agentPool: hmcts-ss-sandbox
   
 stages:
 - stage: BuildAndDeploy
@@ -92,8 +93,8 @@ stages:
     - job: DeployBuild
       dependsOn: BuildAndTestApplication
       condition: succeeded()
-      pool:
-        vmImage: 'Ubuntu-16.04'
+      pool: ${{ parameters.agentPool }}
+
       variables:
         env: ${{ parameters.env }}
       steps:
