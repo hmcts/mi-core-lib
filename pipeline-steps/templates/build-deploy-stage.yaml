@@ -99,8 +99,8 @@ stages:
         env: ${{ parameters.env }}
       steps:
         - template: ./add-dependencies.yaml
-            parameters:
-              aptDependencies: 'gettext'
+          parameters:
+            aptDependencies: 'gettext'
         - script: |
             apt-get update && apt-get install -y apt-transport-https gnupg2 curl
             curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
