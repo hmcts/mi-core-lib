@@ -143,6 +143,7 @@ stages:
     - job: IntegrationTest
       dependsOn: DeployBuild
       condition: succeeded()
+      pool: ${{ parameters.agentPool }}
       variables:
         env: ${{ parameters.env }}
       steps:
