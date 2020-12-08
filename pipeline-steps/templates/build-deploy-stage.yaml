@@ -24,6 +24,7 @@ parameters:
   ithcEnv: 'ithc'
   ithcAcr: 'ssprivateithc'
   ithcSubscriptionEndpoint: 'DTS-SHAREDSERVICES-ITHC'
+  agentPool: hmcts-ss-sandbox
   
 stages:
 - stage: BuildAndDeploy
@@ -92,13 +93,23 @@ stages:
     - job: DeployBuild
       dependsOn: BuildAndTestApplication
       condition: succeeded()
-      pool:
-        vmImage: 'Ubuntu-16.04'
+      pool: ${{ parameters.agentPool }}
+
       variables:
         env: ${{ parameters.env }}
       steps:
+        - template: ./add-dependencies.yaml
+          parameters:
+            aptDependencies: 'gettext'
+        - script: |
+            apt-get update && apt-get install -y apt-transport-https gnupg2 curl
+            curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+            apt-get update
+            apt-get install -y kubectl
+          displayName: 'add kubectl'
         - template: ./steps/vault-secrets.yaml
-          parameters: 
+          parameters:
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
             secretsFilter: ${{ parameters.azureSecreKeys }}
@@ -132,6 +143,7 @@ stages:
     - job: IntegrationTest
       dependsOn: DeployBuild
       condition: succeeded()
+      pool: ${{ parameters.agentPool }}
       variables:
         env: ${{ parameters.env }}
       steps:
