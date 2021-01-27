@@ -10,8 +10,8 @@ parameters:
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
   azureAksResourceGroup: $(azure.aks.resourcegroup)
-  azurePromAcr: $(azure.prom.acr)
-  azurePromSubscriptionEndpoint: $(azure.prom.subscription.endpoint)
+  azurePromAcr: 'sdshmctspublic'
+  azurePromSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
   azureKeyMapping: {}
   envMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
