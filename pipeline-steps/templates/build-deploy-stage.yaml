@@ -5,7 +5,7 @@ parameters:
   applicationName: ''
   chartEnv: 'test'
   product: ''
-  azureContainerRegistry: 'sdshmctspublic'
+  azureContainerRegistry: 'sdshmctspublic,azurecr,io'
   azureContainerRegistrySubscription: 'DTS-SHAREDSERVICES-PROD'
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
@@ -21,7 +21,7 @@ parameters:
   postIntegrationTest: true
   functionalTest: false
   mutationTest: false
-  helmRepo: 'hmctspublic'
+  helmRepo: 'sdshmctspublic'
   ithcEnv: 'ithc'
   agentPool: hmcts-ss-sandbox
   
