@@ -5,7 +5,7 @@ parameters:
   applicationName: ''
   chartEnv: 'test'
   product: ''
-  azureContainerRegistry: 'sdshmctspublic,azurecr,io'
+  azureContainerRegistry: 'sdshmctspublic.azurecr.io'
   azureContainerRegistrySubscription: 'DTS-SHAREDSERVICES-PROD'
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
