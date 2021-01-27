@@ -5,7 +5,8 @@ parameters:
   applicationName: ''
   chartEnv: 'test'
   product: ''
-  azureContainerRegistry: $(azure.container.registry)
+  azureContainerRegistry: 'sdshmctspublic'
+  azureContainerRegistrySubscription: 'DTS-SHAREDSERVICES-PROD'
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
   azureAksResourceGroup: $(azure.aks.resourcegroup)
@@ -22,8 +23,6 @@ parameters:
   mutationTest: false
   helmRepo: 'hmctspublic'
   ithcEnv: 'ithc'
-  ithcAcr: 'ssprivateithc'
-  ithcSubscriptionEndpoint: 'DTS-SHAREDSERVICES-ITHC'
   agentPool: hmcts-ss-sandbox
   
 stages:
@@ -58,6 +57,7 @@ stages:
               azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
               azureAksCluster:  ${{ parameters.azureAksCluster }}
               azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+              azureContainerRegistrySubscription: ${{ parameters.azureContainerRegistrySubscription }}
           - template: ./steps/gradle-task.yaml
             parameters:
               gradleTasks: 'functional'
@@ -87,7 +87,7 @@ stages:
         - template: ./docker-build.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
-            azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
+            azureContainerRegistrySubscription:  ${{ parameters.azureContainerRegistrySubscription }}
             applicationName:  ${{ parameters.applicationName }}
 
     - job: DeployBuild

@@ -3,6 +3,7 @@ parameters:
   azureAksResourceGroup: ''
   azureAksCluster: ''
   azureContainerRegistry: ''
+  azureContainerRegistrySubscription: ''
 
 steps:
   - template: ./aks-authenticate.yaml
@@ -17,7 +18,7 @@ steps:
   - task: AzureCLI@1
     displayName: "ACR Login"
     inputs:
-      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+      azureSubscription: ${{ parameters.azureContainerRegistrySubscription }}
       scriptLocation: "inlineScript"
       inlineScript: |
         az acr login --name $(acrName)
