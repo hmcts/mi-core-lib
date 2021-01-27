@@ -196,8 +196,8 @@ stages:
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
             applicationName: ${{ parameters.applicationName }}
-            azureDestinyContainerRegistry:  ${{ parameters.ithcAcr }}
-            azureProdSubscription: ${{ parameters.ithcSubscriptionEndpoint }}
+            azureDestinyContainerRegistry:  ${{ parameters.azureContainerRegistry }}
+            azureProdSubscription: ${{ parameters.azureContainerRegistrySubscription }}
             promEnv: ${{ parameters.ithcEnv }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
