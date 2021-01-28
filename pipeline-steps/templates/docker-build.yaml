@@ -1,7 +1,7 @@
 
 parameters:
   azureContainerRegistry: ''
-  azureSubscriptionEndpoint: ''
+  azureContainerRegistrySubscription: ''
   applicationName: ''
 
 
@@ -15,7 +15,7 @@ steps:
   - task: Docker@1
     displayName: login
     inputs:
-      azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+      azureSubscriptionEndpoint: ${{ parameters.azureContainerRegistrySubscription }}
       azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
       command: login
 
@@ -28,7 +28,7 @@ steps:
   - task: Docker@1
     displayName: 'Push an image'
     inputs:
-      azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+      azureSubscriptionEndpoint: ${{ parameters.azureContainerRegistrySubscription }}
       azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
       command: 'Push an image'
       imageName: '${{ parameters.applicationName }}:$(imageTag)'

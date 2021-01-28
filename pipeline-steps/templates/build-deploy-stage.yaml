@@ -5,12 +5,13 @@ parameters:
   applicationName: ''
   chartEnv: 'test'
   product: ''
-  azureContainerRegistry: $(azure.container.registry)
+  azureContainerRegistry: 'sdshmctspublic.azurecr.io'
+  azureContainerRegistrySubscription: 'DTS-SHAREDSERVICES-PROD'
   azureAksCluster: $(azure.aks.cluster)
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
   azureAksResourceGroup: $(azure.aks.resourcegroup)
-  azurePromAcr: $(azure.prom.acr)
-  azurePromSubscriptionEndpoint: $(azure.prom.subscription.endpoint)
+  azurePromAcr: 'sdshmctspublic'
+  azurePromSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
   azureKeyMapping: {}
   envMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
@@ -20,10 +21,8 @@ parameters:
   postIntegrationTest: true
   functionalTest: false
   mutationTest: false
-  helmRepo: 'hmctspublic'
+  helmRepo: 'sdshmctspublic'
   ithcEnv: 'ithc'
-  ithcAcr: 'ssprivateithc'
-  ithcSubscriptionEndpoint: 'DTS-SHAREDSERVICES-ITHC'
   agentPool: hmcts-ss-sandbox
   
 stages:
@@ -58,6 +57,7 @@ stages:
               azureAksResourceGroup:  ${{ parameters.azureAksResourceGroup }}
               azureAksCluster:  ${{ parameters.azureAksCluster }}
               azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
+              azureContainerRegistrySubscription: ${{ parameters.azureContainerRegistrySubscription }}
           - template: ./steps/gradle-task.yaml
             parameters:
               gradleTasks: 'functional'
@@ -87,7 +87,7 @@ stages:
         - template: ./docker-build.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
-            azureSubscriptionEndpoint:  ${{ parameters.azureSubscriptionEndpoint }}
+            azureContainerRegistrySubscription:  ${{ parameters.azureContainerRegistrySubscription }}
             applicationName:  ${{ parameters.applicationName }}
 
     - job: DeployBuild
@@ -196,8 +196,8 @@ stages:
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
             applicationName: ${{ parameters.applicationName }}
-            azureDestinyContainerRegistry:  ${{ parameters.ithcAcr }}
-            azureProdSubscription: ${{ parameters.ithcSubscriptionEndpoint }}
+            azureDestinyContainerRegistry:  ${{ parameters.azureContainerRegistry }}
+            azureProdSubscription: ${{ parameters.azureContainerRegistrySubscription }}
             promEnv: ${{ parameters.ithcEnv }}
     - job: PromoteBuild
       dependsOn: IntegrationTest
