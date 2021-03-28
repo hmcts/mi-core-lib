@@ -17,8 +17,10 @@ parameters:
   default: hmcts-ss-$(environment)
 - name: databaseName
   type: string
+  default: ''
 - name: databaseServerName
   type: string
+  default: ''
 
 jobs:
 - job: run_integration_tests
