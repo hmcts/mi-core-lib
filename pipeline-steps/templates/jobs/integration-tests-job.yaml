@@ -21,6 +21,12 @@ parameters:
 - name: databaseServerName
   type: string
   default: ''
+- name: azureKeyMapping
+  type: object
+  default: {}
+- name: envMapping
+  type: object
+  default: {}
 
 jobs:
 - job: run_integration_tests
@@ -81,25 +87,11 @@ jobs:
       AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
+      ${{ each pair in parameters.envMapping }}:
+        ${{ pair.key }}: $(${{ pair.value }})
+      ${{ each pair in parameters.azureKeyMapping }}:
+        ${{ pair.key }}: $(${{ pair.value }})
     displayName: 'Run integration tests'
-
-  - task: AzureCLI@2
-    inputs:
-      scriptType: bash
-      scriptLocation: inlineScript
-      azureSubscription: ${{ parameters.subscriptionEndpoint }}
-      inlineScript: |
-        make coverage
-    env:
-      SQL_SERVER_NAME: ${{parameters.databaseServerName }}
-      SQL_DATABASE_NAME: ${{ parameters.databaseName }}
-      SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
-      SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
-      AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
-      AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
-      AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
-      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
-    displayName: 'Run test coverage'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
