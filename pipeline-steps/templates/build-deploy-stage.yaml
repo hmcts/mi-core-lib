@@ -24,6 +24,7 @@ parameters:
   helmRepo: 'sdshmctspublic'
   ithcEnv: 'ithc'
   agentPool: hmcts-ss-sandbox
+  jobTimeout: 900
   
 stages:
 - stage: BuildAndDeploy
@@ -139,6 +140,7 @@ stages:
             jobName:  ${{ parameters.applicationName }}
             namespace:  ${{ parameters.product }}
             projectName: ${{ parameters.applicationName }}
+            jobTimeout: ${{ parameters.jobTimeout }}
     
     - job: IntegrationTest
       dependsOn: DeployBuild
