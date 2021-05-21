@@ -50,6 +50,13 @@ jobs:
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
             ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
             azurePowerShellVersion: LatestVersion
+        - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Update global parameters'
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/GlobalParametersUpdateScript.ps1'
+            ScriptArguments: '-globalParametersFilePath "$(Pipeline.Workspace)/ArmTemplates/${{ parameters.adfName }}_GlobalParameters.json" -resourceGroupName "${{ parameters.resourceGroup }}" -dataFactoryName "${{ parameters.adfName }}"'
+            azurePowerShellVersion: LatestVersion
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
