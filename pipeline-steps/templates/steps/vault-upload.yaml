@@ -12,7 +12,7 @@ steps:
           scriptLocation: "inlineScript"
           inlineScript: |
             seachedSecret=$(az keyvault secret list --vault-name ${{ parameters.azureVault }}  --query "[?name=='${{ pair.secret_name }}'].name" -o tsv)
-            varValue=$(${{ pair.env_var_name }})
+            varValue=${{ pair.env_var_name }}
             if [ -z "$seachedSecret" ]; then
                  echo  "This is a new secret"
                  az keyvault secret set --name ${{ pair.secret_name }} --vault-name ${{ parameters.azureVault }}  --value $(${{ pair.env_var_name }})
