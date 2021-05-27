@@ -8,6 +8,8 @@ parameters:
   default: mi-$(environment)-rg
 - name: adfOverrideParameters
   type: string
+- name: adfAdditionalOverrideParameters
+  type: string
 - name: adfFolder
   type: string
   default: ./
@@ -75,7 +77,7 @@ jobs:
             location: '$(azureLocation)'
             csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
-            overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
+            overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }} ${{ parameters.adfAdditionalOverrideParameters }}
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start ADF triggers'
           condition: eq(parameters.enableTriggers, true)
