@@ -80,7 +80,7 @@ jobs:
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }} ${{ parameters.adfAdditionalOverrideParameters }}
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start ADF triggers'
-          condition: eq(parameters.enableTriggers, true)
+          condition: eq(${{ parameters.enableTriggers }}, true)
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
