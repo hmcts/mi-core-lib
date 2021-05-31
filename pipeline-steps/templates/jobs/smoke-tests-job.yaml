@@ -65,7 +65,7 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        make smokeTest
+        make smoke-test
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
     env:
       SQL_SERVER_NAME: ${{parameters.databaseServerName }}
