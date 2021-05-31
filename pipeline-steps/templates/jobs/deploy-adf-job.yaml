@@ -37,7 +37,7 @@ jobs:
       deploy:
         steps:
         - task: CmdLine@2
-          displayName: 'show filders'
+          displayName: 'Show Folders'
           inputs:
             script: 'ls -lRt $(Pipeline.Workspace)'
         - task: CmdLine@2
@@ -54,6 +54,7 @@ jobs:
             ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
             azurePowerShellVersion: LatestVersion
         - task: Powershell@2
+          displayName: Check Global Parameters Existence
           inputs:
             targetType: 'inline'
             script: |
