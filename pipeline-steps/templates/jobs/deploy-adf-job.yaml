@@ -65,6 +65,7 @@ jobs:
           condition: eq(variables['GlobalParametersExist'], True)
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            scriptType: inlineScript
             inline: |
               $repoConfiguration = Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Select-Object -ExpandProperty RepoConfiguration
               Write-Output "##vso[task.setvariable variable=RepoConfiguration]$repoConfiguration"
@@ -82,6 +83,7 @@ jobs:
           condition: and(eq(variables['GlobalParametersExist'], True), eq(variables['RepoConfiguration'].AccountName, 'hmcts'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            scriptType: inlineScript
             inline: |
               Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -AccountName "${{ variables['RepoConfiguration'].AccountName }}" -RepositoryName "${{ variables['RepoConfiguration'].RepositoryName }}" -CollaborationBranch "${{ variables['RepoConfiguration'].CollaborationBranch }}" -RootFolder "${{ variables['RepoConfiguration'].RootFolder }}"
             azurePowerShellVersion: LatestVersion
