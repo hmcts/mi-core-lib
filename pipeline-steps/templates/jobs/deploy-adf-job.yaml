@@ -60,6 +60,31 @@ jobs:
             script: |
               $globalParametersExist = Test-Path -Path "$(Pipeline.Workspace)/ArmTemplates/${{ parameters.adfName }}_GlobalParameters.json"
               Write-Output "##vso[task.setvariable variable=GlobalParametersExist]$globalParametersExist"
+        - task: AzurePowerShell@4
+          displayName: 'Azure Powershell script: Save Existing RepoConfiguration'
+          condition: eq(variables['GlobalParametersExist'], True)
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            inline: |
+              $repoConfiguration = Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Select-Object -ExpandProperty RepoConfiguration
+              Write-Output "##vso[task.setvariable variable=RepoConfiguration]$repoConfiguration"
+            azurePowerShellVersion: LatestVersion
+        - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Update global parameters'
+          condition: eq(variables['GlobalParametersExist'], True)
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/GlobalParametersUpdateScript.ps1'
+            ScriptArguments: '-globalParametersFilePath "$(Pipeline.Workspace)/ArmTemplates/${{ parameters.adfName }}_GlobalParameters.json" -resourceGroupName "${{ parameters.resourceGroup }}" -dataFactoryName "${{ parameters.adfName }}"'
+            azurePowerShellVersion: LatestVersion
+        - task: AzurePowerShell@4
+          displayName: 'Azure Powershell script: Restore Existing HMCTS RepoConfiguration'
+          condition: and(eq(variables['GlobalParametersExist'], True), eq(variables['RepoConfiguration'].AccountName, 'hmcts'))
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            inline: |
+              Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -AccountName "${{ variables['RepoConfiguration'].AccountName }}" -RepositoryName "${{ variables['RepoConfiguration'].RepositoryName }}" -CollaborationBranch "${{ variables['RepoConfiguration'].CollaborationBranch }}" -RootFolder "${{ variables['RepoConfiguration'].RootFolder }}"
+            azurePowerShellVersion: LatestVersion
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
