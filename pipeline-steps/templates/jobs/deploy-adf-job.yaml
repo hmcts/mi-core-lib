@@ -68,11 +68,18 @@ jobs:
             scriptType: inlineScript
             inline: |
               $repoConfiguration = Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Select-Object -ExpandProperty RepoConfiguration
-              echo "$repoConfiguration"
-              Write-Output "##vso[task.setvariable variable=RepoConfigurationAccountName]$repoConfiguration.AccountName"
-              Write-Output "##vso[task.setvariable variable=RepoConfigurationRepositoryName]$repoConfiguration.RepositoryName"
-              Write-Output "##vso[task.setvariable variable=RepoConfigurationCollaborationBranch]$repoConfiguration.CollaborationBranch"
-              Write-Output "##vso[task.setvariable variable=RepoConfigurationRootFolder]$repoConfiguration.RootFolder"
+              Write-Output "##vso[task.setvariable variable=RepoConfigurationAccountName]$($repoConfiguration.AccountName)"
+              Write-Output "##vso[task.setvariable variable=RepoConfigurationRepositoryName]$($repoConfiguration.RepositoryName)"
+              Write-Output "##vso[task.setvariable variable=RepoConfigurationCollaborationBranch]$($repoConfiguration.CollaborationBranch)"
+              Write-Output "##vso[task.setvariable variable=RepoConfigurationRootFolder]$($repoConfiguration.RootFolder)"
+            azurePowerShellVersion: LatestVersion
+        - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Update global parameters'
+          condition: eq(variables['GlobalParametersExist'], True)
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/GlobalParametersUpdateScript.ps1'
+            ScriptArguments: '-globalParametersFilePath "$(Pipeline.Workspace)/ArmTemplates/${{ parameters.adfName }}_GlobalParameters.json" -resourceGroupName "${{ parameters.resourceGroup }}" -dataFactoryName "${{ parameters.adfName }}"'
             azurePowerShellVersion: LatestVersion
         - task: AzurePowerShell@4
           displayName: 'Azure Powershell script: Restore Existing HMCTS RepoConfiguration'
