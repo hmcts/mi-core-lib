@@ -1,0 +1,47 @@
+parameters:
+- name: subscriptionId
+  type: string
+- name: env
+  type: string
+- name: adfName
+  type: string
+- name: rootFolder
+  type: string
+- name: buildFolder
+  type: string
+  default: 'build/ArmTemplate'
+
+jobs:
+- job: 'validate_adf'
+  displayName: 'Validate adf objects'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - task: NodeTool@0
+    displayName: 'Install Node.js'
+    inputs:
+      versionSpec: '10.x'
+      
+  - task: Npm@1
+    displayName: 'Install npm package'
+    inputs:
+      command: 'install'
+      verbose: true
+      
+  - task: Npm@1
+    displayName: 'Validate'
+    inputs:
+      command: 'custom'
+      customCommand: "run build validate $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }}"
+
+  - task: Npm@1
+    displayName: 'Validate and Generate ARM template'
+    inputs:
+      command: 'custom'
+      customCommand: "run build export $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }} ${{ parameters.buildFolder }}"
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.Repository.LocalPath)/${{ parameters.buildFolder }}'
+      artifact: 'ArmTemplates'
+      publishLocation: 'pipeline'
