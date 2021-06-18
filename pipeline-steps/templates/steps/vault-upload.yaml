@@ -12,14 +12,17 @@ steps:
           scriptLocation: "inlineScript"
           inlineScript: |
             seachedSecret=$(az keyvault secret list --vault-name ${{ parameters.azureVault }}  --query "[?name=='${{ secret.secret_name }}'].name" -o tsv)
+            varValue='$(${{ secret.env_var_name }})'
+            defaultType='literal'
             secretType='${{ secret.type }}'
             if [ -z "$secretType" ]; then
-              secretType=literal
+              secretType=$defaultType
+            elif [ "$secretType" != "$defaultType" ]
+              varValue=$(${{ secret.env_var_name }})
             fi
-            varValue='$(${{ secret.env_var_name }})'
             if [ -z "$seachedSecret" ]; then
                 echo  "This is a new secret"
-                if [ "$secretType" = 'literal' ]; then
+                if [ "$secretType" = "$defaultType" ]; then
                     az keyvault secret set --name ${{ secret.secret_name }} --vault-name ${{ parameters.azureVault }}  --value '$(${{ secret.env_var_name }})'
                 else
                     echo "Setting secret of type: $secretType"
@@ -30,7 +33,7 @@ steps:
                 if [ "$varValue" = "$currentValue" ]; then
                     echo "Secret has not changed. Skipped"
                 else
-                    if [ "$secret.type" = 'literal' ]; then
+                    if [ "$secret.type" = "$defaultType" ]; then
                         az keyvault secret set --name ${{ secret.secret_name }} --vault-name ${{ parameters.azureVault }}  --value '$(${{ secret.env_var_name }})'
                     else
                         echo "Setting secret of type: $secretType"
