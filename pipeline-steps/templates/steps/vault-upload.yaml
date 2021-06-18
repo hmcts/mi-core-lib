@@ -16,11 +16,10 @@ steps:
             if [ -z "$secretType" ]; then
               secretType=literal
             fi
-            echo "$secretType"
             varValue='$(${{ secret.env_var_name }})'
             if [ -z "$seachedSecret" ]; then
                 echo  "This is a new secret"
-                if [ "$secretType" == "literal" ]; then
+                if [ "$secretType" = "literal" ]; then
                     az keyvault secret set --name ${{ secret.secret_name }} --vault-name ${{ parameters.azureVault }}  --value '$(${{ secret.env_var_name }})'
                 else
                     echo "Setting secret of type: $secretType"
@@ -31,7 +30,7 @@ steps:
                 if [ "$varValue" = "$currentValue" ]; then
                     echo "Secret has not changed. Skipped"
                 else
-                    if [ "$secret.type" == "literal" ]; then
+                    if [ "$secret.type" = "literal" ]; then
                         az keyvault secret set --name ${{ secret.secret_name }} --vault-name ${{ parameters.azureVault }}  --value '$(${{ secret.env_var_name }})'
                     else
                         echo "Setting secret of type: $secretType"
