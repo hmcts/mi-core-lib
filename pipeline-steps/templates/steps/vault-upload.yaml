@@ -13,6 +13,7 @@ steps:
           inlineScript: |
             seachedSecret=$(az keyvault secret list --vault-name ${{ parameters.azureVault }}  --query "[?name=='${{ secret.secret_name }}'].name" -o tsv)
             secretType='$(${{ secret.type }}:=literal)'
+            echo "$secretType"
             varValue='$(${{ secret.env_var_name }})'
             if [ -z "$seachedSecret" ]; then
                 echo  "This is a new secret"
