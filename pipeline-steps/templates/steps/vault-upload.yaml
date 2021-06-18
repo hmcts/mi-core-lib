@@ -12,11 +12,12 @@ steps:
           scriptLocation: "inlineScript"
           inlineScript: |
             seachedSecret=$(az keyvault secret list --vault-name ${{ parameters.azureVault }}  --query "[?name=='${{ secret.secret_name }}'].name" -o tsv)
-            varValue='$(${{ secret.env_var_name }})'
             secretType='${{ secret.type }}'
             if [ -z "$secretType" ]; then
               secretType=literal
-            elif [ "$secretType" != "literal" ]; then
+            fi
+            varValue='$(${{ secret.env_var_name }})'
+            if [ "$secretType" != "literal" ]; then
               varValue=$(${{ secret.env_var_name }})
             fi
             if [ -z "$seachedSecret" ]; then
