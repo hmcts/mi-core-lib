@@ -17,7 +17,7 @@ steps:
             secretType='${{ secret.type }}'
             if [ -z "$secretType" ]; then
               secretType=$defaultType
-            elif [ "$secretType" != "$defaultType" ]
+            elif [ "$secretType" != "$defaultType" ]; then
               varValue=$(${{ secret.env_var_name }})
             fi
             if [ -z "$seachedSecret" ]; then
