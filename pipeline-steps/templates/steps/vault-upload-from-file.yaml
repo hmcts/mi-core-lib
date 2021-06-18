@@ -12,20 +12,15 @@ steps:
           scriptLocation: "inlineScript"
           inlineScript: |
             seachedSecret=$(az keyvault secret list --vault-name ${{ parameters.azureVault }}  --query "[?name=='${{ pair.secret_name }}'].name" -o tsv)
-            varValue=$(cat '$(${{ pair.env_var_name }})')
-            echo $varValue
-            varValuea=$(cat '${{ pair.env_var_name }}')
-            echo $varValuea
-            varValueb='$(cat ${{ pair.env_var_name }})'
-            echo $varValueb
+            varValue=$(cat '${{ pair.env_var_name }}')
             if [ -z "$seachedSecret" ]; then
                  echo  "This is a new secret"
-                 az keyvault secret set --name ${{ pair.secret_name }} --vault-name ${{ parameters.azureVault }}  --file '$(${{ pair.env_var_name }})'
+                 az keyvault secret set --name ${{ pair.secret_name }} --vault-name ${{ parameters.azureVault }}  --file ${{ pair.env_var_name }}
             else
                 currentValue=$(az keyvault secret show --vault-name ${{ parameters.azureVault }} --name ${{ pair.secret_name }} --query 'value' -o tsv)
                 if [ "$varValue" = "$currentValue" ]; then
                     echo "Secret has not changed. Skipped"
                 else
-                    az keyvault secret set --name ${{ pair.secret_name }} --vault-name ${{ parameters.azureVault }}  --file '$(${{ pair.env_var_name }})'
+                    az keyvault secret set --name ${{ pair.secret_name }} --vault-name ${{ parameters.azureVault }}  --file ${{ pair.env_var_name }})
                 fi
             fi
