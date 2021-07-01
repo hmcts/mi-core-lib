@@ -3,7 +3,7 @@ parameters:
   type: string
 - name: adfName
   type: string
-  type: ''
+  default: ''
 - name: resourceGroup
   type: string
   default: mi-$(environment)-rg
