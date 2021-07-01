@@ -3,6 +3,7 @@ parameters:
   type: string
 - name: adfName
   type: string
+  type: ''
 - name: resourceGroup
   type: string
   default: mi-$(environment)-rg
@@ -27,11 +28,13 @@ parameters:
 - name: envMapping
   type: object
   default: {}
-
+- name: dependsOn
+  type: string
+  default: deploy_adf
 jobs:
 - job: run_integration_tests
   displayName: 'Run integration tests'
-  dependsOn: deploy_adf
+  dependsOn: ${{ parameters.agentPool }}
   pool: ${{ parameters.agentPool }}
 
   variables:
