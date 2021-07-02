@@ -75,6 +75,7 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
+        pip freeze
         make test
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
     env:
