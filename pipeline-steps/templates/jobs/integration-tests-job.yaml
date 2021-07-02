@@ -56,7 +56,7 @@ jobs:
   - script: |
       ${{ parameters.preExecuitonScript }}
     displayName: 'Pre-execution  script'
-    condition: and(succeeded(),ne(${{ parameters.subscriptionEndpoint }}, ''))
+    condition: and(succeeded(),ne('${{ parameters.preExecuitonScript }}', ''))
   - script: |
       bash --version
       alias python=python3
