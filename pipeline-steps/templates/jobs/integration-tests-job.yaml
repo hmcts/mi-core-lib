@@ -89,7 +89,7 @@ jobs:
       ${{ each pair in parameters.envMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
       ${{ each pair in parameters.azureKeyMapping }}:
-        ${{ pair.key }}: $(${{ pair.value }})
+        ${{ pair.key }}: ${{ pair.value }}
     displayName: 'Run integration tests'
 
   - task: PublishTestResults@2
