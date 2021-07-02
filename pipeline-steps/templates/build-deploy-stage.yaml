@@ -32,7 +32,7 @@ stages:
       # condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
 
       pool:
-        vmImage: 'Ubuntu-16.04'
+        vmImage: 'Ubuntu-latest'
       variables:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
@@ -188,7 +188,7 @@ stages:
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/ithc'), ne(variables['Build.Reason'], 'Schedule')))
 
       pool:
-        vmImage: 'Ubuntu-16.04'
+        vmImage: 'Ubuntu-latest'
       variables:
         env: ${{ parameters.env }}
       steps:
@@ -204,7 +204,7 @@ stages:
       condition: and(succeeded(), and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'Schedule')))
 
       pool:
-        vmImage: 'Ubuntu-16.04'
+        vmImage: 'Ubuntu-latest'
       variables:
         env: ${{ parameters.env }}
 

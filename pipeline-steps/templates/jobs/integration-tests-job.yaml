@@ -31,6 +31,9 @@ parameters:
 - name: dependsOn
   type: string
   default: deploy_adf
+- name: preExecuitonScript
+  type: string
+  default: ''
 jobs:
 - job: run_integration_tests
   displayName: 'Run integration tests'
@@ -50,17 +53,10 @@ jobs:
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecreKeys: '*'
-#  - template: ../tasks/vault-secrets.yaml
-#    parameters:
-#      azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
-#      keyVaultName: ${{ parameters.ssKeyvaultName }}
-#      azureSecreKeys: '*'
-  # - task: UsePythonVersion@0
-  #   inputs:
-  #     versionSpec: '$(pythonVersion)'
-  #     addToPath: true
-  #   displayName: 'Use Python Version: $(pythonVersion)'
-
+  - script: |
+      ${{ parameters.preExecuitonScript }}
+    displayName: 'Pre-execution  script'
+    condition: and(succeeded(),ne(${{ parameters.subscriptionEndpoint }}, ''))
   - script: |
       bash --version
       alias python=python3
