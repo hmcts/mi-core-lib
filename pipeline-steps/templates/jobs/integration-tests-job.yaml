@@ -61,14 +61,14 @@ jobs:
       bash --version
       alias python=python3
       python --version
-      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-      python3 get-pip.py
       apt-get install python3-venv
-    workingDirectory: $(pythonWorkingDir)
-    displayName: 'Install pip and virtual env'
-  - script: |
       python3 -m venv working_dir
       source working_dir/bin/activate
+    workingDirectory: $(pythonWorkingDir)
+    displayName: 'Install virtual env'
+  - script: |
+      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      python3 get-pip.py
       pip install -r requirements.txt
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install dependencies'
