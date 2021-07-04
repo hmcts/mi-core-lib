@@ -63,7 +63,7 @@ jobs:
       python --version
       curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
       python3 get-pip.py
-      python3 -m pip install --user virtualenv
+      apt-get install python3-venv
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install pip and virtual env'
   - script: |
