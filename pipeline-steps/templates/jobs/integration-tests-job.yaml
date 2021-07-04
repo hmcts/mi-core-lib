@@ -58,6 +58,7 @@ jobs:
     displayName: 'Pre-execution  script'
     condition: and(succeeded(),ne('${{ parameters.preExecuitonScript }}', ''))
   - script: |
+      set -x
       bash --version
       alias python=python3
       python --version
@@ -65,6 +66,7 @@ jobs:
       apt-get install python3-venv
       python3 -m venv working_dir
       source working_dir/bin/activate
+      which python
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install virtual env'
   - script: |
