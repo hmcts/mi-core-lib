@@ -64,16 +64,13 @@ jobs:
       python --version
       python3 --version
       apt-get install python3-venv
-      python3 -m venv working_dir
-      source working_dir/bin/activate
-      which python
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install virtual env'
   - script: |
       which python
       curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
       python3 get-pip.py
-      pip install -r requirements.txt
+      
     workingDirectory: $(pythonWorkingDir)
     displayName: 'Install dependencies'
   - task: CmdLine@2
@@ -85,7 +82,11 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        pip freeze
+        python3 -m venv working_dir
+        source working_dir/bin/activate
+        which python
+        python3 -m pip install -r requirements.txt
+        python3 -m pip freeze
         make test
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
     env:
