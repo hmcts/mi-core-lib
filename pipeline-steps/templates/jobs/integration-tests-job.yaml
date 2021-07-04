@@ -63,9 +63,15 @@ jobs:
       python --version
       curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
       python3 get-pip.py
+      python3 -m pip install --user virtualenv
+    workingDirectory: $(pythonWorkingDir)
+    displayName: 'Install pip and virtual env'
+  - script: |
+      python3 -m venv working_dir
+      source working_dir/bin/activate
       pip install -r requirements.txt
     workingDirectory: $(pythonWorkingDir)
-    displayName: 'Install requirements'
+    displayName: 'Install dependencies'
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
     inputs:
@@ -105,3 +111,8 @@ jobs:
       path: '$(System.DefaultWorkingDirectory)/reports/test/'
       artifact: 'test'
       displayName: 'Publish test report'
+  - script: |
+      deactiate
+    workingDirectory: $(pythonWorkingDir)
+    condition: succeededOrFailed()
+    displayName: 'Clean python workspace'
