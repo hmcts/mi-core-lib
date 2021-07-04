@@ -87,7 +87,7 @@ jobs:
         which python
         python -m pip --version
         python -m pip install -U pip
-        python3 -m pip install -r requirements.txt
+        python3 -m pip install -r requirements.txt --no-cache-dir
         python3 -m pip freeze
         make test
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
@@ -119,7 +119,7 @@ jobs:
       artifact: 'test'
       displayName: 'Publish test report'
   - script: |
-      deactiate
+      deactivate
     workingDirectory: $(pythonWorkingDir)
     condition: succeededOrFailed()
     displayName: 'Clean python workspace'
