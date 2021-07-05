@@ -46,7 +46,7 @@ jobs:
   steps:
   - script: |
       apt-get update
-      ACCEPT_EULA=Y apt-get -y install python3-dev python3-pip  python3-venv python3-setuptools
+      ACCEPT_EULA=Y apt-get -y install python3-dev python3-pip  python3-venv python3-setuptools python3-wheel
     displayName: 'Install python'
   - template: ../steps/vault-secrets.yaml
     parameters: 
@@ -57,21 +57,21 @@ jobs:
       ${{ parameters.preExecuitonScript }}
     displayName: 'Pre-execution  script'
     condition: and(succeeded(),ne('${{ parameters.preExecuitonScript }}', ''))
-  - script: |
-      set -x
-      bash --version
-      alias python=python3
-      python --version
-      python3 --version
-    workingDirectory: $(pythonWorkingDir)
-    displayName: 'Install virtual env'
-  - script: |
-      which python
-      # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-      # python3 get-pip.py
+  # - script: |
+  #     set -x
+  #     bash --version
+  #     alias python=python3
+  #     python --version
+  #     python3 --version
+  #   workingDirectory: $(pythonWorkingDir)
+  #   displayName: 'Install virtual env'
+  # - script: |
+  #     which python
+  #     # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  #     # python3 get-pip.py
       
-    workingDirectory: $(pythonWorkingDir)
-    displayName: 'Install dependencies'
+  #   workingDirectory: $(pythonWorkingDir)
+  #   displayName: 'Install dependencies'
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
     inputs:
@@ -81,15 +81,13 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        set -x
+        set -e
         python3 -m venv working_dir
         source working_dir/bin/activate
-        which python
-        python -m pip --version
         python -m pip install -U pip
-        python3 -m pip install -r requirements.txt --no-cache-dir
-        python3 -m pip freeze
+        python -m pip install -r requirements.txt --no-cache-dir
         make test
+        deactivate
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
     env:
       SQL_SERVER_NAME: ${{parameters.databaseServerName }}
@@ -118,8 +116,3 @@ jobs:
       path: '$(System.DefaultWorkingDirectory)/reports/test/'
       artifact: 'test'
       displayName: 'Publish test report'
-  - script: |
-      deactivate
-    workingDirectory: $(pythonWorkingDir)
-    condition: succeededOrFailed()
-    displayName: 'Clean python workspace'
