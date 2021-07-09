@@ -53,7 +53,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ##PathtoPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+      ##PathtoPublish: $(build.artifactstagingdirectory)
+      PathtoPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
       ArtifactName: ${{ parameters.artifactName }}
     displayName: 'Publish SQL DACPAC'  
