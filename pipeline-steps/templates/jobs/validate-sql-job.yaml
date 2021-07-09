@@ -22,9 +22,10 @@ jobs:
   displayName: 'Validate sql project'
   variables:
     ${{ if eq(parameters.sqlPath, '') }}:
-      pathToPublish: 'bod/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+      pathToPublish: 'bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
     ${{ if ne(parameters.sqlPath, '') }}:
       pathToPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'      
+  
   pool:
       vmImage: 'windows-latest'
   steps:
