@@ -44,12 +44,12 @@ jobs:
       platform: '${{ parameters.buildPlatform }}'
       configuration: '${{ parameters.buildConfiguration }}'
 
-  - task: CopyFiles@2
-    condition: succeededOrFailed()
-    inputs:
-      SourceFolder: $(system.defaultworkingdirectory)
-      Contents: '**\bin\Output\**'
-      TargetFolder: $(build.artifactstagingdirectory)
+  #- task: CopyFiles@2
+  #  condition: succeededOrFailed()
+  #  inputs:
+  #    SourceFolder: $(system.defaultworkingdirectory)
+  #    Contents: '**\bin\Output\**'
+  #    TargetFolder: $(build.artifactstagingdirectory)
 
   - task: PublishBuildArtifacts@1
     inputs:
