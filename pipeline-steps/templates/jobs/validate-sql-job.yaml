@@ -43,9 +43,17 @@ jobs:
     inputs:
       platform: '${{ parameters.buildPlatform }}'
       configuration: '${{ parameters.buildConfiguration }}'
-  
+
+  - task: CopyFiles@2
+    condition: succeededOrFailed()
+    inputs:
+      SourceFolder: $(system.defaultworkingdirectory)
+      Contents: '**\bin\Output\**'
+      TargetFolder: $(build.artifactstagingdirectory)
+
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ##PathtoPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
       ArtifactName: ${{ parameters.artifactName }}
     displayName: 'Publish SQL DACPAC'  
