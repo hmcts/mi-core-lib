@@ -16,6 +16,7 @@ parameters:
 - name: artifactName
   type: string
 
+
 jobs:
 - job: 'validate_sql_packages'
   displayName: 'Validate sql project'
