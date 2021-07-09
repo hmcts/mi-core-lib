@@ -10,6 +10,7 @@ parameters:
   default: 'Release'
 - name: sqlPath
   type: string
+  default: ''
 - name: dacpacName
   type: string  
 - name: artifactName
@@ -18,6 +19,11 @@ parameters:
 jobs:
 - job: 'validate_sql_packages'
   displayName: 'Validate sql project'
+  variables:
+    ${{ if eq(parameters.sqlPath, '') }}:
+      pathToPublish: '/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+    ${{ if ne(parameters.sqlPath, '') }}:
+      pathToPublish: '${{ parameters.sqlPath }}//bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'      
   pool:
       vmImage: 'windows-latest'
   steps:
