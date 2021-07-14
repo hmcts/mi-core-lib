@@ -8,30 +8,46 @@ parameters:
 - name: buildConfiguration
   type: string
   default: 'Release'
-- name: sqlDwPath
+- name: sqlPath
   type: string
+  default: ''
+- name: dacpacName
+  type: string
+- name: artifactName
+  type: string
+
 
 jobs:
 - job: 'validate_sql_packages'
   displayName: 'Validate sql project'
+  variables:
+    ${{ if eq(parameters.sqlPath, '') }}:
+      pathToPublish: 'bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+    ${{ if ne(parameters.sqlPath, '') }}:
+      pathToPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+
   pool:
       vmImage: 'windows-latest'
   steps:
   - task: NuGetToolInstaller@1
+
   - task: NuGetCommand@2
     inputs:
       restoreSolution: '${{ parameters.solution }}'
+
   - task: VSBuild@1
     inputs:
       solution: '${{ parameters.solution }}'
       platform: '${{ parameters.buildPlatform }}'
       configuration: '${{ parameters.buildConfiguration }}'
+
   - task: VSTest@2
     inputs:
       platform: '${{ parameters.buildPlatform }}'
       configuration: '${{ parameters.buildConfiguration }}'
+
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '${{ parameters.sqlDwPath }}/bin/${{ parameters.buildConfiguration }}/synapse.dacpac'
-      ArtifactName: 'sql_dw_dacpac'
+      PathtoPublish: $(pathToPublish)
+      ArtifactName: ${{ parameters.artifactName }}
     displayName: 'Publish SQL DACPAC'  

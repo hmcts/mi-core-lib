@@ -3,13 +3,14 @@ parameters:
   azureAksResourceGroup: ''
   azureAksCluster: ''
   namespace: ''
+  jobTimeout: 900
 
 steps:
   - template: ./steps/helm-job-name.yaml
     parameters:
       applicationName: ${{ parameters.jobName }}
   - bash: |
-      timeout=600
+      timeout=${{ parameters.jobTimeout }}
       deploymentBuild=$(deploymentName)
       job=$(kubectl get jobs --namespace ${{ parameters.namespace }} -o name | grep $deploymentBuild | tail -1)
       until [[ $SECONDS -gt $timeout ]] \

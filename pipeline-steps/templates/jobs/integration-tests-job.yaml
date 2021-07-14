@@ -69,7 +69,7 @@ jobs:
   #     which python
   #     # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
   #     # python3 get-pip.py
-      
+
   #   workingDirectory: $(pythonWorkingDir)
   #   displayName: 'Install dependencies'
   - task: CmdLine@2
