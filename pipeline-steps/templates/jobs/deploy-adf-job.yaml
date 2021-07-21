@@ -20,6 +20,9 @@ parameters:
 - name: artifactName
   type: string
   default: 'ArmTemplates'
+- name: enableTriggers
+  type: boolean
+  default: false
 
 jobs:
 - deployment: deploy_adf
@@ -100,6 +103,7 @@ jobs:
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start ADF triggers'
+          condition: eq(${{ parameters.enableTriggers }}, true)
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
