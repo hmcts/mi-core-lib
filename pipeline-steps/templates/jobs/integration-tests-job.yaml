@@ -30,7 +30,7 @@ parameters:
   default: {}
 - name: dependsOn
   type: string
-  default: deploy_adf
+  default: 'deploy_adf'
 - name: preExecuitonScript
   type: string
   default: ''

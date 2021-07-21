@@ -1,7 +1,7 @@
 parameters:
 - name: subscriptionEndpoint
   type: string
-- name: synapseName
+- name: adfName
   type: string
 - name: resourceGroup
   type: string
@@ -21,23 +21,23 @@ parameters:
 - name: databaseServerName
   type: string
   default: ''
-- name: sqlServerUserNameKey
-  type: string
-- name: sqlServerPasswordNameKey
-  type: string
 - name: azureKeyMapping
   type: object
   default: {}
 - name: envMapping
   type: object
   default: {}
+- name: sqlServerUserNameKey
+  type: string
+- name: sqlServerPasswordNameKey
+  type: string
 - name: dependsOn
   type: string
-  default: ''
+  default: 'deploy_adf'
 
 jobs:
 - job: run_smoke_tests
-  displayName : 'Run smote tests'
+  displayName: 'Run smoke tests'
   dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
 
@@ -82,7 +82,7 @@ jobs:
       AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
       AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
-      AZ_SYNAPSE_NAME: ${{ parameters.synapseName }}
+      AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
       ${{ each pair in parameters.envMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
       ${{ each pair in parameters.azureKeyMapping }}:
@@ -99,5 +99,5 @@ jobs:
     condition: succeededOrFailed()
     inputs:
       path: '$(System.DefaultWorkingDirectory)/reports/test/'
-      artifact: 'test'
-      displayName: 'Publish test report'
+      artifact: 'smokeTest'
+      displayName: 'Publish smoke test report'
