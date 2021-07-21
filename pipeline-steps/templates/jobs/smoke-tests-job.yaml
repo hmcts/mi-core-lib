@@ -30,8 +30,10 @@ parameters:
   default: {}
 - name: sqlServerUserNameKey
   type: string
+  default: ''
 - name: sqlServerPasswordNameKey
   type: string
+  default: ''
 - name: dependsOn
   type: string
   default: 'deploy_adf'

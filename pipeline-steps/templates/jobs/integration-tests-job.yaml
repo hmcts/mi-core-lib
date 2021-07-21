@@ -16,12 +16,6 @@ parameters:
 - name: agentPool
   type: string
   default: hmcts-ss-$(environment)
-- name: databaseName
-  type: string
-  default: ''
-- name: databaseServerName
-  type: string
-  default: ''
 - name: azureKeyMapping
   type: object
   default: {}
@@ -57,21 +51,6 @@ jobs:
       ${{ parameters.preExecuitonScript }}
     displayName: 'Pre-execution  script'
     condition: and(succeeded(),ne('${{ parameters.preExecuitonScript }}', ''))
-  # - script: |
-  #     set -x
-  #     bash --version
-  #     alias python=python3
-  #     python --version
-  #     python3 --version
-  #   workingDirectory: $(pythonWorkingDir)
-  #   displayName: 'Install virtual env'
-  # - script: |
-  #     which python
-  #     # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  #     # python3 get-pip.py
-
-  #   workingDirectory: $(pythonWorkingDir)
-  #   displayName: 'Install dependencies'
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
     inputs:
@@ -90,10 +69,6 @@ jobs:
         deactivate
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
     env:
-      SQL_SERVER_NAME: ${{parameters.databaseServerName }}
-      SQL_DATABASE_NAME: ${{ parameters.databaseName }}
-      SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
-      SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
       AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
