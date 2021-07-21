@@ -1,0 +1,103 @@
+parameters:
+- name: subscriptionEndpoint
+  type: string
+- name: synapseName
+  type: string
+- name: resourceGroup
+  type: string
+  default: mi-$(environment)-rg
+- name: keyvaultName
+  type: string
+  default: mi-vault-$(environment)
+- name: ssKeyvaultName
+  type: string
+  default: ss-vault-$(environment)
+- name: agentPool
+  type: string
+  default: hmcts-ss-$(environment)
+- name: databaseName
+  type: string
+  default: ''
+- name: databaseServerName
+  type: string
+  default: ''
+- name: sqlServerUserNameKey
+  type: string
+- name: sqlServerPasswordNameKey
+  type: string
+- name: azureKeyMapping
+  type: object
+  default: {}
+- name: envMapping
+  type: object
+  default: {}
+- name: dependsOn
+  type: string
+  default: ''
+
+jobs:
+- job: run_smoke_tests
+  displayName : 'Run smote tests'
+  dependsOn: ${{ parameters.dependsOn }}
+  pool: ${{ parameters.agentPool }}
+
+  variables:
+    pythonWorkingDir: './'
+    pythonVersion: 3.6
+  steps:
+  - script: |
+      apt-get update
+      ACCEPT_EULA=Y apt-get -y install python3-dev python3-pip
+    displayName: 'Install python'
+  - template: ../steps/vault-secrets.yaml
+    parameters: 
+      azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
+      keyVaultName: ${{ parameters.keyvaultName }}
+      azureSecreKeys: '*'
+  - script: |
+      bash --version
+      alias python=python3
+      python --version
+      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      python3 get-pip.py
+      pip install -r requirements.txt
+    workingDirectory: $(pythonWorkingDir)
+    displayName: 'Install requirements'
+  - task: CmdLine@2
+    displayName: 'Prepare Az environment'
+    inputs:
+      script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
+  - task: AzureCLI@2
+    inputs:
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        make smoke-test
+      azureSubscription: ${{ parameters.subscriptionEndpoint }}
+    env:
+      SQL_SERVER_NAME: ${{ parameters.databaseServerName }}
+      SQL_DATABASE_NAME: ${{ parameters.databaseName }}
+      SQL_SERVER_USERNAME: '$(${{ parameters.sqlServerUserNameKey }})'
+      SQL_SERVER_PASSWORD: '$(${{ parameters.sqlServerPasswordNameKey }})'
+      AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
+      AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
+      AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
+      AZ_SYNAPSE_NAME: ${{ parameters.synapseName }}
+      ${{ each pair in parameters.envMapping }}:
+        ${{ pair.key }}: $(${{ pair.value }})
+      ${{ each pair in parameters.azureKeyMapping }}:
+        ${{ pair.key }}: $(${{ pair.value }})
+    displayName: 'Run smoke tests'
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/reports/test/*.xml'
+
+  - task: PublishPipelineArtifact@1
+    condition: succeededOrFailed()
+    inputs:
+      path: '$(System.DefaultWorkingDirectory)/reports/test/'
+      artifact: 'test'
+      displayName: 'Publish test report'
