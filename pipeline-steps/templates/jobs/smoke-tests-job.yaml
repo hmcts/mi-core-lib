@@ -70,7 +70,8 @@ jobs:
     env:
       SQL_SERVER_NAME: ${{parameters.databaseServerName }}
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
-      SQL_SERVER_USERNAME: '$(mi-datawarehouse-server-admin-user)'
+      SQL_SERVER_USERNAME: '$(${{ parameters.sqlServerUserNameKey }})'
+      SQL_SERVER_PASSWORD: '$(${{ parameters.sqlServerPasswordNameKey }})'```
       SQL_SERVER_PASSWORD: '$(mi-datawarehouse-server-admin-password)'
       AZ_SERVICE_PRINCIPAL_TENANT_ID: $(AZ_SERVICE_PRINCIPAL_TENANT_ID)
       AZ_SUBSCRIPTION_ID: ${{ parameters.subscriptionEndpoint }}
