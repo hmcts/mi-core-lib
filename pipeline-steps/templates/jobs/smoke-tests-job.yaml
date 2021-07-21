@@ -31,11 +31,14 @@ parameters:
   type: string
 - name: sqlServerPasswordNameKey
   type: string
+- name: dependsOn
+  type: string
+  default: 'deploy_adf'
 
 jobs:
 - job: run_smoke_tests
   displayName: 'Run smoke tests'
-  dependsOn: deploy_adf
+  dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
 
   variables:
