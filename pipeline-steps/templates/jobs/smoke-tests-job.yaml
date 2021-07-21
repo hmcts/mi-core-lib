@@ -27,6 +27,10 @@ parameters:
 - name: envMapping
   type: object
   default: {}
+- name: sqlServerUserNameKey
+  type: string
+- name: sqlServerPasswordNameKey
+  type: string
 
 jobs:
 - job: run_smoke_tests
