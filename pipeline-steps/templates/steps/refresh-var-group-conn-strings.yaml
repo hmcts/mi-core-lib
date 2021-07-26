@@ -1,6 +1,7 @@
 parameters:
   azureSubscriptionEndpoint: $(azure.subscription.endpoint)
   env: "sbox"
+  azureVault: ""
 
 steps:
   - ${{ each pair in parameters.keyMapping }}:
@@ -10,6 +11,8 @@ steps:
         azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
         scriptLocation: "inlineScript"
         inlineScript: |
+          #TODO Create map matcing secret name to storage account and loop.
+          
           varGroupId=$(az pipelines variable-group list --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --group-name "mi-env-${{ parameters.env }}" --query "[0].id")
           resourceGroupName="mi-${{ parameters.env }}-rg"
 
@@ -17,40 +20,40 @@ steps:
           landingConnString=$(az storage account show-connection-string -g $resourceGroupName -n $landingAccountName --query "connectionString" | tr -d '"')
           if [ ! -z "$landingConnString" ]
           then
-          	az pipelines variable-group variable create --id "$varGroupId" --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --name "mi-landing-storage-connection-string" --value "$landingConnString" --secret true
+            az keyvault secret set --name "mi-landing-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$landingConnString"
           fi
 
           persistentAccountName="mipersistent${{ parameters.env }}"
           persistentConnString=$(az storage account show-connection-string -g $resourceGroupName -n $persistentAccountName --query "connectionString" | tr -d '"')
           if [ ! -z "$persistentConnString" ]
           then
-          	az pipelines variable-group variable create --id "$varGroupId" --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --name "mi-staging-storage-connection-string" --value "$persistentConnString" --secret true
+            az keyvault secret set --name "mi-staging-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$persistentConnString"
           fi
 
           exportAccountName="miexport${{ parameters.env }}"
           exportConnString=$(az storage account show-connection-string -g $resourceGroupName -n $exportAccountName --query "connectionString" | tr -d '"')
           if [ ! -z "$exportConnString" ]
           then
-          	az pipelines variable-group variable create --id "$varGroupId" --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --name "mi-export-storage-connection-string" --value "$exportConnString" --secret true
+            az keyvault secret set --name "mi-export-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$exportConnString"
           fi
 
           extractionAccountName="midataextractor${{ parameters.env }}"
           extractionConnString=$(az storage account show-connection-string -g $resourceGroupName -n $extractionAccountName --query "connectionString" | tr -d '"')
           if [ ! -z "$extractionConnString" ]
           then
-          	az pipelines variable-group variable create --id "$varGroupId" --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --name "mi-extraction-storage-connection-string" --value "$extractionConnString" --secret true
+            az keyvault secret set --name "mi-extraction-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$extractionConnString"
           fi
 
           auditAccountName="miaudit${{ parameters.env }}"
           auditConnString=$(az storage account show-connection-string -g $resourceGroupName -n $auditAccountName --query "connectionString" | tr -d '"')
           if [ ! -z "$auditConnString" ]
           then
-          	az pipelines variable-group variable create --id "$varGroupId" --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --name "mi-audit-storage-connection-string" --value "$auditConnString" --secret true
+            az keyvault secret set --name "mi-audit-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$auditConnString"
           fi
 
           polyBaseAccountName="mipolybasestaging${{ parameters.env }}"
           polyBaseConnString=$(az storage account show-connection-string -g $resourceGroupName -n $polyBaseAccountName --query "connectionString" | tr -d '"')
           if [ ! -z "$polyBaseConnString" ]
           then
-          	az pipelines variable-group variable create --id "$varGroupId" --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --name "mi-polybase-storage-connection-string" --value "$polyBaseConnString" --secret true
+            az keyvault secret set --name "mi-polybase-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$polyBaseConnString"
           fi
