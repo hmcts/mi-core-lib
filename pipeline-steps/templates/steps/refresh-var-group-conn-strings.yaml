@@ -4,56 +4,55 @@ parameters:
   azureVault: ""
 
 steps:
-  - ${{ each pair in parameters.keyMapping }}:
-    - task: AzureCLI@1
-      displayName: "Set vault secrets ${{ pair.secret_name }}"
-      inputs:
-        azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
-        scriptLocation: "inlineScript"
-        inlineScript: |
-          #TODO Create map matcing secret name to storage account and loop.
-          
-          varGroupId=$(az pipelines variable-group list --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --group-name "mi-env-${{ parameters.env }}" --query "[0].id")
-          resourceGroupName="mi-${{ parameters.env }}-rg"
+  - task: AzureCLI@1
+    displayName: "Refresh Storage Connection String Secrets"
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        #TODO Create map matcing secret name to storage account and loop.
 
-          landingAccountName="milanding${{ parameters.env }}"
-          landingConnString=$(az storage account show-connection-string -g $resourceGroupName -n $landingAccountName --query "connectionString" | tr -d '"')
-          if [ ! -z "$landingConnString" ]
-          then
-            az keyvault secret set --name "mi-landing-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$landingConnString"
-          fi
+        varGroupId=$(az pipelines variable-group list --organization "https://dev.azure.com/hmcts" --project "MI Reporting" --group-name "mi-env-${{ parameters.env }}" --query "[0].id")
+        resourceGroupName="mi-${{ parameters.env }}-rg"
 
-          persistentAccountName="mipersistent${{ parameters.env }}"
-          persistentConnString=$(az storage account show-connection-string -g $resourceGroupName -n $persistentAccountName --query "connectionString" | tr -d '"')
-          if [ ! -z "$persistentConnString" ]
-          then
-            az keyvault secret set --name "mi-staging-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$persistentConnString"
-          fi
+        landingAccountName="milanding${{ parameters.env }}"
+        landingConnString=$(az storage account show-connection-string -g $resourceGroupName -n $landingAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$landingConnString" ]
+        then
+          az keyvault secret set --name "mi-landing-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$landingConnString"
+        fi
 
-          exportAccountName="miexport${{ parameters.env }}"
-          exportConnString=$(az storage account show-connection-string -g $resourceGroupName -n $exportAccountName --query "connectionString" | tr -d '"')
-          if [ ! -z "$exportConnString" ]
-          then
-            az keyvault secret set --name "mi-export-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$exportConnString"
-          fi
+        persistentAccountName="mipersistent${{ parameters.env }}"
+        persistentConnString=$(az storage account show-connection-string -g $resourceGroupName -n $persistentAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$persistentConnString" ]
+        then
+          az keyvault secret set --name "mi-staging-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$persistentConnString"
+        fi
 
-          extractionAccountName="midataextractor${{ parameters.env }}"
-          extractionConnString=$(az storage account show-connection-string -g $resourceGroupName -n $extractionAccountName --query "connectionString" | tr -d '"')
-          if [ ! -z "$extractionConnString" ]
-          then
-            az keyvault secret set --name "mi-extraction-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$extractionConnString"
-          fi
+        exportAccountName="miexport${{ parameters.env }}"
+        exportConnString=$(az storage account show-connection-string -g $resourceGroupName -n $exportAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$exportConnString" ]
+        then
+          az keyvault secret set --name "mi-export-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$exportConnString"
+        fi
 
-          auditAccountName="miaudit${{ parameters.env }}"
-          auditConnString=$(az storage account show-connection-string -g $resourceGroupName -n $auditAccountName --query "connectionString" | tr -d '"')
-          if [ ! -z "$auditConnString" ]
-          then
-            az keyvault secret set --name "mi-audit-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$auditConnString"
-          fi
+        extractionAccountName="midataextractor${{ parameters.env }}"
+        extractionConnString=$(az storage account show-connection-string -g $resourceGroupName -n $extractionAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$extractionConnString" ]
+        then
+          az keyvault secret set --name "mi-extraction-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$extractionConnString"
+        fi
 
-          polyBaseAccountName="mipolybasestaging${{ parameters.env }}"
-          polyBaseConnString=$(az storage account show-connection-string -g $resourceGroupName -n $polyBaseAccountName --query "connectionString" | tr -d '"')
-          if [ ! -z "$polyBaseConnString" ]
-          then
-            az keyvault secret set --name "mi-polybase-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$polyBaseConnString"
-          fi
+        auditAccountName="miaudit${{ parameters.env }}"
+        auditConnString=$(az storage account show-connection-string -g $resourceGroupName -n $auditAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$auditConnString" ]
+        then
+          az keyvault secret set --name "mi-audit-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$auditConnString"
+        fi
+
+        polyBaseAccountName="mipolybasestaging${{ parameters.env }}"
+        polyBaseConnString=$(az storage account show-connection-string -g $resourceGroupName -n $polyBaseAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$polyBaseConnString" ]
+        then
+          az keyvault secret set --name "mi-polybase-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$polyBaseConnString"
+        fi
