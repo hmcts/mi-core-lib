@@ -112,6 +112,7 @@ jobs:
           displayName: 'Enable or Disable Pipeline Triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            azurePowerShellVersion: LatestVersion
             scriptType: 'inline'
             inline: |
               $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName "${{ parameters.adfName }}" -ResourceGroupName "${{ parameters.resourceGroup }}"
