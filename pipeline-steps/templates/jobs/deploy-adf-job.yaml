@@ -92,15 +92,9 @@ jobs:
               Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -HostName "https://github.com" -AccountName "$(RepoConfigurationAccountName)" -RepositoryName "$(RepoConfigurationRepositoryName)" -CollaborationBranch "$(RepoConfigurationCollaborationBranch)" -RootFolder "$(RepoConfigurationRootFolder)" -Force
             azurePowerShellVersion: LatestVersion
         
-        #- script: echo "$(adfOverrideParams)"
-        #  displayName: "List override parameters"
-        - task: Powershell@2
-          displayName: "List override parameter"
-          inputs:
-            targetType: 'inline'
-            script: |
-              $adfParams = "$(adfOverrideParams) -replace ';', '\;'"
-              Write-Output $adfParams
+        - script: echo "$(adfOverrideParams)"
+          displayName: "List override parameters"
+
         
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
