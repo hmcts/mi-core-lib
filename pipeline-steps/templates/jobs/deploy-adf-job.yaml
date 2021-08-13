@@ -32,7 +32,7 @@ jobs:
   variables:
     packageWheelName: 'none'
     adfOverrideTemp: ${{ parameters.adfOverrideParameters }}
-    adfOverrideParams: $[replace(variables.adfOverrideTemp, ";", "\;")]
+    adfOverrideParams: $[replace(variables.adfOverrideTemp, ';', '\;')]
   environment: ${{ parameters.env }}
   strategy:
     runOnce:
