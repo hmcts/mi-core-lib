@@ -31,7 +31,6 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-    adfOverrideParams: ${{ parameters.adfOverrideParameters }}
   environment: ${{ parameters.env }}
   strategy:
     runOnce:
