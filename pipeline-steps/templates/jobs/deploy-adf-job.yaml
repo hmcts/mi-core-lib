@@ -99,7 +99,7 @@ jobs:
             location: '$(azureLocation)'
             csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
-            overrideParameters: -factoryName ${{ parameters.adfName }} '${{ parameters.adfOverrideParameters }}'
+            overrideParameters: -factoryName ${{ parameters.adfName }} ${{ replace(parameters.adfOverrideParameters, '"', '\"') }}
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start PostDeploymentScript'
           inputs:
