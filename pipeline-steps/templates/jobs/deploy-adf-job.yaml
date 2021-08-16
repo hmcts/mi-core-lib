@@ -91,11 +91,6 @@ jobs:
             inline: |
               Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -HostName "https://github.com" -AccountName "$(RepoConfigurationAccountName)" -RepositoryName "$(RepoConfigurationRepositoryName)" -CollaborationBranch "$(RepoConfigurationCollaborationBranch)" -RootFolder "$(RepoConfigurationRootFolder)" -Force
             azurePowerShellVersion: LatestVersion
-        
-        - script: echo "$(adfOverrideParams)"
-          displayName: "List override parameters"
-
-        
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
@@ -104,7 +99,7 @@ jobs:
             location: '$(azureLocation)'
             csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
-            overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
+            overrideParameters: -factoryName ${{ parameters.adfName }} '${{ parameters.adfOverrideParameters }}'
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start PostDeploymentScript'
           inputs:
