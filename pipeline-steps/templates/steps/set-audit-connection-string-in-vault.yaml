@@ -1,0 +1,20 @@
+parameters:
+  azureSubscriptionEndpoint: $(azure.subscription.endpoint)
+  env: "sbox"
+  azureVault: ""
+
+steps:
+  - task: AzureCLI@1
+    displayName: "Sets currently active miaudit storage access key in vault"
+    inputs:
+      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        resourceGroupName="mi-${{ parameters.env }}-rg"
+
+        auditAccountName="miaudit${{ parameters.env }}"
+        auditConnString=$(az storage account show-connection-string -g $resourceGroupName -n $auditAccountName --query "connectionString" | tr -d '"')
+        if [ ! -z "$auditConnString" ]
+        then
+          az keyvault secret set --name "mi-audit-storage-connection-string" --vault-name ${{ parameters.azureVault }}  --value "$auditConnString" --output "none"
+        fi
