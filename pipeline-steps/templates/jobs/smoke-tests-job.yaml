@@ -99,5 +99,5 @@ jobs:
     condition: succeededOrFailed()
     inputs:
       path: '$(System.DefaultWorkingDirectory)/reports/test/'
-      artifact: 'smokeTest'
+      artifact: 'smokeTest-$(environment)'
       displayName: 'Publish smoke test report'
