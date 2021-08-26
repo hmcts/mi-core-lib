@@ -106,5 +106,5 @@ jobs:
     condition: succeededOrFailed()
     inputs:
       path: '$(System.DefaultWorkingDirectory)/reports/test/'
-      artifact: 'test'
+      artifact: 'integrationTest-$(environment)'
       displayName: 'Publish test report'
