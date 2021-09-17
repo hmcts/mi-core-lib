@@ -116,16 +116,16 @@ jobs:
             azurePowerShellVersion: LatestVersion
             scriptType: 'inline'
             inline: |
-              $disabledTriggersList = ${{ parameters.disabledTriggers }} -split ","
+              $disabledTriggersList = "${{ parameters.disabledTriggers }}" -split ","
 
               $triggersADF | ForEach-Object {
                 if (("$enableTriggers" -eq "true") -And (-Not $disabledTriggersList.Contains($_.name))) {
-                  # Start-AzDataFactoryV2Trigger -ResourceGroupName "$resourceGroup" -DataFactoryName "adfName" -Name $_.name -Force
+                  Start-AzDataFactoryV2Trigger -ResourceGroupName "$resourceGroup" -DataFactoryName "adfName" -Name $_.name -Force
                   Write-Host("Start trigger --> ",$_.name)
 
                 }
                 else {
                   Write-Host("Stop Trigger:::", $_.name)
-                  # Stop-AzDataFactoryV2Trigger -ResourceGroupName "$resourceGroup" -DataFactoryName "$adfName" -Name $_.name -Force
+                  Stop-AzDataFactoryV2Trigger -ResourceGroupName "$resourceGroup" -DataFactoryName "$adfName" -Name $_.name -Force
                 }
               }
