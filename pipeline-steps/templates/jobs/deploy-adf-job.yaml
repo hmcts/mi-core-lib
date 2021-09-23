@@ -118,11 +118,11 @@ jobs:
             inline: |
               $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName "${{ parameters.adfName }}" -ResourceGroupName "${{ parameters.resourceGroup }}"
               $disabledTriggersList = "${{ parameters.disabledTriggers }}" -split ","
-              Write-Host($enableTriggers -And (-Not $disabledTriggersList.Contains($_.name)))
+              Write-Host(("${{ parameters.enableTriggers }}" -eq "true"))
               Write-Host("$enableTriggers")
               Write-Host((-Not $disabledTriggersList.Contains($_.name)))
               $triggersADF | ForEach-Object {
-                if ($enableTriggers -And (-Not $disabledTriggersList.Contains($_.name))) {
+                if (("${{ parameters.enableTriggers }}" -eq "true") -And (-Not $disabledTriggersList.Contains($_.name))) {
                   Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
                   Write-Host("Start trigger --> ",$_.name)
                 }
