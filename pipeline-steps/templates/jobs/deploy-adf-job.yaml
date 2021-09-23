@@ -118,13 +118,7 @@ jobs:
             inline: |
               $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName "${{ parameters.adfName }}" -ResourceGroupName "${{ parameters.resourceGroup }}"
               $disabledTriggersList = "${{ parameters.disabledTriggers }}" -split ","
-              Write-Host("Checking enabled triggers")
-              Write-Host(("${{ parameters.enableTriggers }}" -eq "true"))
-              Write-Host("Checking combine boolean")
-              Write-Host(("${{ parameters.enableTriggers }}" -eq "true") -And (-Not $disabledTriggersList.Contains($_.name)))
-              Write-Host("Checking disabled list")
-              Write-Host((-Not $disabledTriggersList.Contains($_.name)))
-              Write-Host("Executing activities")
+              
               $triggersADF | ForEach-Object {
                 if (("${{ parameters.enableTriggers }}" -eq "true") -And (-Not $disabledTriggersList.Contains($_.name))) {
                   Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
