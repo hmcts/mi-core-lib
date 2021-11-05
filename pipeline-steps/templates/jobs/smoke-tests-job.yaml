@@ -94,6 +94,7 @@ jobs:
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/reports/test/*.xml'
+      testRunTitle: 'pytest-smoke'
 
   - task: PublishPipelineArtifact@1
     condition: succeededOrFailed()
