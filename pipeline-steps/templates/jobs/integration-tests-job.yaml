@@ -101,6 +101,7 @@ jobs:
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/reports/test/*.xml'
+      testRunTitle: 'pytest-integration'
 
   - task: PublishPipelineArtifact@1
     condition: succeededOrFailed()
