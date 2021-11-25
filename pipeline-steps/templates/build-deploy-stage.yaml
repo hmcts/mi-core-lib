@@ -173,6 +173,7 @@ stages:
     - job: CleanResources
       dependsOn: IntegrationTest
       condition: always()
+      pool: ${{ parameters.agentPool }}
       variables:
         env: ${{ parameters.env }}
       steps:
