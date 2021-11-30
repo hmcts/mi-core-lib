@@ -6,16 +6,18 @@ steps:
   - bash: |
       repo_sha=$(git rev-parse --verify HEAD)
       docker_image_tag_sha=${repo_sha:0:7}
+      last_commit_time=$(git log -1 --pretty='%cd' --date=iso | tr -d '+[:space:]:-' | head -c 14)
       echo "##vso[task.setvariable variable=imageSha]${docker_image_tag_sha}"
-      echo "##vso[task.setvariable variable=imageTag]pr-$(System.PullRequest.PullRequestNumber)-${docker_image_tag_sha}"
+      echo "##vso[task.setvariable variable=imageTag]pr-$(System.PullRequest.PullRequestNumber)-${docker_image_tag_sha}-${last_commit_time}"
     displayName: 'Set Image Tag: Pull Request'
     condition: eq(variables['Build.Reason'], 'PullRequest')
   # Everything else: Set the tag to the environment name
   - bash: |
       repo_sha=$(git rev-parse --verify HEAD)
       docker_image_tag_sha=${repo_sha:0:7}
+      last_commit_time=$(git log -1 --pretty='%cd' --date=iso | tr -d '+[:space:]:-' | head -c 14)
       echo "##vso[task.setvariable variable=imageSha]${docker_image_tag_sha}"
-      echo "##vso[task.setvariable variable=imageTag]${{ parameters.env }}-${docker_image_tag_sha}"
+      echo "##vso[task.setvariable variable=imageTag]${{ parameters.env }}-${docker_image_tag_sha}-${last_commit_time}"
     displayName: 'Set Image Tag: Branch'
     condition: ne(variables['Build.Reason'], 'PullRequest')
   - bash: |
