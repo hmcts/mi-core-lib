@@ -13,5 +13,5 @@ steps:
       scriptLocation: "inlineScript"
       inlineScript: |
         sourceImage=${{ parameters.azureContainerRegistry }}/${{ parameters.applicationName }}:$(imageTag)
-        targetImage=${{ parameters.applicationName }}:${{ parameters.promEnv }}-$(imageSha)
+        targetImage=${{ parameters.applicationName }}:${{ parameters.promEnv }}-$(imageSha)-$(lastCommitTime)
         az acr import -n  ${{ parameters.azureDestinyContainerRegistry }} --source $sourceImage --image $targetImage
