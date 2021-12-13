@@ -14,7 +14,7 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.mi'
-version = '3.5.2'
+version = '3.5.3'
 sourceCompatibility = '11'
 
 bootJar {
@@ -165,6 +165,10 @@ dependencyManagement {
 		// CVE-2018-10237 - Unbounded memory allocation
 		dependencySet(group: 'com.google.guava', version: '28.1-jre') {
 			entry 'guava'
+		}
+		dependencySet(group: 'org.apache.logging.log4j', version: '2.15.0') {
+			entry 'log4j-to-slf4j'
+			entry 'log4j-api'
 		}
 	}
 	imports {
