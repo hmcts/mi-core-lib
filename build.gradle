@@ -23,6 +23,7 @@ bootJar {
 
 jar {
 	enabled = true
+	archiveClassifier = ''
 	archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
