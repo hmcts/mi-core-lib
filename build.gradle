@@ -168,7 +168,7 @@ dependencyManagement {
 		dependencySet(group: 'com.google.guava', version: '31.0.1-jre') {
 			entry 'guava'
 		}
-		dependencySet(group: 'org.apache.logging.log4j', version: '2.16.0') {
+		dependencySet(group: 'org.apache.logging.log4j', version: '2.17.0') {
 			entry 'log4j-to-slf4j'
 			entry 'log4j-api'
 		}
@@ -222,7 +222,7 @@ dependencies {
 	implementation group: 'com.azure.spring', name: 'azure-spring-boot-starter-storage', version: versions.azureSpringBoot
 	implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: versions.azureAppInsights
 
-	// Azure Dependencies - Transitive
+	// Azure Dependencies
 	implementation group: 'com.azure', name: 'azure-core', version: versions.azureCore
 	implementation group: 'com.azure', name: 'azure-storage-blob', version: versions.azureStorageBlob
 	implementation group: 'com.azure', name: 'azure-storage-common', version: versions.azureStorageCom
