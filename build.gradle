@@ -200,7 +200,6 @@ dependencyManagement {
 }
 
 def versions = [
-	azureAppInsights : '2.6.4',
 	azureCore     	 : '1.23.1',
 	azureIdentity 	 : '1.4.2',
 	azureSpringBoot	 : '3.11.0',
@@ -208,6 +207,7 @@ def versions = [
 	azureStorageCom  : '12.14.1',
 	commonsIo        : '2.11.0',
 	commonsLang      : '3.12.0',
+	hmctsLogging     : '5.1.9',
 	junit         	 : '5.8.2',
 	lombok        	 : '1.18.22',
 	mockito       	 : '4.1.0',
@@ -220,7 +220,6 @@ def versions = [
 dependencies {
 	// Spring Boot Initial Dependencies
 	implementation group: 'com.azure.spring', name: 'azure-spring-boot-starter-storage', version: versions.azureSpringBoot
-	implementation group: 'com.microsoft.azure', name: 'applicationinsights-spring-boot-starter', version: versions.azureAppInsights
 
 	// Azure Dependencies
 	implementation group: 'com.azure', name: 'azure-core', version: versions.azureCore
@@ -238,6 +237,10 @@ dependencies {
 	// Lombok
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 	implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+	// HMCTS Logging
+	implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.hmctsLogging
+	implementation group: 'com.github.hmcts.java-logging', name: 'logging-appinsights', version: versions.hmctsLogging
 
 	// Test Dependencies
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
