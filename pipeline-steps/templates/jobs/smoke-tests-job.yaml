@@ -43,7 +43,7 @@ jobs:
 
   variables:
     pythonWorkingDir: './'
-    pythonVersion: 3.6
+    pythonVersion: 3.7
   steps:
   - script: |
       apt-get update
