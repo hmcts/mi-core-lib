@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 
 import static java.lang.Boolean.TRUE;
 
+@SuppressWarnings("PMD.TooManyMethods")
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class StorageAccountWrapper {
@@ -114,5 +115,11 @@ public class StorageAccountWrapper {
 
     public StorageAccountInfo getAccountInfo() {
         return blobServiceClient.getAccountInfo();
+    }
+
+    public void deleteContainer(String containerName) {
+        blobServiceClient
+            .getBlobContainerClient(containerName)
+            .delete();
     }
 }

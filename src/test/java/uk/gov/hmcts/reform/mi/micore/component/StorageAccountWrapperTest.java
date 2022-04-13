@@ -202,4 +202,13 @@ class StorageAccountWrapperTest {
         when(blobServiceClient.getAccountName()).thenReturn(ACCOUNT_NAME);
         assertEquals(ACCOUNT_NAME, classToTest.getStorageAccountName(), "Valid account name");
     }
+
+    @Test
+    void testDeleteContainer() {
+        defaultMock();
+        when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME))
+            .thenReturn(blobContainerClient);
+        classToTest.deleteContainer(CONTAINER_NAME);
+        verify(blobContainerClient, times(1)).delete();
+    }
 }
