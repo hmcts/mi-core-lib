@@ -122,4 +122,19 @@ public class StorageAccountWrapper {
             .getBlobContainerClient(containerName)
             .delete();
     }
+
+    public BlobServiceClient getBlobServiceClient() {
+        return blobServiceClient;
+    }
+
+    public BlobContainerClient getBlobContainerClient(String containerName) {
+        return blobServiceClient
+            .getBlobContainerClient(containerName);
+    }
+
+    public BlobClient getBlobClient(String containerName, String blobName) {
+        return blobServiceClient
+            .getBlobContainerClient(containerName)
+            .getBlobClient(blobName);
+    }
 }
