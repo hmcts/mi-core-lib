@@ -4,6 +4,8 @@ param
     [parameter(Mandatory = $false)] [String] $action,
     [parameter(Mandatory = $false)] [String] $tsn,
     [parameter(Mandatory = $false)] [String] $tdn,
+    [parameter(Mandatory = $false)] [String] $tu,
+    [parameter(Mandatory = $false)] [String] $tp,
     [parameter(Mandatory = $false)] [String] $sf,
     [parameter(Mandatory = $false)] [String] $blockDataLoss,
     [parameter(Mandatory = $false)] [String] $dropObjects,
@@ -41,6 +43,15 @@ Function Get-Variables {
     $variables
 }
 
+Function Set-Managed-Identity-Auth {
+    $response = Invoke-WebRequest `
+         -Uri 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fdatabase.windows.net'`
+         -Method GET`
+         -Headers @{Metadata="true"}
+
+    $access_token = ($response.Content | ConvertFrom-Json).access_token
+}
+
 $Command='sqlpackage'
 
 $vars = Get-Variables
@@ -49,13 +60,11 @@ $Command="$Command /a:$action /tsn:$tsn /tdn:$tdn /sf:$sf /p:BlockOnPossibleData
 
 Write-Host $Command
 
-$response = Invoke-WebRequest `
-     -Uri 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fdatabase.windows.net'`
-     -Method GET`
-     -Headers @{Metadata="true"}
-
-$access_token = ($response.Content | ConvertFrom-Json).access_token
-
-$Command="$Command /AccessToken:$access_token"
+if ($tu) {
+    $Command="$Command /tu:$tu /tp:'$tp'"
+} else {
+    $access_token = Set-Managed-Identity-Auth
+    $Command="$Command /AccessToken:$access_token"
+}
 
 $Command | Invoke-Expression
