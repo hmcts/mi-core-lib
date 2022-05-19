@@ -49,7 +49,7 @@ Function Set-Managed-Identity-Auth {
          -Method GET`
          -Headers @{Metadata="true"}
 
-    $access_token = ($response.Content | ConvertFrom-Json).access_token
+    ($response.Content | ConvertFrom-Json).access_token
 }
 
 $Command='sqlpackage'
