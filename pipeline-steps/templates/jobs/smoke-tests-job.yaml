@@ -84,7 +84,7 @@ jobs:
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
       ${{ each pair in parameters.envMapping }}:
-        ${{ pair.key }}: $(${{ pair.value }})
+        ${{ pair.key }}: ${{ pair.value }}
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
     displayName: 'Run smoke tests'
