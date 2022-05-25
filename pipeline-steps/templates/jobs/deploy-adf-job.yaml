@@ -23,7 +23,10 @@ parameters:
 - name: enableTriggers
   type: boolean
   default: false
-
+- name: disabledTriggers #List of disabled triggers separated by comma
+  type: string
+  default: ''
+  
 jobs:
 - deployment: deploy_adf
   displayName: 'Deploy to Azure Data Factory'
@@ -44,10 +47,10 @@ jobs:
           displayName: 'Prepare Az environment'
           inputs:
             script: |
-              pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force
-              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.11.4 -AllowClobber -Force
+              pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.6.1 -AllowClobber -Force
+              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.0 -AllowClobber -Force
         - task: AzurePowerShell@4
-          displayName: 'Azure PowerShell script: Stop ADF triggers'
+          displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
@@ -90,8 +93,6 @@ jobs:
             inline: |
               Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -HostName "https://github.com" -AccountName "$(RepoConfigurationAccountName)" -RepositoryName "$(RepoConfigurationRepositoryName)" -CollaborationBranch "$(RepoConfigurationCollaborationBranch)" -RootFolder "$(RepoConfigurationRootFolder)" -Force
             azurePowerShellVersion: LatestVersion
-        - script: echo "${{ parameters.adfOverrideParameters }}"
-          displayName: "List override parameters"
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
@@ -102,10 +103,29 @@ jobs:
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
         - task: AzurePowerShell@4
-          displayName: 'Azure PowerShell script: Start ADF triggers'
-          condition: eq(${{ parameters.enableTriggers }}, true)
+          displayName: 'Azure PowerShell script: Start PostDeploymentScript'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
             ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $false'
             azurePowerShellVersion: LatestVersion
+        - task: AzurePowerShell@4
+          displayName: 'Enable or Disable Pipeline Triggers'
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            azurePowerShellVersion: LatestVersion
+            scriptType: 'inline'
+            inline: |
+              $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName "${{ parameters.adfName }}" -ResourceGroupName "${{ parameters.resourceGroup }}"
+              $disabledTriggersList = "${{ parameters.disabledTriggers }}" -split ","
+              
+              $triggersADF | ForEach-Object {
+                if (("${{ parameters.enableTriggers }}" -eq "true") -And (-Not $disabledTriggersList.Contains($_.name))) {
+                  Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
+                  Write-Host("Start trigger --> ",$_.name)
+                }
+                else {
+                  Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
+                  Write-Host("Stop Trigger:::", $_.name)
+                }
+              }

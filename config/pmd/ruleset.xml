@@ -30,6 +30,8 @@
     <rule ref="category/java/codestyle.xml/MethodNamingConventions">
         <properties>
             <property name="junit4TestPattern" value="[a-z][a-zA-Z0-9_]+"/>
+            <property name="junit5TestPattern" value="[a-z][a-zA-Z0-9_]+"/>
+            <property name="methodPattern" value="[a-z][a-zA-Z0-9_]*" />
         </properties>
     </rule>
     <rule ref="category/java/codestyle.xml/ShortVariable">
@@ -72,11 +74,6 @@
     <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
         <properties>
             <property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*"/>
-        </properties>
-    </rule>
-    <rule ref="category/java/codestyle.xml/MethodNamingConventions">
-        <properties>
-            <property name="methodPattern" value="[a-z][a-zA-Z0-9_]*" />
         </properties>
     </rule>
 

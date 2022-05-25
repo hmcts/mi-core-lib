@@ -17,7 +17,7 @@ public final class FileTestUtils {
         return new File(classLoader.getResource(filePath).getFile());
     }
 
-    private  FileTestUtils() {
+    private FileTestUtils() {
         //Utility constructor
     }
 

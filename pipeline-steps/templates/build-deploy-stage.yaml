@@ -83,7 +83,7 @@ stages:
           parameters:
             gradleTasks: 'sonarqube'
             displayName: 'Sonar analysis'
-            extraOptions: '--build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
+            extraOptions: '--no-daemon --build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
         - template: ./docker-build.yaml
           parameters:
@@ -173,6 +173,7 @@ stages:
     - job: CleanResources
       dependsOn: IntegrationTest
       condition: always()
+      pool: ${{ parameters.agentPool }}
       variables:
         env: ${{ parameters.env }}
       steps:

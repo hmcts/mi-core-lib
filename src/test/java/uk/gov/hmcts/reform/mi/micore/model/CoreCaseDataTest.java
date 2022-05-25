@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CoreCaseDataTest {
+class CoreCaseDataTest {
 
     public static final String PUBLIC_CLASSIFICATION = "PUBLIC";
     public static final String NAME = "name";
@@ -37,7 +37,7 @@ public class CoreCaseDataTest {
 
     @Test
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")
-    public void parseData() throws IOException {
+    void parseData() throws IOException {
         Map<String, Object> caseData = ImmutableMap.of(NAME, "A1",
             "subject", ImmutableMap.of("address", "a1Address"));
 

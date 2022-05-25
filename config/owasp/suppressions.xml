@@ -8,5 +8,27 @@
         <cpe>cpe:/a:pivotal_software:spring_security</cpe>
         <cve>CVE-2018-1258</cve>
     </suppress>
+    <suppress until="2030-01-01">
+        <notes><![CDATA[
+     Suppressing as it's a false positive due to a different version numbering system to the core libs.
+   ]]></notes>
+        <gav regex="true">.*tcnative.*</gav>
+        <vulnerabilityName regex="true"></vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+      Checkstyle library not part of production.
+   ]]></notes>
+        <cve>CVE-2019-10782</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+   file name: netty-tcnative-classes-2.0.46.Final.jar
+   This is a false positive as it has a different version scheme to the core netty libs.
+   See: https://ossindex.sonatype.org/component/pkg:maven/io.netty/netty-tcnative-classes@2.0.46.Final?utm_source=dependency-check&utm_medium=integration&utm_content=6.5.0
+   ]]></notes>
+        <packageUrl regex="true">^pkg:maven/io\.netty/netty\-tcnative\-classes@.*$</packageUrl>
+        <cpe>cpe:/a:netty:netty</cpe>
+    </suppress>
 
 </suppressions>

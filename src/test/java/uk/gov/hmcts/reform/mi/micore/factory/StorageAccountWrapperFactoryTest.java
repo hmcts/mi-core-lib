@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.mi.micore.factory;
 
 import com.azure.storage.blob.BlobServiceClient;
-import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
