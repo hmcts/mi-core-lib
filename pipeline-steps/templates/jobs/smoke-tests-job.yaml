@@ -3,6 +3,7 @@ parameters:
   type: string
 - name: adfName
   type: string
+  default: ''
 - name: resourceGroup
   type: string
   default: mi-$(environment)-rg
@@ -29,8 +30,10 @@ parameters:
   default: {}
 - name: sqlServerUserNameKey
   type: string
+  default: ''
 - name: sqlServerPasswordNameKey
   type: string
+  default: ''
 - name: dependsOn
   type: string
   default: 'deploy_adf'
@@ -47,22 +50,13 @@ jobs:
   steps:
   - script: |
       apt-get update
-      ACCEPT_EULA=Y apt-get -y install python3-dev python3-pip
+      ACCEPT_EULA=Y apt-get -y install python3-dev python3-pip  python3-venv python3-setuptools python3-wheel
     displayName: 'Install python'
   - template: ../steps/vault-secrets.yaml
     parameters: 
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecreKeys: '*'
-  - script: |
-      bash --version
-      alias python=python3
-      python --version
-      curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o get-pip.py
-      python3 get-pip.py
-      pip install -r requirements.txt
-    workingDirectory: $(pythonWorkingDir)
-    displayName: 'Install requirements'
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
     inputs:
@@ -72,7 +66,13 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
+        set -e
+        python3 -m venv working_dir
+        source working_dir/bin/activate
+        python -m pip install -U pip
+        python -m pip install -r requirements.txt --no-cache-dir
         make smoke-test
+        deactivate
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
     env:
       SQL_SERVER_NAME: ${{ parameters.databaseServerName }}
@@ -84,7 +84,7 @@ jobs:
       AZ_RESOURCE_GROUP_NAME: ${{parameters.resourceGroup }}
       AZ_DATAFACTORY_NAME: ${{ parameters.adfName }}
       ${{ each pair in parameters.envMapping }}:
-        ${{ pair.key }}: $(${{ pair.value }})
+        ${{ pair.key }}: ${{ pair.value }}
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
     displayName: 'Run smoke tests'

@@ -12,7 +12,7 @@ parameters:
   type: string
   default: ''
 - name: dacpacName
-  type: string  
+  type: string
 - name: artifactName
   type: string
 
@@ -24,23 +24,23 @@ jobs:
     ${{ if eq(parameters.sqlPath, '') }}:
       pathToPublish: 'bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
     ${{ if ne(parameters.sqlPath, '') }}:
-      pathToPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'      
-  
+      pathToPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
+
   pool:
       vmImage: 'windows-2019'
   steps:
   - task: NuGetToolInstaller@1
-  
+
   - task: NuGetCommand@2
     inputs:
       restoreSolution: '${{ parameters.solution }}'
-  
+
   - task: VSBuild@1
     inputs:
       solution: '${{ parameters.solution }}'
       platform: '${{ parameters.buildPlatform }}'
       configuration: '${{ parameters.buildConfiguration }}'
-  
+
   - task: VSTest@2
     inputs:
       platform: '${{ parameters.buildPlatform }}'
