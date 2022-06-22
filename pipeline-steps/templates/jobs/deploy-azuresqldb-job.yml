@@ -1,0 +1,98 @@
+parameters:
+- name: artifactName
+  type: string
+  default: "sql_dw_dacpac"
+- name: projectName
+  type: string
+  default: "synapse"
+- name: databaseName
+  type: string
+  default: "mi-datawarehouse-db-$(environment)"
+- name: databaseServerName
+  type: string
+  default: '$(mi-datawarehouse-server)'
+- name: subscriptionEndpoint
+  type: string
+- name: keyvaultName
+  type: string
+  default: "mi-vault-$(environment)"
+- name: readerGroup
+  type: string
+  default: "DTS Readers Data Platform Nonprod"
+- name: env
+  type: string
+  default: $(environment)
+- name: agentPool
+  type: string
+  default: hmcts-ss-$(environment)
+- name: blockDataLoss
+  type: string
+  default: 'true'
+- name: dropObjects
+  type: string
+  default: 'false'
+jobs:
+  - deployment: deploy_azuresqldw
+    displayName: 'Deploy to AzureSQLDW'
+    # condition: eq(variables['build.sourceBranch'], 'refs/heads/master')  #disable job for testing
+    pool: ${{ parameters.agentPool }}
+
+    variables:
+      sqlProjName: ${{ parameters.projectName }}
+      sqlDwDatabaseName: ${{ parameters.databaseName }}
+    environment: ${{ parameters.env }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+            path: 'self'
+          - task: Bash@3
+            displayName: 'List directory'
+            inputs:
+              targetType: inline
+              script: 'ls -lR && echo  subs is ${{ parameters.subscriptionEndpoint }}'
+          - template: ../tasks/vault-secrets.yaml
+            parameters: 
+              azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
+              keyVaultName: ${{ parameters.keyvaultName }}
+              azureSecreKeys: '*'
+              runAsPreJob: false
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              downloadPath: $(System.ArtifactsDirectory)
+              artifactName: ${{ parameters.artifactName }} #'sql_dw_dacpac'
+          - task: Bash@3
+            displayName: 'Azure SQL Dacpac backup'
+            inputs:
+              targetType: filePath
+              filePath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.sh'
+            env:
+              ServerName: ${{parameters.databaseServerName }}
+              DatabaseName: ${{ parameters.databaseName }}
+              SqlUsername: '$(mi-datawarehouse-server-admin-user)'
+              SqlPassword: '$(mi-datawarehouse-server-admin-password)'
+              DeploymentAction: 'Extract'
+              TargetFile: 'backup.dacpac'
+          - task: CmdLine@2
+            displayName: 'Prepare Az environment'
+            inputs:
+              script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
+ 
+          - task: AzurePowerShell@4
+            displayName: 'Deploy Azure SQL Dacpac'
+            inputs:
+              ScriptPath: '$(Pipeline.Workspace)/self/_scripts/deploySqlPackage.ps1'
+              azureSubscription: ${{ parameters.subscriptionEndpoint }}
+              azurePowerShellVersion: LatestVersion
+              failOnStandardError: true
+              ScriptArguments:
+                -tsn:${{ parameters.databaseServerName }}
+                -tdn:${{ parameters.databaseName }}
+                -tu:$(mi-datawarehouse-server-admin-user)
+                -tp:'$(mi-datawarehouse-server-admin-password)'
+                -blockDataLoss:${{ parameters.blockDataLoss }}
+                -dropObjects:${{ parameters.dropObjects }}
+                -action:'Publish'
+                -sf:$(System.ArtifactsDirectory)/sql_dw_dacpac/$(sqlProjName).dacpac
+                -extra:'/v:SqlDwDatabaseName=${{ parameters.databaseName }} /v:PipelinePassword=dummy /v:readerGroup="${{ parameters.readerGroup }}"'
