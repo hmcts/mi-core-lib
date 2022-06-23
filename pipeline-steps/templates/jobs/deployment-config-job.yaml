@@ -87,17 +87,4 @@ jobs:
         ${{ pair.key }}: ${{ pair.value }}
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
-    displayName: 'Run smoke tests'
-
-  - task: PublishTestResults@2
-    condition: succeededOrFailed()
-    inputs:
-      testResultsFormat: 'JUnit'
-      testResultsFiles: '**/reports/test/*.xml'
-
-  - task: PublishPipelineArtifact@1
-    condition: succeededOrFailed()
-    inputs:
-      path: '$(System.DefaultWorkingDirectory)/reports/test/'
-      artifact: 'smokeTest-$(environment)'
-      displayName: 'Publish smoke test report'
+    displayName: 'Run Synapse Configuration'
