@@ -39,8 +39,8 @@ parameters:
   default: 'deploy_adf'
 
 jobs:
-- job: run_smoke_tests
-  displayName: 'Run smoke tests'
+- job: run_deployment_config
+  displayName: 'Run deployment config'
   dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
 
