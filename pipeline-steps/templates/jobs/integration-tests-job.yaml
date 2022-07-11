@@ -55,6 +55,17 @@ jobs:
     displayName: 'Prepare Az environment'
     inputs:
       script: 'pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.1.2 -AllowClobber -Force'
+  - task: Bash@3
+    displayName: 'Install Oracle Libraries'
+    inputs:
+      targetType: 'inline'
+      script: |
+        curl -L -o oraclelib.zip "https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip"
+        unzip oraclelib.zip
+        echo "Current Directory"
+        pwd
+        echo "Child Items"
+        ls
   - task: AzureCLI@2
     inputs:
       scriptType: bash
