@@ -69,7 +69,6 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
-        env
         set -e
         python3 -m venv working_dir
         source working_dir/bin/activate
