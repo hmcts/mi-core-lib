@@ -43,6 +43,16 @@ jobs:
           displayName: 'Show Folders'
           inputs:
             script: 'ls -lRt $(Pipeline.Workspace)'
+        - task: Bash@3
+          displayName: 'Check Scope Lock'
+          inputs:
+            targetType: 'inline'
+            script: |
+              locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
+              if [[ ! -z "$locks" && $locks==" " ]]; then
+                echo "Lock exists on resource group to be modified"
+                exit 1
+              fi
         - task: CmdLine@2
           displayName: 'Prepare Az environment'
           inputs:
