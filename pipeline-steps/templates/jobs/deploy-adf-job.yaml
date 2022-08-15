@@ -57,7 +57,7 @@ jobs:
               fi
 
               exportLocks=$(az lock list -g "mi-ingestion-${{ parameters.env }}" -o tsv)
-              if [[ ! -z "$locks" && $locks==" " ]]; then
+              if [[ ! -z "$exportLocks" && $exportLocks==" " ]]; then
                 echo "Lock exists on export storage account resource group which will prevent updating the storage triggers."
                 exit 1
               fi
