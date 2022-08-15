@@ -45,21 +45,22 @@ jobs:
             script: 'ls -lRt $(Pipeline.Workspace)'
         - task: AzureCLI@2
           displayName: 'Check Scope Lock'
-          azureSubscription: ${{ parameters.subscriptionEndpoint }}
-          scriptType: 'bash'
-          scriptLocation: 'inlineScript'
-          script: |
-            locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
-            if [[ ! -z "$locks" && $locks==" " ]]; then
-              echo "Lock exists on resource group to be modified."
-              exit 1
-            fi
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            script: |
+              locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
+              if [[ ! -z "$locks" && $locks==" " ]]; then
+                echo "Lock exists on resource group to be modified."
+                exit 1
+              fi
 
-            exportLocks=$(az lock list -g "mi-ingestion-${{ parameters.env }}" -o tsv)
-            if [[ ! -z "$locks" && $locks==" " ]]; then
-              echo "Lock exists on export storage account resource group which will prevent updating the storage triggers."
-              exit 1
-            fi
+              exportLocks=$(az lock list -g "mi-ingestion-${{ parameters.env }}" -o tsv)
+              if [[ ! -z "$locks" && $locks==" " ]]; then
+                echo "Lock exists on export storage account resource group which will prevent updating the storage triggers."
+                exit 1
+              fi
         - task: CmdLine@2
           displayName: 'Prepare Az environment'
           inputs:
