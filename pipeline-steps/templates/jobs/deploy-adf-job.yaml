@@ -49,7 +49,7 @@ jobs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
-            script: |
+            inlineScript: |
               locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
               if [[ ! -z "$locks" && $locks==" " ]]; then
                 echo "Lock exists on resource group to be modified."
