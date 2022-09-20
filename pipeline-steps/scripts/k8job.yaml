@@ -36,8 +36,9 @@ stages:
             azureSubscription: $(azure.subscription.endpoint)
             scriptLocation: "inlineScript"
             inlineScript: |
-              kubectl config set-context --current --namespace=$(TARGET_NAMESPACE)
-              kubectl create job --from=cronjob/data-extractor-job $(JOB_NAME)
+              az --version
+              # kubectl config set-context --current --namespace=$(TARGET_NAMESPACE)
+              # kubectl create job --from=cronjob/data-extractor-job $(JOB_NAME)
         # - task: AzureCLI@1
         #   displayName: "AKS list identities"
         #   inputs:
