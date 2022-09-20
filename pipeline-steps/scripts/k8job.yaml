@@ -3,6 +3,19 @@ name: '$(SourceBranchName)-$(Build.SourceVersion) Build-$(Build.BuildId)'
 trigger: none
 pr: none
 
+
+parameters:
+  - name: integrationEnv
+    displayName: Integration Environment
+    type: string
+    default: 'default'
+    values:
+      - 'sbox'
+      - 'dev'
+      - 'test'
+      - 'ithc'
+      - 'stg'
+      - 'default'
 variables:
   #  group: pipeline-env-variables
 
@@ -16,20 +29,11 @@ stages:
 - stage: Execk8
   jobs:
     - job: Execk8
-      pool:
-        vmImage: 'Ubuntu-16.04'
+      pool: hmcts-ss-${{ parameters.integrationEnv }}
+
       variables:
-        env: 
+        env: ${{ parameters.integrationEnv }}
       steps:
-        - template: ../templates/steps/aks-authenticate.yaml
-          parameters:
-            azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-            azureAksResourceGroup:  $(azureAksResourceGroup)
-            azureAksCluster:  $(azureAksCluster)
-        # - task: HelmInstaller@1 
-        #   displayName: 'Install Helm 3.0.0'
-        #   inputs:
-        #     helmVersionToInstall: '3.0.0'
         - task: AzureCLI@1
           displayName: "Clean deployments"
           inputs:
