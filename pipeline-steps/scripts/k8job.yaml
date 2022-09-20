@@ -21,7 +21,7 @@ variables:
 
   # environment: 'stg' #Use test and promoting to stg until prod is ready
   # env.upper: 'STG'
-  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-$(env.upper)'
+  azure.subscription.endpoint: 'DTS-SHAREDSERVICES-${{ parameters.integrationEnv }}'
   azure.aks.cluster: 'ss_aks_$(environment)'
   azureAksResourceGroup:  'ss_$(environment)_kubernetes_resource_group'
   azureAksCluster: 'ss_aks_$(environment)'
@@ -37,7 +37,7 @@ stages:
         - task: AzureCLI@1
           displayName: "Clean deployments"
           inputs:
-            azureSubscription: $(azure.subscription.endpoint)
+            azureSubscription: "DTS-SHAREDSERVICES-${{ upper(parameters.integrationEnv) }}"
             scriptLocation: "inlineScript"
             inlineScript: |
               az --version
