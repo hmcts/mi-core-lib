@@ -21,7 +21,7 @@ parameters:
   default: workspace
 steps:
   - task: Synapse workspace deployment@2
-    displayName: 'Deploy Synapse Workspace ${{ parameters.env }}'
+    displayName: 'Synapse Workspace task ${{ parameters.env }}'
     inputs:
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
       ResourceGroupName: '${{ parameters.resourceGroup }}'
