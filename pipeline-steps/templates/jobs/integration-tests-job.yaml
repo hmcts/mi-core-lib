@@ -33,6 +33,7 @@ jobs:
   displayName: 'Run integration tests'
   dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
+  timeoutInMinutes: 120
 
   variables:
     pythonWorkingDir: './'
