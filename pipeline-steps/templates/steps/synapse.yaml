@@ -1,0 +1,36 @@
+parameters:
+- name: subscriptionEndpoint
+  type: string
+- name: env
+  type: string
+- name: resourceGroup
+  type: string
+- name: synapseName
+  type: string
+- name: overrideParams
+  type: string
+  default: ''
+- name: operation
+  type: string
+  default: validateDeploy
+  values:
+  - validateDeploy
+  - validate
+- name: artifactsFolder
+  type: string
+  default: workspace
+steps:
+  - task: Synapse workspace deployment@2
+    displayName: 'Deploy Synapse Workspace ${{ parameters.env }}'
+    inputs:
+      azureSubscription: ${{ parameters.subscriptionEndpoint }}
+      ResourceGroupName: '${{ parameters.resourceGroup }}'
+      operation: ${{ parameters.operation }}
+      ArtifactsFolder: ${{ parameters.artifactsFolder }}
+      TargetWorkspaceName: '${{ parameters.synapseName }}'
+      DeleteArtifactsNotInTemplate: false
+      DeployManagedPrivateEndpoints: false
+      FailOnMissingOverrides: false
+      Environment: 'prod'
+      npmpackage: 'prod'
+      OverrideArmParameters: -workspaceName ${{ parameters.synapseName }} ${{ parameters.overrideParams }}
