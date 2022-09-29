@@ -9,4 +9,4 @@ steps:
     inputs:
       azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
       scriptLocation: "inlineScript"
-      inlineScript: az aks get-credentials --admin --resource-group ${{ parameters.azureAksResourceGroup }} --name ${{ parameters.azureAksCluster }}
+      inlineScript: az aks get-credentials --admin --resource-group ${{ parameters.azureAksResourceGroup }} --name ${{ parameters.azureAksCluster }} --overwrite-existing
