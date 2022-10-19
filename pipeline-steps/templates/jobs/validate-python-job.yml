@@ -10,7 +10,7 @@ parameters:
 jobs:
 - job: validate_python
   displayName: Validate python
-  pool: $(parameters.pool)
+  pool: ${{ parameters.pool }}
   steps:
   - task: AzureCLI@2
     displayName: 'Install dependencies and validate code'
@@ -24,7 +24,7 @@ jobs:
         pip3 install -U pip
         pip3 install -r requirements.txt --no-cache-dir
         printf "\n\n\n\n\nBeginning code validation\n"
-        flake8 $(parameters.testDirectory) || echo "Warning - The code has styling issues that must be resolved"
+        flake8 ${{ parameters.testDirectory }} || echo "Warning - The code has styling issues that must be resolved"
         echo "Code validation complete"
         deactivate
-      azureSubscription: $(parameters.azureSubscriptionName)
+      azureSubscription: ${{ parameters.azureSubscriptionName }}
