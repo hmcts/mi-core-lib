@@ -5,6 +5,9 @@ parameters:
   type: string
 - name: pool
   type: string
+- name: pythonVersion
+  type: string
+  default: 3
 
 #Assumes that python/pip/venv have already been installed
 jobs:
@@ -19,10 +22,10 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         set -e
-        python3 -m venv working_dir
+        python${{ parameters.pythonVersion}} -m venv working_dir
         source working_dir/bin/activate
-        pip3 install -U pip
-        pip3 install -r requirements.txt --no-cache-dir
+        pip${{ parameters.pythonVersion}} install -U pip
+        pip${{ parameters.pythonVersion}} install -r requirements.txt --no-cache-dir
         printf "\n\n\n\n\nBeginning code validation\n"
         flake8 ${{ parameters.testDirectory }} || echo "Warning - The code has styling issues that must be resolved"
         echo "Code validation complete"
