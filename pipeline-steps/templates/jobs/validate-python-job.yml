@@ -16,7 +16,7 @@ jobs:
   pool: ${{ parameters.pool }}
   steps:
   - task: AzureCLI@2
-    displayName: 'Install dependencies and validate code'
+    displayName: 'Validate code'
     inputs:
       scriptType: bash
       scriptLocation: inlineScript
