@@ -10,7 +10,7 @@ parameters:
 jobs:
   - job: validate_python
     displayName: Validate python
-    pool: $(parameters.pool)
+    pool: '$(parameters.pool)'
     steps:
     - task: AzureCLI@2
       displayName: 'Install dependencies and validate code'
