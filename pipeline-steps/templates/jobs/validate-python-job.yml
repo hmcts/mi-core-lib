@@ -1,0 +1,33 @@
+parameters:
+- name: testDirectory
+  type: string
+- name: azureSubscriptionName
+  type: string
+- name: pool
+  type: string
+- name: environment
+  type: string
+  default: test
+
+#Assumes that python/pip/venv have already been installed
+jobs:
+  - job: validate_python
+    displayName: Validate python
+    pool: $(parameters.pool)
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Install dependencies and validate code'
+      inputs:
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -e
+          python3 -m venv working_dir
+          source working_dir/bin/activate
+          pip3 install -U pip
+          pip3 install -r requirements.txt --no-cache-dir
+          printf "\n\n\n\n\nBeginning code validation\n"
+          flake8 $(parameters.testDirectory)
+          echo "Code validation complete"
+          deactivate
+        azureSubscription: '$(parameters.azureSubscriptionName)-${{ upper(parameters.environment) }}'
