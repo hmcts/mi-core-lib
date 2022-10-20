@@ -3,8 +3,6 @@ parameters:
   type: string
 - name: azureSubscriptionName
   type: string
-- name: pool
-  type: string
 - name: pythonVersion
   type: string
   default: 3
@@ -12,7 +10,6 @@ parameters:
 #Assumes that python/pip/venv have already been installed
 steps:
 - task: AzureCLI@2
-  pool: ${{ parameters.pool }}
   displayName: 'Validate python'
   inputs:
     scriptType: bash
