@@ -38,7 +38,7 @@ jobs:
     displayName: 'Validate and Generate ARM template'
     inputs:
       command: 'custom'
-      customCommand: "run start-preview $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }} ${{ parameters.buildFolder }}"
+      customCommand: "run start-preview export $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }} ${{ parameters.buildFolder }}"
 
   - task: PublishPipelineArtifact@1
     inputs:
