@@ -23,6 +23,9 @@ parameters:
 - name: enableTriggers
   type: boolean
   default: false
+- name: updateTriggers
+  type: boolean
+  default: false
 - name: disabledTriggers #List of disabled triggers separated by comma
   type: string
   default: ''
@@ -39,12 +42,9 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - task: CmdLine@2
-          displayName: 'Show Folders'
-          inputs:
-            script: 'ls -lRt $(Pipeline.Workspace)'
         - task: AzureCLI@2
           displayName: 'Check Scope Lock'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             scriptType: 'bash'
@@ -69,6 +69,7 @@ jobs:
               pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.0 -AllowClobber -Force
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
@@ -122,6 +123,7 @@ jobs:
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start PostDeploymentScript'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
@@ -129,6 +131,7 @@ jobs:
             azurePowerShellVersion: LatestVersion
         - task: AzurePowerShell@4
           displayName: 'Enable or Disable Pipeline Triggers'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             azurePowerShellVersion: LatestVersion
