@@ -23,9 +23,6 @@ parameters:
 - name: enableTriggers
   type: boolean
   default: false
-- name: updateTriggers
-  type: boolean
-  default: false
 - name: disabledTriggers #List of disabled triggers separated by comma
   type: string
   default: ''
@@ -131,7 +128,6 @@ jobs:
         #     azurePowerShellVersion: LatestVersion
         - task: AzurePowerShell@4
           displayName: 'Enable or Disable Pipeline Triggers'
-          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             azurePowerShellVersion: LatestVersion
