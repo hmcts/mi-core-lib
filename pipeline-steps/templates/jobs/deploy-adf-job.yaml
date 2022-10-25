@@ -42,39 +42,39 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - task: AzureCLI@2
-          displayName: 'Check Scope Lock'
-          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
-          inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            scriptType: 'bash'
-            scriptLocation: 'inlineScript'
-            inlineScript: |
-              locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
-              if [[ ! -z "$locks" && $locks==" " ]]; then
-                echo "Lock exists on resource group to be modified."
-                exit 1
-              fi
+        # - task: AzureCLI@2
+        #   displayName: 'Check Scope Lock'
+        #   condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
+        #   inputs:
+        #     azureSubscription: ${{ parameters.subscriptionEndpoint }}
+        #     scriptType: 'bash'
+        #     scriptLocation: 'inlineScript'
+        #     inlineScript: |
+        #       locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
+        #       if [[ ! -z "$locks" && $locks==" " ]]; then
+        #         echo "Lock exists on resource group to be modified."
+        #         exit 1
+        #       fi
 
-              exportLocks=$(az lock list -g "mi-${{ parameters.env }}-rg" -o tsv)
-              if [[ ! -z "$exportLocks" && $exportLocks==" " ]]; then
-                echo "Lock exists on export storage account resource group which will prevent updating the storage triggers."
-                exit 1
-              fi
+        #       exportLocks=$(az lock list -g "mi-${{ parameters.env }}-rg" -o tsv)
+        #       if [[ ! -z "$exportLocks" && $exportLocks==" " ]]; then
+        #         echo "Lock exists on export storage account resource group which will prevent updating the storage triggers."
+        #         exit 1
+        #       fi
         - task: CmdLine@2
           displayName: 'Prepare Az environment'
           inputs:
             script: |
               pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.6.1 -AllowClobber -Force
               pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.0 -AllowClobber -Force
-        - task: AzurePowerShell@4
-          displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
-          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
-          inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
-            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
-            azurePowerShellVersion: LatestVersion
+        # - task: AzurePowerShell@4
+        #   displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
+        #   # condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
+        #   inputs:
+        #     azureSubscription: ${{ parameters.subscriptionEndpoint }}
+        #     ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
+        #     ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
+        #     azurePowerShellVersion: LatestVersion
         - task: Powershell@2
           displayName: Check Global Parameters Existence
           inputs:
@@ -121,14 +121,14 @@ jobs:
             csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
-        - task: AzurePowerShell@4
-          displayName: 'Azure PowerShell script: Start PostDeploymentScript'
-          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
-          inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
-            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $false'
-            azurePowerShellVersion: LatestVersion
+        # - task: AzurePowerShell@4
+        #   displayName: 'Azure PowerShell script: Start PostDeploymentScript'
+        #   condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
+        #   inputs:
+        #     azureSubscription: ${{ parameters.subscriptionEndpoint }}
+        #     ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
+        #     ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $false'
+        #     azurePowerShellVersion: LatestVersion
         - task: AzurePowerShell@4
           displayName: 'Enable or Disable Pipeline Triggers'
           condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
