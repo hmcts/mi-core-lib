@@ -32,13 +32,13 @@ jobs:
     displayName: 'Validate'
     inputs:
       command: 'custom'
-      customCommand: "run build validate $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }}"
+      customCommand: "run start validate $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }}"
 
   - task: Npm@1
     displayName: 'Validate and Generate ARM template'
     inputs:
       command: 'custom'
-      customCommand: "run build export $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }} ${{ parameters.buildFolder }}"
+      customCommand: "run start-preview export $(Build.Repository.LocalPath)/${{ parameters.rootFolder }} /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }} ${{ parameters.buildFolder }}"
 
   - task: PublishPipelineArtifact@1
     inputs:
