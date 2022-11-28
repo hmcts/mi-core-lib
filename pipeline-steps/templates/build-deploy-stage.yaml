@@ -17,6 +17,7 @@ parameters:
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   dependencyCheck: true
+  fortifyScan: true
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
@@ -51,6 +52,12 @@ stages:
             displayName: 'Package application'
             publishJUnitResults: true
             extraOptions: '--build-cache'
+        - ${{ if eq(parameters.fortifyScan, 'true') }}:
+          - template: ./steps/fortify-scan.yaml
+            parameters:
+              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+              azureVault: ${{ parameters.azureVault }}
+              applicationName: ${{ parameters.applicationName }}
         - ${{ if eq(parameters.functionalTest, 'true') }}:
           - template: ./steps/acr-login.yaml
             parameters:
