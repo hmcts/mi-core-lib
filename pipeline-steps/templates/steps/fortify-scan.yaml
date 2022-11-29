@@ -5,7 +5,7 @@ parameters:
   fortifyPasswordSecret: 'fortify-password'
   fortifyBaseUrl: 'https://api.emea.fortify.com'
   applicationName: ''
-  rootFolder: 'fortify'
+  rootFolder: '.'
   qualityGateLevel: 0 # 0 for no quality gate, 1 includes critical issues only, 2 includes, 3 includes medium and 4 includes low.
   technologyStack: 'JAVA/J2EE/Kotlin'
   technologyVersion: '11'
@@ -24,7 +24,7 @@ steps:
         fortifyPassword=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyPasswordSecret }}" --query "value" -o tsv)
 
         # TODO Improve by dynamically determining the auto generated files for a repository and skip them, or clone a clean copy of the repository for use by this step.
-        zip -r "${{ parameters.applicationName }}.zip" "$(Pipeline.Workspace)/${{ parameters.rootFolder }}" -x .git/\* -x .gradle/\* -x bin/\* -x build/\* -x target/\* -x node_modules/\* .pytest_cache/\*
+        zip -r "${{ parameters.applicationName }}.zip" "${{ parameters.rootFolder }}" -x .git/\* -x .gradle/\* -x bin/\* -x build/\* -x target/\* -x node_modules/\* .pytest_cache/\*
 
         authResponse=$(curl \
             --request POST "${{ parameters.fortifyBaseUrl }}/oauth/token" \
