@@ -17,6 +17,7 @@ parameters:
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   dependencyCheck: true
+  fortifyScan: true
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
@@ -85,6 +86,12 @@ stages:
             displayName: 'Sonar analysis'
             extraOptions: '--no-daemon --build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
+        - ${{ if eq(parameters.fortifyScan, 'true') }}:
+          - template: ./steps/fortify-scan.yaml
+            parameters:
+              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+              azureVault: ${{ parameters.azureVault }}
+              applicationName: ${{ parameters.applicationName }}
         - template: ./docker-build.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
