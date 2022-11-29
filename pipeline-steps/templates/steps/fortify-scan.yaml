@@ -101,7 +101,7 @@ steps:
         while [[ $analysisStatus != "Completed" && $analysisStatus != "Failed" && $analysisStatus != "Canceled" && $loopCount -lt $maxLoops ]]
         do
             loopCount=$(($loopCount + 1))
-            echo "Waiting 1 minute for Fortify scan completion. Currently on loop ${loopCount} out of ${maxLoops}"."
+            echo "Waiting 1 minute for Fortify scan completion. Currently on loop ${loopCount} out of ${maxLoops}."
             sleep 60
 
             analysisSummary=$(curl \
@@ -145,7 +145,7 @@ steps:
                 fi
             fi
         else
-            echo "Unable to complete Fortify scan"
+            echo "Unable to complete Fortify scan."
             if [[ ${{ parameters.qualityGateLevel }} -ge 1 ]]
             then
               exit 19
