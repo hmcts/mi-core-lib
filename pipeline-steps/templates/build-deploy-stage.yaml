@@ -14,6 +14,7 @@ parameters:
   azurePromSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
   azureKeyMapping: {}
   envMapping: {}
+  envStringMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   dependencyCheck: true
@@ -125,9 +126,10 @@ stages:
             secretsFilter: ${{ parameters.azureSecreKeys }}
         - template: ./steps/gradle-task.yaml
           parameters:
-            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             displayName: 'Run Pre Integration Test Setup'
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             envMapping: ${{ parameters.envMapping }}
+            envStringMapping: ${{ parameters.envStringMapping }}
             gradleTasks: 'integrationPreTest'
             execute: ${{ parameters.preIntegrationTest }}
         - template: ./helm-install-chart-job.yaml
