@@ -157,7 +157,7 @@ repositories {
 }
 
 ext {
-	set('azureVersion', "3.14.0")
+	set('azureVersion', "4.0.0")
 }
 
 dependencyManagement {
