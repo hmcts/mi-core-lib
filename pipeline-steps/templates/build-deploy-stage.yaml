@@ -14,10 +14,12 @@ parameters:
   azurePromSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
   azureKeyMapping: {}
   envMapping: {}
+  envStringMapping: {}
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   dependencyCheck: true
   fortifyScan: true
+  fortifyQualityGateLevel: 1
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
@@ -86,12 +88,13 @@ stages:
             displayName: 'Sonar analysis'
             extraOptions: '--no-daemon --build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
-        - ${{ if eq(parameters.fortifyScan, 'true') }}:
+        - ${{ if parameters.fortifyScan }}:
           - template: ./steps/fortify-scan.yaml
             parameters:
               azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
               azureVault: ${{ parameters.azureVault }}
               applicationName: ${{ parameters.applicationName }}
+              qualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
         - template: ./docker-build.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
@@ -123,9 +126,10 @@ stages:
             secretsFilter: ${{ parameters.azureSecreKeys }}
         - template: ./steps/gradle-task.yaml
           parameters:
-            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             displayName: 'Run Pre Integration Test Setup'
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             envMapping: ${{ parameters.envMapping }}
+            envStringMapping: ${{ parameters.envStringMapping }}
             gradleTasks: 'integrationPreTest'
             execute: ${{ parameters.preIntegrationTest }}
         - template: ./helm-install-chart-job.yaml
