@@ -18,6 +18,7 @@ parameters:
   azureVault: ''
   dependencyCheck: true
   fortifyScan: true
+  fortifyQualityGateLevel: 1
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
@@ -92,6 +93,7 @@ stages:
               azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
               azureVault: ${{ parameters.azureVault }}
               applicationName: ${{ parameters.applicationName }}
+              qualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
         - template: ./docker-build.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
