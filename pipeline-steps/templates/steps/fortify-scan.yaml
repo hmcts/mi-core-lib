@@ -12,7 +12,7 @@ parameters:
 
 steps:
   - task: AzureCLI@2
-    displayName: "Run Fortify scan on folder"
+    displayName: "Run Fortify scan"
     inputs:
       azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
       scriptType: "bash"
