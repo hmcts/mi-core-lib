@@ -209,7 +209,7 @@ def versions = [
 	commonsLang      : '3.12.0',
 	hmctsLogging     : '5.1.9',
 	junit         	 : '5.8.2',
-	lombok        	 : '1.18.22',
+	lombok        	 : '1.18.24',
 	mockito       	 : '4.1.0',
 	openCsv       	 : '5.5.2',
 	piTest        	 : '1.7.3',
