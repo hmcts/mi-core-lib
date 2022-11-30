@@ -45,7 +45,7 @@ steps:
         echo "Generated access token for Fortify API."
 
         releaseResponse=$(curl \
-            --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/releases?filters=releaseName=${{ parameters.applicationName }}&fields=releaseId" \
+            --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/releases?filters=releaseName:${{ parameters.applicationName }}&fields=releaseId" \
             --header "Accept: application/json" \
             --header "Authorization: Bearer $accessToken")
 
