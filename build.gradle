@@ -213,7 +213,7 @@ def versions = [
 	mockito       	 : '4.1.0',
 	openCsv       	 : '5.5.2',
 	piTest        	 : '1.7.3',
-	piTestGradle  	 : '1.7.0',
+	piTestGradle  	 : '1.9.11',
 	piTestSonar   	 : '0.5'
 ]
 
