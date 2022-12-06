@@ -4,6 +4,8 @@ parameters:
 - name: pythonVersion
   type: string
   default: 3.8
+- name: azureSubscriptionName # added for backward compatiblity
+  default: ''
 
 #Assumes that python/pip/venv have already been installed
 steps:
