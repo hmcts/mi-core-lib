@@ -10,11 +10,7 @@ steps:
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '${{ parameters.pythonVersion }}'
-- task: PythonScript@0
-  displayName: 'Validate python'
-  inputs:
-    scriptSource: 'inline'
-    script: |
+- script: |
       set -e
       python -m venv working_dir
       source working_dir/bin/activate
@@ -23,3 +19,4 @@ steps:
       flake8 ${{ parameters.testDirectory }} || echo "Warning - The code has styling issues that must be resolved"
       echo "Code validation complete"
       deactivate
+  displayName: 'Validate python'
