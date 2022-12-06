@@ -1,27 +1,24 @@
 parameters:
 - name: testDirectory
   type: string
-- name: azureSubscriptionName
-  type: string
 - name: pythonVersion
   type: string
-  default: 3
+  default: 3.8
+- name: azureSubscriptionName # added for backward compatiblity
+  default: ''
 
 #Assumes that python/pip/venv have already been installed
 steps:
-- task: AzureCLI@2
-  displayName: 'Validate python'
+- task: UsePythonVersion@0
   inputs:
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
+    versionSpec: '${{ parameters.pythonVersion }}'
+- script: |
       set -e
-      python${{ parameters.pythonVersion}} -m venv working_dir
+      python -m venv working_dir
       source working_dir/bin/activate
-      pip${{ parameters.pythonVersion}} install -U pip
-      pip${{ parameters.pythonVersion}} install -r requirements.txt --no-cache-dir
+      pip install -r requirements.txt --no-cache-dir
       printf "\n\n\n\n\nBeginning code validation\n"
       flake8 ${{ parameters.testDirectory }} || echo "Warning - The code has styling issues that must be resolved"
       echo "Code validation complete"
       deactivate
-    azureSubscription: ${{ parameters.azureSubscriptionName }}
+  displayName: 'Validate python'
