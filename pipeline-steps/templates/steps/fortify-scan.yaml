@@ -1,37 +1,30 @@
 parameters:
-  azureSubscriptionEndpoint: $(azure.subscription.endpoint)
-  azureVault: ''
-  fortifyUsernameSecret: 'fortify-username'
-  fortifyPasswordSecret: 'fortify-password'
+  fortifyUsername: 'fortify-username'
+  fortifyPassword: 'fortify-password'
   fortifyBaseUrl: 'https://api.emea.fortify.com'
   applicationName: ''
   rootFolder: '.'
   qualityGateLevel: 1 # 0 for no quality gate, 1 includes critical issues only, 2 includes high, 3 includes medium and 4 includes low.
   technologyStack: 'JAVA/J2EE/Kotlin'
   technologyVersion: '11'
+  retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
 
 steps:
-  - task: AzureCLI@2
+  - task: Bash@3
     displayName: "Run Fortify scan"
     inputs:
-      azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
-      scriptType: "bash"
-      scriptLocation: "inlineScript"
-      inlineScript: |
+      targetType: "inlineScript"
+      script: |
         set -e
 
-        fortifyUsername=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyUsernameSecret }}" --query "value" -o tsv)
-        fortifyPassword=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyPasswordSecret }}" --query "value" -o tsv)
-
-        # TODO Improve by dynamically determining the auto generated files for a repository and skip them, or clone a clean copy of the repository for use by this step.
         zip -r "${{ parameters.applicationName }}.zip" "${{ parameters.rootFolder }}" -x .git/\* -x .gradle/\* -x bin/\* -x build/\* -x target/\* -x node_modules/\* .pytest_cache/\*
 
         authResponse=$(curl \
             --request POST "${{ parameters.fortifyBaseUrl }}/oauth/token" \
             --form 'scope="api-tenant"' \
             --form 'grant_type="password"' \
-            --form 'username="'$fortifyUsername'"' \
-            --form 'password="'$fortifyPassword'"')
+            --form 'username="'${{ parameters.fortifyUsername }}'"' \
+            --form 'password="'${{ parameters.fortifyPassword }}'"')
 
         # curl --fail-with-body not available on some hosted agents due to versioning. Below is a workaround.
         if [[ $(echo "$authResponse" | jq -r ".access_token") != null ]]
@@ -76,8 +69,13 @@ steps:
         echo "Using Foritfy entitlement id: ${entitlementId}"
 
         # Technology stack selection seems to make no impact on scan results.
+        scanUrl=$(echo "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}/static-scans/start-scan?assessmentTypeId=117&technologyStack=${{ parameters.technologyStack }}&fragNo=-1&offset=0&entitlementId=${entitlementId}&entitlementFrequencyType=Subscription")
+        if [[ -z "${{ parameters.technologyVersion }}" ]]
+        then
+          scanUrl=$(echo ${scanUrl}&languageLevel=${{ parameters.technologyVersion }})
+        fi
         scanResponse=$(curl \
-            --request POST "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}/static-scans/start-scan?assessmentTypeId=117&technologyStack=${{ parameters.technologyStack }}&languageLevel=${{ parameters.technologyVersion }}&fragNo=-1&offset=0&entitlementId=${entitlementId}&entitlementFrequencyType=Subscription" \
+            --request POST "${scanUrl}" \
             --header "Authorization: Bearer $accessToken" \
             --header "Content-Type: application/octet-stream" \
             --data-binary @"${{ parameters.applicationName }}.zip")
@@ -95,7 +93,7 @@ steps:
         analysisStatus="In_Progress"
 
         loopCount=0
-        maxLoops=20
+        maxLoops=$(echo ${{ parameters.retryLimit }})
 
         echo "About to start Fortify scan status check loop."
         while [[ $analysisStatus != "Completed" && $analysisStatus != "Failed" && $analysisStatus != "Canceled" && $loopCount -lt $maxLoops ]]
