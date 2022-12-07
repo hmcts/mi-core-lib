@@ -30,9 +30,8 @@ parameters:
 jobs:
 - deployment: deploy_adf
   displayName: 'Deploy to Azure Data Factory'
-  # pool: ${{ parameters.agentPool }}
   pool:
-        vmImage: 'Ubuntu-latest'
+      vmImage: 'Ubuntu-latest'
   variables:
     packageWheelName: 'none'
   environment: ${{ parameters.env }}
