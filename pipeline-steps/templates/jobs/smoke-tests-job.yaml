@@ -42,7 +42,8 @@ jobs:
 - job: run_smoke_tests
   displayName: 'Run smoke tests'
   dependsOn: ${{ parameters.dependsOn }}
-  pool: ${{ parameters.agentPool }}
+  pool:
+      vmImage: 'Ubuntu-latest'
 
   variables:
     pythonWorkingDir: './'
