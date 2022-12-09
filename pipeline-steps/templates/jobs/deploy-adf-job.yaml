@@ -23,9 +23,16 @@ parameters:
 - name: enableTriggers
   type: boolean
   default: false
-- name: disabledTriggers #List of disabled triggers separated by comma
+- name: disabledTriggers # List of disabled triggers separated by comma.
   type: string
   default: ''
+- name: deploymentMode # Complete by default to remove resources not in the generated ARM template.
+  type: string
+  default: 'Complete'
+  values:
+    - 'Complete'
+    - 'Incremental'
+    - 'Validation'
   
 jobs:
 - deployment: deploy_adf
@@ -87,6 +94,7 @@ jobs:
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             resourceGroupName: ${{ parameters.resourceGroup }}
+            deploymentMode: ${{ parameters.deploymentMode }}
             location: '$(azureLocation)'
             csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
