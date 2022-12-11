@@ -88,21 +88,27 @@ stages:
             displayName: 'Sonar analysis'
             extraOptions: '--no-daemon --build-cache -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$(sonarcloud-api-token) -Dsonar.organization=hmcts $(sonarPr)'
         - template: ./steps/publish-artifact.yaml
-        - ${{ if parameters.fortifyScan }}:
-          - template: ./steps/fortify-scan.yaml
-            parameters:
-              azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-              azureVault: ${{ parameters.azureVault }}
-              applicationName: ${{ parameters.applicationName }}
-              qualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
         - template: ./docker-build.yaml
           parameters:
             azureContainerRegistry: ${{ parameters.azureContainerRegistry }}
             azureContainerRegistrySubscription:  ${{ parameters.azureContainerRegistrySubscription }}
             applicationName:  ${{ parameters.applicationName }}
 
+    - ${{ if parameters.fortifyScan }}:
+      - template: ./jobs/fortify-scan-job.yaml
+        parameters:
+          dependsOn: BuildAndTestApplication
+          vaultAgentPool: ${{ parameters.agentPool }}
+          azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+          azureVault: ${{ parameters.azureVault }}
+          applicationName: ${{ parameters.applicationName }}
+          qualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
+
     - job: DeployBuild
-      dependsOn: BuildAndTestApplication
+      ${{ if parameters.fortifyScan }}:
+        dependsOn: RunFortifyScan
+      ${{ if not(parameters.fortifyScan) }}:
+        dependsOn: BuildAndTestApplication
       condition: succeeded()
       pool: ${{ parameters.agentPool }}
 
