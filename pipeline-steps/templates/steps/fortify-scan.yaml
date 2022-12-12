@@ -70,9 +70,9 @@ steps:
 
         # Technology stack selection seems to make no impact on scan results.
         scanUrl=$(echo "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}/static-scans/start-scan?assessmentTypeId=117&technologyStack=${{ parameters.technologyStack }}&fragNo=-1&offset=0&entitlementId=${entitlementId}&entitlementFrequencyType=Subscription")
-        if [[ -z "${{ parameters.technologyVersion }}" ]]
+        if [[ -n "${{ parameters.technologyVersion }}" ]]
         then
-          scanUrl=$(echo ${scanUrl}&languageLevel=${{ parameters.technologyVersion }})
+          scanUrl=$(echo "${scanUrl}&languageLevel=${{ parameters.technologyVersion }}")
         fi
         scanResponse=$(curl \
             --request POST "${scanUrl}" \
