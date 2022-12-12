@@ -106,7 +106,9 @@ stages:
 
     - job: DeployBuild
       ${{ if parameters.fortifyScan }}:
-        dependsOn: RunFortifyScan
+        dependsOn:
+          - BuildAndTestApplication
+          - RunFortifyScan
       ${{ if not(parameters.fortifyScan) }}:
         dependsOn: BuildAndTestApplication
       condition: succeeded()
