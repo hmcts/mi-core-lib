@@ -202,7 +202,7 @@ dependencyManagement {
 def versions = [
 	azureCore     	 : '1.34.0',
 	azureIdentity 	 : '1.7.1',
-	azureSpringBoot	 : '3.14.0',
+	azureSpringBoot	 : '4.0.0',
 	azureStorageBlob : '12.20.1',
 	azureStorageCom  : '12.19.1',
 	commonsIo        : '2.11.0',
