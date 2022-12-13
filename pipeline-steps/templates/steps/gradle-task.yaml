@@ -1,7 +1,6 @@
 parameters:
   azureKeyMapping: {}
   envMapping: {}
-  envStringMapping: {}
   gradleTasks: ''
   testResultsFiles: '**/TEST-*.xml'
   testRunTitle: 'Gradle test'
@@ -19,11 +18,9 @@ steps:
     condition: and(succeeded(), eq('${{ parameters.execute }}', true))
     env:
       ${{ each pair in parameters.envMapping }}:
-        ${{ pair.key }}: $(${{ pair.value }})
+        ${{ pair.key }}: ${{ pair.value }}
       ${{ each pair in parameters.azureKeyMapping }}:
         ${{ pair.key }}: $(${{ pair.value }})
-      ${{ each pair in parameters.envStringMapping }}:
-        ${{ pair.key }}: ${{ pair.value }}
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
