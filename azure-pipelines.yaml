@@ -1,0 +1,47 @@
+name: HMCTS Management Information Core Library
+trigger:
+  - master
+
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: 'default'
+    values:
+      - 'default'
+      - 'sbox'
+      - 'dev'
+      - 'test'
+      - 'ithc'
+ - name: fortifyScan
+    displayName: Run Fortify scan
+    type: boolean
+    default: true
+  - name: fortifyQualityGateLevel
+    displayName: Fortify quality gate level (0 for non-blocking)
+    type: number
+    default: 1
+    
+variables:
+  applicationName: 'mi-core-lib'
+  azureSubscriptionPrefix: 'DTS-SHAREDSERVICES'
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+    environment: ${{ parameters.environment }}
+    fortifyScan: ${{ parameters.fortifyScan }}
+    fortifyQualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    environment: 'stg'
+    fortifyScan: true
+    fortifyQualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
+    
+stages:
+  - ${{ if parameters.fortifyScan }}:
+    - template: ./pipeline-steps/templates/run-fortify-scan.yaml
+      parameters:
+        azureSubscriptionEndpoint: "${{ variables.azureSubscriptionPrefix }}-${{ upper(variables.environment) }}"
+        azureVault: "mi-vault-${{ lower(variables.environment) }}"
+        vaultAgentPool: "hmcts-ss-${{ lower(variables.environment) }}"
+        applicationName: "${{ variables.applicationName }}"
+        qualityGateLevel: ${{ variables.fortifyQualityGateLevel }}
+        technologyStack: 'JS/TS/HTML'
+        technologyVersion: ''
