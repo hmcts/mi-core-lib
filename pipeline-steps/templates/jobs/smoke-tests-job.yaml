@@ -41,7 +41,7 @@ parameters:
 jobs:
 - job: run_smoke_tests
   displayName: 'Run smoke tests'
-  dependsOn: ${{ parameters.dependsOn }}
+  # dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
 
   variables:
