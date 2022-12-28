@@ -210,7 +210,7 @@ def versions = [
 	hmctsLogging     : '5.1.9',
 	junit         	 : '5.8.2',
 	lombok        	 : '1.18.24',
-	mockito       	 : '4.1.0',
+	mockito       	 : '4.11.0',
 	openCsv       	 : '5.7.1',
 	piTest        	 : '1.7.3',
 	piTestGradle  	 : '1.9.11',
