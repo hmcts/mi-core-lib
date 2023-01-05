@@ -13,7 +13,7 @@ parameters:
       - 'dev'
       - 'test'
       - 'ithc'
- - name: fortifyScan
+  - name: fortifyScan
     displayName: Run Fortify scan
     type: boolean
     default: true
