@@ -6,9 +6,8 @@ parameters:
   - name: environment
     displayName: Environment
     type: string
-    default: 'default'
+    default: 'sbox'
     values:
-      - 'default'
       - 'sbox'
       - 'dev'
       - 'test'
