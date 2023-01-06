@@ -182,7 +182,9 @@ class StorageAccountWrapperTest {
         when(blobServiceClient.getBlobContainerClient(CONTAINER_NAME).getBlobClient(BLOB_NAME)).thenReturn(blobClient);
         when(blobClient.openInputStream()).thenReturn(inputStream);
         when(blobClient.exists()).thenReturn(true);
-        assertEquals(inputStream, classToTest.getBlobInputStream(CONTAINER_NAME, BLOB_NAME), "Valid stream");
+        try (BlobInputStream getInputStream = classToTest.getBlobInputStream(CONTAINER_NAME, BLOB_NAME)) {
+            assertEquals(inputStream, getInputStream, "Valid stream");
+        }
     }
 
     @Test
