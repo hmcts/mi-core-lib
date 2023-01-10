@@ -208,7 +208,7 @@ def versions = [
 	commonsIo        : '2.11.0',
 	commonsLang      : '3.12.0',
 	hmctsLogging     : '5.1.9',
-	junit         	 : '5.8.2',
+	junit         	 : '5.9.2',
 	lombok        	 : '1.18.24',
 	mockito       	 : '4.1.0',
 	openCsv       	 : '5.7.1',
