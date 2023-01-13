@@ -10,8 +10,8 @@ parameters:
   applicationName: ''
   rootFolder: '.'
   qualityGateLevel: 1 # 0 for no quality gate, 1 includes critical issues only, 2 includes high, 3 includes medium and 4 includes low.
-  technologyStack: 'JAVA/J2EE/Kotlin'
-  technologyVersion: '11'
+  technologyStack: 'JS/TS/HTML'
+  technologyVersion: ''
   retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
   runScan: default
 
