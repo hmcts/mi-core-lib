@@ -12,10 +12,6 @@ parameters:
       - 'dev'
       - 'test'
       - 'ithc'
-  - name: fortifyScan
-    displayName: Run Fortify scan
-    type: boolean
-    default: false
     
 variables:
   applicationName: 'mi-core-lib'
@@ -32,4 +28,3 @@ stages:
       azureVault: "mi-vault-${{ lower(variables.environment) }}"
       vaultAgentPool: "hmcts-ss-${{ lower(variables.environment) }}"
       applicationName: "${{ variables.applicationName }}"
-      runScan: ${{ parameters.fortifyScan }}
