@@ -50,7 +50,7 @@ jobs:
   steps:
   - template: ../steps/install-python.yaml
     parameters:
-      pythonVersion: 3.8
+      pythonVersion: ${{ variables.pythonVersion }}
   - template: ../steps/vault-secrets.yaml
     parameters: 
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
@@ -66,11 +66,13 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         set -e
-        python$pythonVersion --version
-        python$pythonVersion -m venv working_dir
+        pythonCmd=python${{ variables.pythonVersion }}
+        echo ${{ variables.pythonVersion }}
+        $pythonCmd --version
+        $pythonCmd -m venv working_dir
         source working_dir/bin/activate
-        python$pythonVersion -m pip install -U pip
-        python$pythonVersion -m pip install -r requirements.txt --no-cache-dir
+        $pythonCmd -m pip install -U pip
+        $pythonCmd -m pip install -r requirements.txt --no-cache-dir
         make smoke-test
         deactivate
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
