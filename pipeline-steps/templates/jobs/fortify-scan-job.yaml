@@ -13,10 +13,12 @@ parameters:
   technologyStack: 'JAVA/J2EE/Kotlin'
   technologyVersion: '11'
   retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
+  runScan: default
 
 jobs:
   - job: PrepareFortifySecrets
     dependsOn: ${{ parameters.dependsOn }}
+    condition: or(eq('${{ parameters.runScan }}', true), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool: ${{ parameters.vaultAgentPool }}
     steps:
       - checkout: none
