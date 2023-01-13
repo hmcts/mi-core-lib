@@ -18,7 +18,7 @@ parameters:
 jobs:
   - job: PrepareFortifySecrets
     dependsOn: ${{ parameters.dependsOn }}
-    condition: or(eq('${{ parameters.runScan }}', true), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
+    condition: or(eq('${{ parameters.runScan }}', true), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool: ${{ parameters.vaultAgentPool }}
     steps:
       - checkout: none
