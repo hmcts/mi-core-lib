@@ -17,8 +17,6 @@ parameters:
   azureSecreKeys: '*' # coma separated azure keys
   azureVault: ''
   dependencyCheck: true
-  fortifyScan: true
-  fortifyQualityGateLevel: 1
   preIntegrationTest: false
   postIntegrationTest: true
   functionalTest: false
@@ -27,6 +25,8 @@ parameters:
   ithcEnv: 'ithc'
   agentPool: hmcts-ss-sandbox
   jobTimeout: 900
+  fortifyTechnologyStack: 'JAVA/J2EE/Kotlin'
+  fortifyTechnologyVersion: '11'
   
 stages:
 - stage: BuildAndDeploy
@@ -93,23 +93,20 @@ stages:
             azureContainerRegistrySubscription:  ${{ parameters.azureContainerRegistrySubscription }}
             applicationName:  ${{ parameters.applicationName }}
 
-    - ${{ if parameters.fortifyScan }}:
-      - template: ./jobs/fortify-scan-job.yaml
-        parameters:
-          dependsOn: BuildAndTestApplication
-          vaultAgentPool: ${{ parameters.agentPool }}
-          azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-          azureVault: ${{ parameters.azureVault }}
-          applicationName: ${{ parameters.applicationName }}
-          qualityGateLevel: ${{ parameters.fortifyQualityGateLevel }}
+    - template: ./jobs/fortify-scan-job.yaml
+      parameters:
+        dependsOn: BuildAndTestApplication
+        vaultAgentPool: ${{ parameters.agentPool }}
+        azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+        azureVault: ${{ parameters.azureVault }}
+        applicationName: ${{ parameters.applicationName }}
+        technologyStack: ${{ parameters.fortifyTechnologyStack }}
+        technologyVersion: ${{ parameters.fortifyTechnologyVersion }}
 
     - job: DeployBuild
-      ${{ if parameters.fortifyScan }}:
-        dependsOn:
-          - BuildAndTestApplication
-          - RunFortifyScan
-      ${{ if not(parameters.fortifyScan) }}:
-        dependsOn: BuildAndTestApplication
+      dependsOn:
+        - BuildAndTestApplication
+        - RunFortifyScan
       condition: succeeded()
       pool: ${{ parameters.agentPool }}
 
