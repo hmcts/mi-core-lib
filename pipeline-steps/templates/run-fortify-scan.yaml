@@ -13,7 +13,6 @@ parameters:
   technologyStack: 'JS/TS/HTML'
   technologyVersion: ''
   retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
-  runScan: default
 
 stages:
   - stage: FortifyScan
@@ -34,4 +33,3 @@ stages:
           technologyStack: ${{ parameters.technologyStack }}
           technologyVersion: ${{ parameters.technologyVersion }}
           retryLimit: ${{ parameters.retryLimit }}
-          runScan: ${{ parameters.runScan }}
