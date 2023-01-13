@@ -73,8 +73,6 @@ jobs:
         source working_dir/bin/activate
         $pythonCmd -m pip install -U pip
         $pythonCmd -m pip install -r requirements.txt --no-cache-dir
-        $pythonCmd -c 'import psutil;d=psutil.cpu_count();print(d)'
-        $pythonCmd -c 'import psutil;d=psutil.cpu_count(logical=False);print(d)'
         make smoke-test
         deactivate
       azureSubscription: ${{ parameters.subscriptionEndpoint }}
