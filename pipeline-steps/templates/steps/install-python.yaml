@@ -1,0 +1,22 @@
+parameters:
+- name: pythonVersion
+  type: string
+  default: '3.8'
+  values:
+  - '2.7'
+  - '3.7'
+  - '3.8'
+
+
+steps:
+  - script: |
+      set -x
+      apt-get update
+      pythonVersion=${{ parameters.pythonVersion }}
+      echo "Python version is $pythonVersion"
+      ACCEPT_EULA=Y apt-get -y install python$pythonVersion python$pythonVersion-dev  
+      apt-get -y install  python$pythonVersion-venv  python$pythonVersion-distutils
+      python$pythonVersion --version
+      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+      python$pythonVersion get-pip.py
+    displayName: 'Install python version'
