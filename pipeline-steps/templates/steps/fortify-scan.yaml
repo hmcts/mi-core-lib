@@ -112,14 +112,24 @@ steps:
 
         echo "Fortify scan loop finished."
         echo "$analysisSummary"
+        
+        echo "Getting updated Fortify release status. Required to account for existing issue audit resolution."
+        
+        releaseSummary=$(curl \
+            --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}" \
+            --header "Accept: application/json" \
+            --header "Authorization: Bearer $accessToken")
+            
+        echo "Got updated release summary."
+        echo "$releaseSummary"
 
         if [[ $analysisStatus == "Completed" ]]
         then
-            analysisIssueCount=$(echo "$analysisSummary" | jq -r ".totalIssues")
-            criticalIssueCount=$(echo "$analysisSummary" | jq -r ".issueCountCritical")
-            highIssueCount=$(echo "$analysisSummary" | jq -r ".issueCountHigh")
-            mediumIssueCount=$(echo "$analysisSummary" | jq -r ".issueCountMedium")
-            lowIssueCount=$(echo "$analysisSummary" | jq -r ".issueCountLow")
+            analysisIssueCount=$(echo "$releaseSummary" | jq -r ".issueCount")
+            criticalIssueCount=$(echo "$releaseSummary" | jq -r ".critical")
+            highIssueCount=$(echo "$releaseSummary" | jq -r ".high")
+            mediumIssueCount=$(echo "$releaseSummary" | jq -r ".medium")
+            lowIssueCount=$(echo "$releaseSummary" | jq -r ".low")
 
             if [[ $analysisIssueCount -eq 0 ]]
             then
