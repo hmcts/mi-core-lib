@@ -44,7 +44,9 @@ jobs:
     ${{ if ne(parameters.scanAgentPool, '') }}:
       pool: ${{ parameters.scanAgentPool }}
     steps:
+      - bash: echo '$(Build.SourceBranch)'
       - checkout: self
+        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
         clean: true
       - template: ../steps/fortify-scan.yaml
         parameters:
