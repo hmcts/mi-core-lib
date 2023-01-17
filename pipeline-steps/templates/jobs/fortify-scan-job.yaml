@@ -34,7 +34,7 @@ jobs:
             echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$fortifyUsername"
             echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$fortifyPassword"
   - job: RunFortifyScan
-    dependsOn: ['GetFortifyCredentials']
+    dependsOn: ['PrepareFortifySecrets']
     variables:
       fortifyUsername: $[ dependencies.PrepareFortifySecrets.outputs['GetFortifyCredentials.FortifyUsername'] ]
       fortifyPassword: $[ dependencies.PrepareFortifySecrets.outputs['GetFortifyCredentials.FortifyPassword'] ]
