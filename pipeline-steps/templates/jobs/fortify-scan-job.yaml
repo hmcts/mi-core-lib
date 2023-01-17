@@ -17,11 +17,11 @@ parameters:
 jobs:
   - job: PrepareFortifySecrets
     dependsOn: ${{ parameters.dependsOn }}
-    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool: ${{ parameters.vaultAgentPool }}
     steps:
       - checkout: none
       - task: AzureCLI@2
+        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
         name: GetFortifyCredentials
         displayName: "Get Fortify Credentials"
         inputs:
@@ -34,8 +34,7 @@ jobs:
             echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$fortifyUsername"
             echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$fortifyPassword"
   - job: RunFortifyScan
-    dependsOn: ['PrepareFortifySecrets']
-    condition: succeeded()
+    dependsOn: ['GetFortifyCredentials']
     variables:
       fortifyUsername: $[ dependencies.PrepareFortifySecrets.outputs['GetFortifyCredentials.FortifyUsername'] ]
       fortifyPassword: $[ dependencies.PrepareFortifySecrets.outputs['GetFortifyCredentials.FortifyPassword'] ]
