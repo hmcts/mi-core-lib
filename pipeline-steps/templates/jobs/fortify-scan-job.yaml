@@ -15,8 +15,18 @@ parameters:
   retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
 
 jobs:
-  - job: PrepareFortifySecrets
+  - job: CheckFortifyScanRequirement
     dependsOn: ${{ parameters.dependsOn }}
+    pool: ${{ parameters.vaultAgentPool }}
+    steps:
+      - checkout: none
+      - task: Bash@3
+        displayName: "Get Build Trigger Branch Reference"
+        inputs:
+          targetType: inline
+          script: echo '$(Build.SourceBranch)'
+  - job: PrepareFortifySecrets
+    dependsOn: ['CheckFortifyScanRequirement']
     condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/'))
     pool: ${{ parameters.vaultAgentPool }}
     steps:
