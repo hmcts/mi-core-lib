@@ -14,11 +14,10 @@ parameters:
   technologyStack: 'JS/TS/HTML'
   technologyVersion: ''
   retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
-  
-variables:
-  - group: ${{ parameters.variableGroup }}
 
 jobs:
+  variables:
+    - group: ${{ parameters.variableGroup }}
   - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/')) }}:
     - ${{ if and(ne(variables['fortify-username'], ''), ne(variables['fortify-password'], '')) }}:
       - job: PrepareFortifySecrets
