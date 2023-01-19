@@ -4,6 +4,7 @@ parameters:
   vaultAgentPool: 'hmcts-ss-sbox'
   azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-SBOX'
   azureVault: 'mi-vault-sbox'
+  variableGroup: 'mi-env-variables'
   fortifyUsernameSecret: 'fortify-username'
   fortifyPasswordSecret: 'fortify-password'
   fortifyBaseUrl: 'https://api.emea.fortify.com'
@@ -24,6 +25,7 @@ stages:
           vaultAgentPool: ${{ parameters.vaultAgentPool }}
           azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
           azureVault: ${{ parameters.azureVault }}
+          variableGroup: ${{ parameters.variableGroup }}
           fortifyUsernameSecret: ${{ parameters.fortifyUsernameSecret }}
           fortifyPasswordSecret: ${{ parameters.fortifyPasswordSecret }}
           fortifyBaseUrl: ${{ parameters.fortifyBaseUrl }}
