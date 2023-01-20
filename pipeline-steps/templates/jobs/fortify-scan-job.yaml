@@ -16,12 +16,12 @@ parameters:
   retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
 
 jobs:
-  variables:
-    - group: ${{ parameters.variableGroup }}
   - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/')) }}:
-    - ${{ if and(ne(variables['fortify-username'], ''), ne(variables['fortify-password'], '')) }}:
-      - job: PrepareFortifySecrets
-        dependsOn: ${{ parameters.dependsOn }}
+    - job: PrepareFortifySecrets
+      variables:
+        - group: ${{ parameters.variableGroup }}
+      dependsOn: ${{ parameters.dependsOn }}
+      ${{ if and(ne(variables['fortify-username'], ''), ne(variables['fortify-password'], '')) }}:
         ${{ if eq(parameters.scanAgentPool, '') }}:
           pool:
             vmImage: ubuntu-latest
@@ -40,9 +40,7 @@ jobs:
                 echo "In variable-group setting"
                 echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$(fortify-username)"
                 echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$(fortify-password)"
-    - ${{ else }}:
-      - job: PrepareFortifySecrets
-        dependsOn: ${{ parameters.dependsOn }}
+      ${{ else }}:
         pool: ${{ parameters.vaultAgentPool }}
         steps:
           - checkout: none
