@@ -5,6 +5,7 @@ parameters:
   azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-SBOX'
   azureVault: 'mi-vault-sbox'
   variableGroup: 'mi-env-variables'
+  useVariableGroup: 'true'
   fortifyUsernameSecret: 'fortify-username'
   fortifyPasswordSecret: 'fortify-password'
   fortifyBaseUrl: 'https://api.emea.fortify.com'
@@ -21,7 +22,7 @@ jobs:
       variables:
         - group: ${{ parameters.variableGroup }}
       dependsOn: ${{ parameters.dependsOn }}
-      ${{ if and(ne(variables['fortify-username'], ''), ne(variables['fortify-password'], '')) }}:
+      ${{ if eq(parameters.useVariableGroup, 'true') }}:
         ${{ if eq(parameters.scanAgentPool, '') }}:
           pool:
             vmImage: ubuntu-latest
@@ -38,8 +39,8 @@ jobs:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "In variable-group setting"
-                echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$(fortify-username)"
-                echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$(fortify-password)"
+                echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$(${{ parameters.fortifyUsernameSecret }})"
+                echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$(${{ parameters.fortifyPasswordSecret }})"
       ${{ else }}:
         pool: ${{ parameters.vaultAgentPool }}
         steps:
@@ -53,9 +54,6 @@ jobs:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "In vault setting"
-                echo "$(env.test)"
-                echo "$(fortify-username)"
-                echo "$($(fortify-password))"
                 fortifyUsername=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyUsernameSecret }}" --query "value" -o tsv)
                 fortifyPassword=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyPasswordSecret }}" --query "value" -o tsv)
                 echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$fortifyUsername"
