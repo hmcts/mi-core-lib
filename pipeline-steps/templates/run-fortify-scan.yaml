@@ -5,6 +5,7 @@ parameters:
   azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-SBOX'
   azureVault: 'mi-vault-sbox'
   variableGroup: 'mi-env-variables'
+  useVariableGroup: 'true'
   fortifyUsernameSecret: 'fortify-username'
   fortifyPasswordSecret: 'fortify-password'
   fortifyBaseUrl: 'https://api.emea.fortify.com'
