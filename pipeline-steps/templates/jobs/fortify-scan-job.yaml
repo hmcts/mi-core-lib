@@ -38,10 +38,7 @@ jobs:
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                echo "In variable-group setting"
-                echo "$(fortify-username)"
-                echo "${{ parameters.fortifyUsernameSecret }}"
-                echo "$(${{ parameters.fortifyUsernameSecret }})"
+                echo "$(${{ parameters.fortifyPasswordSecret }})"
                 echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$(${{ parameters.fortifyUsernameSecret }})"
                 echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$(${{ parameters.fortifyPasswordSecret }})"
       ${{ else }}:
@@ -56,7 +53,6 @@ jobs:
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                echo "In vault setting"
                 fortifyUsername=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyUsernameSecret }}" --query "value" -o tsv)
                 fortifyPassword=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyPasswordSecret }}" --query "value" -o tsv)
                 echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$fortifyUsername"
