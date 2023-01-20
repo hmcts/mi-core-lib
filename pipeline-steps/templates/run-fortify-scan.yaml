@@ -27,6 +27,7 @@ stages:
           azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
           azureVault: ${{ parameters.azureVault }}
           variableGroup: ${{ parameters.variableGroup }}
+          useVariableGroup: ${{ parameters.useVariableGroup }}
           fortifyUsernameSecret: ${{ parameters.fortifyUsernameSecret }}
           fortifyPasswordSecret: ${{ parameters.fortifyPasswordSecret }}
           fortifyBaseUrl: ${{ parameters.fortifyBaseUrl }}
