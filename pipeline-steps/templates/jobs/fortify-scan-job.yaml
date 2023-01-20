@@ -53,6 +53,9 @@ jobs:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "In vault setting"
+                echo "$(env.test)"
+                echo "$(fortify-username)"
+                echo "$($(fortify-password))"
                 fortifyUsername=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyUsernameSecret }}" --query "value" -o tsv)
                 fortifyPassword=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyPasswordSecret }}" --query "value" -o tsv)
                 echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$fortifyUsername"
