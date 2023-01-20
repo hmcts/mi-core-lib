@@ -39,6 +39,9 @@ jobs:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "In variable-group setting"
+                echo "$(fortify-username)"
+                echo "${{ parameters.fortifyUsernameSecret }}"
+                echo "$(${{ parameters.fortifyUsernameSecret }})"
                 echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$(${{ parameters.fortifyUsernameSecret }})"
                 echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$(${{ parameters.fortifyPasswordSecret }})"
       ${{ else }}:
