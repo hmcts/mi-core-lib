@@ -103,18 +103,22 @@ jobs:
               
               $triggersADF | ForEach-Object {
                 triggerInitiallyActive = ($_.RuntimeState -match 'Started')
-                if(triggerInitiallyActive){
-                  Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
-                }
                 if (("${{ parameters.enableTriggers }}" -eq "true") -And (-Not $disabledTriggersList.Contains($_.name))) {
-                  Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
-                  Write-Host("Start trigger --> ",$_.name)
+                  if (triggerInitiallyActive) {
+                    Write-Host("Trigger already active --> ",$_.name)
+                  }
+                  else {
+                    Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
+                    Write-Host("Start trigger --> ",$_.name)
+                  }
                 }
                 else {
-                  Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
-                  Write-Host("Stop Trigger:::", $_.name)
-                }
-                if(triggerInitiallyActive){
-                  Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
+                  if (triggerInitiallyActive) {
+                    Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
+                    Write-Host("Stop Trigger:::", $_.name)
+                  }
+                  else {
+                    Write-Host("Trigger already deactivated --> ",$_.name)
+                  }
                 }
               }
