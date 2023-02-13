@@ -83,7 +83,8 @@ jobs:
               Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -HostName "https://github.com" -AccountName "$(RepoConfigurationAccountName)" -RepositoryName "$(RepoConfigurationRepositoryName)" -CollaborationBranch "$(RepoConfigurationCollaborationBranch)" -RootFolder "$(RepoConfigurationRootFolder)" -Force
             azurePowerShellVersion: LatestVersion
         - task: AzurePowerShell@4
-          displayName: deactivateTriggers
+          name: deactivateTriggers
+          displayName: 'Temporarily deactivate triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             azurePowerShellVersion: LatestVersion
@@ -126,7 +127,8 @@ jobs:
                 }
               }
         - task: AzurePowerShell@4
-          displayName: reactivateTriggers
+          name: reactivateTriggers
+          displayName: 'Reactivate temporarily deactivated triggers'
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             azurePowerShellVersion: LatestVersion
