@@ -91,7 +91,9 @@ jobs:
             scriptType: 'inline'
             inline: |
                 $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName "${{ parameters.adfName }}" -ResourceGroupName "${{ parameters.resourceGroup }}"
+                echo $triggersADF
                 $activeTriggers = $triggersADF.where{$_.RuntimeState -match 'Started'}
+                echo "type: ${{ activeTriggers.GetType() }}"
                 $activeTriggers | ForEach-Object {
                   Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
                   Write-Host("Temporarily deactivating trigger :::", $_.name)
