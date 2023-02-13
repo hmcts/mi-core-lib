@@ -138,7 +138,7 @@ jobs:
             scriptType: 'inline'
             inline: |
                 $triggersToActivate = @()
-                if ($(deactivateTriggers.activeTriggers) -ne "") {
+                if ("$(deactivateTriggers.activeTriggers)" -ne "") {
                   $triggersToActivate = -split "$(deactivateTriggers.activeTriggers)"
                 }
                 foreach($trigger in $triggersToActivate){
