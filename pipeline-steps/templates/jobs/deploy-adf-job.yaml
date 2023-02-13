@@ -99,7 +99,7 @@ jobs:
                     Write-Host("Temporarily deactivating trigger :::", $_.name)
                   }
                 }
-                Write-Output "##vso[task.setvariable variable=activeTriggers;isOutput=true]$activeTriggers.ToArray()"
+                Write-Output "##vso[task.setvariable variable=activeTriggers;isOutput=true]$activeTriggers"
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
