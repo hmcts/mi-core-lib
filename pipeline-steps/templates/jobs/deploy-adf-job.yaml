@@ -137,7 +137,8 @@ jobs:
             azurePowerShellVersion: LatestVersion
             scriptType: 'inline'
             inline: |
-                foreach($trigger in $(deactivateTriggers.activeTriggers)){
+                $triggersToActivate = -split $(deactivateTriggers.activeTriggers)
+                foreach($trigger in $triggersToActivate){
                   Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $trigger -Force
                   Write-Host("Reactivating trigger :::", $trigger)
                 }
