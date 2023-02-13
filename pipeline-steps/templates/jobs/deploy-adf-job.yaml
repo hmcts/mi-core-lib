@@ -27,10 +27,6 @@ parameters:
   type: string
   default: ''
 
-variables:
-  - name: activeTriggers
-    value: ''
-
 jobs:
 - deployment: deploy_adf
   displayName: 'Deploy to Azure Data Factory'
@@ -38,6 +34,7 @@ jobs:
 
   variables:
     packageWheelName: 'none'
+    activeTriggers: ''
   environment: ${{ parameters.env }}
   strategy:
     runOnce:
