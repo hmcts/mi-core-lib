@@ -132,7 +132,7 @@ jobs:
             azurePowerShellVersion: LatestVersion
             scriptType: 'inline'
             inline: |
-                $(activeTriggers) | ForEach-Object {
+                $activeTriggers | ForEach-Object {
                   Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
                   Write-Host("Reactivating trigger :::", $_.name)
                 }
