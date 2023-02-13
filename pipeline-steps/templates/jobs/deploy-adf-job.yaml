@@ -94,12 +94,12 @@ jobs:
                 $activeTriggers = [System.Collections.ArrayList]@()
                 $triggersADF | ForEach-Object {
                   if($_.RuntimeState -match 'Started'){
-                    $activeTriggers.Add($_)
+                    $activeTriggers.Add($_.name)
                     Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
                     Write-Host("Temporarily deactivating trigger :::", $_.name)
                   }
                 }
-                Write-Output "##vso[task.setvariable variable=activeTriggers;isOutput=true]$activeTriggers"
+                Write-Output "##vso[task.setvariable variable=activeTriggers;isOutput=true]$activeTriggers.ToArray()"
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
@@ -137,7 +137,7 @@ jobs:
             azurePowerShellVersion: LatestVersion
             scriptType: 'inline'
             inline: |
-                $(deactivateTriggers.activeTriggers) | ForEach-Object {
-                  Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
-                  Write-Host("Reactivating trigger :::", $_.name)
+                foreach($trigger in $(deactivateTriggers.activeTriggers)){
+                  Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $trigger -Force
+                  Write-Host("Reactivating trigger :::", $trigger)
                 }
