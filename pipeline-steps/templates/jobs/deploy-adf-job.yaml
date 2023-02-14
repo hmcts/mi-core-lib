@@ -26,7 +26,7 @@ parameters:
 - name: disabledTriggers #List of disabled triggers separated by comma
   type: string
   default: ''
-
+  
 jobs:
 - deployment: deploy_adf
   displayName: 'Deploy to Azure Data Factory'
@@ -82,24 +82,6 @@ jobs:
             inline: |
               Get-AzDataFactoryV2 -ResourceGroupName "${{ parameters.resourceGroup }}" -Name "${{ parameters.adfName }}" | Set-AzDataFactoryV2 -HostName "https://github.com" -AccountName "$(RepoConfigurationAccountName)" -RepositoryName "$(RepoConfigurationRepositoryName)" -CollaborationBranch "$(RepoConfigurationCollaborationBranch)" -RootFolder "$(RepoConfigurationRootFolder)" -Force
             azurePowerShellVersion: LatestVersion
-        - task: AzurePowerShell@4
-          name: deactivateTriggers
-          displayName: 'Temporarily deactivate triggers'
-          inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            azurePowerShellVersion: LatestVersion
-            scriptType: 'inline'
-            inline: |
-                $triggersADF = Get-AzDataFactoryV2Trigger -DataFactoryName "${{ parameters.adfName }}" -ResourceGroupName "${{ parameters.resourceGroup }}"
-                $activeTriggers = [System.Collections.ArrayList]@()
-                $triggersADF | ForEach-Object {
-                  if($_.RuntimeState -match 'Started'){
-                    $activeTriggers.Add($_.name)
-                    Stop-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $_.name -Force
-                    Write-Host("Temporarily deactivating trigger :::", $_.name)
-                  }
-                }
-                Write-Output "##vso[task.setvariable variable=activeTriggers;isOutput=true]$activeTriggers"
         - task: AzureResourceGroupDeployment@2
           displayName: 'Azure Deployment:Create Or Update Resource Group action on ${{ parameters.resourceGroup }}'
           inputs:
@@ -129,19 +111,3 @@ jobs:
                   Write-Host("Stop Trigger:::", $_.name)
                 }
               }
-        - task: AzurePowerShell@4
-          name: reactivateTriggers
-          displayName: 'Reactivate temporarily deactivated triggers'
-          inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            azurePowerShellVersion: LatestVersion
-            scriptType: 'inline'
-            inline: |
-                $triggersToActivate = @()
-                if ("$(deactivateTriggers.activeTriggers)" -ne "") {
-                  $triggersToActivate = -split "$(deactivateTriggers.activeTriggers)"
-                }
-                foreach($trigger in $triggersToActivate){
-                  Start-AzDataFactoryV2Trigger -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -Name $trigger -Force
-                  Write-Host("Reactivating trigger :::", $trigger)
-                }
