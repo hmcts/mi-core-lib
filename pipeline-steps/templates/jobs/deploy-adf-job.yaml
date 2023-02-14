@@ -23,6 +23,9 @@ parameters:
 - name: enableTriggers
   type: boolean
   default: false
+- name: updateTriggers
+  type: boolean
+  default: false
 - name: disabledTriggers #List of disabled triggers separated by comma
   type: string
   default: ''
@@ -45,6 +48,14 @@ jobs:
             script: |
               pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.6.1 -AllowClobber -Force
               pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.0 -AllowClobber -Force
+        - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $true'
+            azurePowerShellVersion: LatestVersion
         - task: Powershell@2
           displayName: Check Global Parameters Existence
           inputs:
@@ -91,6 +102,14 @@ jobs:
             csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
             csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
+        - task: AzurePowerShell@4
+          displayName: 'Azure PowerShell script: Start PostDeploymentScript'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
+          inputs:
+            azureSubscription: ${{ parameters.subscriptionEndpoint }}
+            ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
+            ScriptArguments: '-armTemplate "$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json" -ResourceGroupName "${{ parameters.resourceGroup }}" -DataFactoryName "${{ parameters.adfName }}" -predeployment $false'
+            azurePowerShellVersion: LatestVersion
         - task: AzurePowerShell@4
           displayName: 'Enable or Disable Pipeline Triggers'
           inputs:
