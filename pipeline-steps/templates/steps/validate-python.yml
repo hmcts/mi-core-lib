@@ -18,7 +18,7 @@ steps:
       source working_dir/bin/activate
       pip install -r requirements.txt --no-cache-dir
       printf "\n\n\n\n\nBeginning code validation\n"
-      flake8 ${{ parameters.testDirectory }} || echo "Warning - The code has styling issues that must be resolved"
+      flake8 ${{ parameters.testDirectory }}
       echo "Code validation complete"
       deactivate
   displayName: 'Validate python'
