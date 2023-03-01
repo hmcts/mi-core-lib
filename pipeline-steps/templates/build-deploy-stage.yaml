@@ -26,7 +26,8 @@ parameters:
   agentPool: hmcts-ss-sandbox
   jobTimeout: 900
   fortifyTechnologyStack: 'JAVA/J2EE/Kotlin'
-  fortifyTechnologyVersion: '11'
+  fortifyTechnologyVersion: '17'
+  javaVersion: '17'
   
 stages:
 - stage: BuildAndDeploy
@@ -40,6 +41,11 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
+        - task: JavaToolInstaller@0
+          inputs:
+            versionSpec: ${{ parameters.javaVersion }}
+            jdkArchitectureOption: 'x64'
+            jdkSourceOption: 'PreInstalled'
         - template: ./steps/sonar-pr-option.yaml
         - template: ./steps/dependency-check.yaml
           parameters:
