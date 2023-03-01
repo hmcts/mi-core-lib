@@ -32,7 +32,7 @@ steps:
       publishJUnitResults: ${{ parameters.publishJUnitResults }}
       testRunTitle: ${{ parameters.testRunTitle }}
       testResultsFiles: ${{ parameters.testResultsFiles }}
-      options: '--info --rerun-tasks ${{ parameters.extraOptions }}'
+      options: '--info --rerun-tasks ${{ parameters.extraOptions }} --daemon'
       tasks: ${{ parameters.gradleTasks }}
       sonarQubeRunAnalysis: ${{ parameters.sonar }}
       checkStyleRunAnalysis: ${{ parameters.checkstyle }}
