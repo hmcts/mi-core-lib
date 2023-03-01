@@ -1,3 +1,6 @@
+parameters:
+  jdkVersion: '1.17'
+
 steps:
   - task: Gradle@2
     inputs:
@@ -5,7 +8,7 @@ steps:
       gradleWrapperFile: 'gradlew'
       gradleOptions: '-Xmx3072m'
       javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.17'
+      jdkVersionOption: ${{ parameters.jdkVersion }}
       jdkArchitectureOption: 'x64'
       publishJUnitResults: false
       testResultsFiles: '**/TEST-*.xml'
