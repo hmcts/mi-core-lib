@@ -11,6 +11,7 @@ parameters:
   publishJUnitResults: false
   extraOptions: ''
   sonar: false
+  jdkVersion: '1.17'
 
 steps:
   - task: Gradle@2
@@ -26,7 +27,7 @@ steps:
       gradleWrapperFile: 'gradlew'
       gradleOptions: '-Xmx3072m'
       javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.11'
+      jdkVersionOption: ${{ parameters.jdkVersion }}
       jdkArchitectureOption: 'x64'
       publishJUnitResults: ${{ parameters.publishJUnitResults }}
       testRunTitle: ${{ parameters.testRunTitle }}
