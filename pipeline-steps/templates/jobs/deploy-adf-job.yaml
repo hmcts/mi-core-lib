@@ -47,7 +47,7 @@ jobs:
           inputs:
             script: |
               pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.6.1 -AllowClobber -Force
-              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.0 -AllowClobber -Force
+              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.11 -AllowClobber -Force
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
           condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
