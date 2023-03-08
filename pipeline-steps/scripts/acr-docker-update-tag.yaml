@@ -40,4 +40,5 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 updatedTag=$(echo ${{ parameters.tag }} | sed 's|\(.*\)-.*|\1|')-$(date '+%Y%m%d%H%M%S')
-                az acr import -n ${{ parameters.acr }} --source ${{ parameters.acr }}.azurecr.io/${{ parameters.repository }}:${{ parameters.tag }} -t ${{ parameters.acr }}.azurecr.io/${{ parameters.repository }}:$updatedTag
+                echo "Updated tag is $updatedTag"
+                az acr import -n ${{ parameters.acr }} --source ${{ parameters.acr }}.azurecr.io/${{ parameters.repository }}:${{ parameters.tag }} -t ${{ parameters.repository }}:$updatedTag
