@@ -1,0 +1,43 @@
+name: 'Build-$(Build.BuildId) Update Docker Tag'
+
+parameters:
+  - name: acr
+    displayName: Name of Azure Container Registry
+    type: string
+    default: sdshmctspublic
+  - name: repository
+    displayName: Name of ACR repository
+    type: string
+    default: mi/azure-functions
+  - name: tag
+    displayName: Tag to create new tag from
+    type: string
+
+variables:
+  azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
+
+trigger: none
+pr: none
+
+stages:
+  - stage: RetagImage
+    jobs:
+      - job: 'RetagImage'
+        pool:
+          vmImage: 'Ubuntu-latest'
+        steps:
+          - task: AzureCLI@1
+            displayName: "ACR Login"
+            inputs:
+              azureSubscription: $(azureSubscriptionEndpoint)
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az acr login --name ${{ parameters.acr }}
+          - task: AzureCLI@1
+            displayName: "Update tag date time"
+            inputs:
+              azureSubscription: $(azureSubscriptionEndpoint)
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                updatedTag=$(echo ${{ parameters.tag }} | sed 's|\(.*\)-.*|\1|')-$(date '+%Y%m%d%H%M%S')
+                az acr import -n ${{ parameters.acr }} --source ${{ parameters.acr }}.azurecr.io/${{ parameters.repository }}:${{ parameters.tag }} -t ${{ parameters.acr }}.azurecr.io/${{ parameters.repository }}:$updatedTag
