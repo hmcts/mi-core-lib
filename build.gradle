@@ -172,7 +172,7 @@ dependencyManagement {
 			entry 'log4j-to-slf4j'
 			entry 'log4j-api'
 		}
-		dependencySet(group: 'io.netty', version: '4.1.72.Final') {
+		dependencySet(group: 'io.netty', version: '4.1.90.Final') {
 			entry 'netty-buffer'
 			entry 'netty-codec'
 			entry 'netty-codec-dns'
