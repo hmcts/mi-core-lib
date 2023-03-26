@@ -212,7 +212,7 @@ def versions = [
 	lombok        	 : '1.18.24',
 	mockito       	 : '4.1.0',
 	openCsv       	 : '5.7.1',
-	piTest        	 : '1.7.3',
+	piTest        	 : '1.11.7',
 	piTestGradle  	 : '1.9.11',
 	piTestSonar   	 : '0.5'
 ]
