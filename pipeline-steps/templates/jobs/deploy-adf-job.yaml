@@ -6,6 +6,9 @@ parameters:
 - name: resourceGroup
   type: string
   default: mi-$(environment)-rg
+- name: deploymentPrefix
+  type: string
+  default: ''
 - name: adfOverrideParameters
   type: string
 - name: adfFolder
@@ -37,7 +40,7 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-  environment: ${{ parameters.env }}
+  environment: '${{ parameters.deploymentPrefix }}${{ parameters.environment }}'
   strategy:
     runOnce:
       deploy:
