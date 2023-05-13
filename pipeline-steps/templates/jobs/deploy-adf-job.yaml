@@ -40,7 +40,7 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-  environment: '${{ parameters.deploymentPrefix }}${{ parameters.environment }}'
+  environment: '${{ parameters.deploymentPrefix }}${{ parameters.env }}'
   strategy:
     runOnce:
       deploy:
