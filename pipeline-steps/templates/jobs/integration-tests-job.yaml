@@ -37,7 +37,7 @@ jobs:
 
   variables:
     pythonWorkingDir: './'
-    pythonVersion: 3.6
+    pythonVersion: 3.10
   steps:
   - script: |
       apt-get update
