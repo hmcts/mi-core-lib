@@ -1,11 +1,12 @@
 parameters:
 - name: pythonVersion
   type: string
-  default: '3.8'
+  default: '3.10'
   values:
   - '2.7'
   - '3.7'
   - '3.8'
+  - '3.10'
 
 
 steps:
