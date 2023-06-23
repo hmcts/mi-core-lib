@@ -46,7 +46,7 @@ jobs:
 
   variables:
     pythonWorkingDir: './'
-    pythonVersion: 3.10
+    pythonVersion: '3.10'
   steps:
   - template: ../steps/install-python.yaml
     parameters:
