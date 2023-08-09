@@ -75,8 +75,12 @@ jobs:
         dpkg -i libssl1.0.0_1.0.2n-1ubuntu5.13_amd64.deb
         dpkg -i libssl1.0-dev_1.0.2n-1ubuntu5.13_amd64.deb
         sed -i 's/openssl_conf = openssl_init/#openssl_conf = openssl_init/g' /etc/ssl/openssl.cnf
+        sed -i s/SECLEVEL=2/SECLEVEL=1/g' /etc/ssl/openssl.cnf
         openssl version
+        echo "Config##########"
         cat /etc/ssl/openssl.cnf
+        echo "File list##########"
+        ls -lrt /etc/ssl/
   - task: AzureCLI@2
     inputs:
       scriptType: bash
