@@ -20,11 +20,16 @@ variables:
     environment: ${{ parameters.environment }}
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     environment: 'stg'
-    
-stages:
-  - template: ./pipeline-steps/templates/run-fortify-scan.yaml
-    parameters:
-      azureSubscriptionEndpoint: "${{ variables.azureSubscriptionPrefix }}-${{ upper(variables.environment) }}"
-      azureVault: "mi-vault-${{ lower(variables.environment) }}"
-      vaultAgentPool: "hmcts-ss-${{ lower(variables.environment) }}"
-      applicationName: "${{ variables.applicationName }}"
+
+steps:
+   - script: |
+      git tag t0.0.1
+      git push origin t0.0.1
+     displayName: 'Extract latest release tag'
+#stages:
+#  - template: ./pipeline-steps/templates/run-fortify-scan.yaml
+#    parameters:
+#      azureSubscriptionEndpoint: "${{ variables.azureSubscriptionPrefix }}-${{ upper(variables.environment) }}"
+#      azureVault: "mi-vault-${{ lower(variables.environment) }}"
+#      vaultAgentPool: "hmcts-ss-${{ lower(variables.environment) }}"
+#      applicationName: "${{ variables.applicationName }}"
