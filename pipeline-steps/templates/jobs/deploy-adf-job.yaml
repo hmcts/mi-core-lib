@@ -45,14 +45,14 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - task: CmdLine@2
+        - task: PowerShell@2
           displayName: 'Prepare Az environment'
           inputs:
+            targetType: 'inline'
             script: |
-              pwsh --command "& {Register-PSRepository -Default}"
-              pwsh --command "& {[Net.ServicePointManager]::SecurityProtocol = "tls12"}"
-              pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.13.1 -AllowClobber -Force
-              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.17.0 -AllowClobber -Force
+              [Net.ServicePointManager]::SecurityProtocol = "tls12"
+              Install-Module -Name Az.Accounts -RequiredVersion 2.13.1 -AllowClobber -Force
+              Install-Module -Name Az.DataFactory -RequiredVersion 1.17.0 -AllowClobber -Force
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
           condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
