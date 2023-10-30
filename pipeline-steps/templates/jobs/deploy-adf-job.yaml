@@ -49,8 +49,8 @@ jobs:
           displayName: 'Prepare Az environment'
           inputs:
             script: |
-              pwsh --command {Register-PSRepository -Default}
-              pwsh --command {[Net.ServicePointManager]::SecurityProtocol = "tls12"}
+              pwsh --command "& {Register-PSRepository -Default}"
+              pwsh --command "& {[Net.ServicePointManager]::SecurityProtocol = "tls12"}"
               pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.13.1 -AllowClobber -Force
               pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.17.0 -AllowClobber -Force
         - task: AzurePowerShell@4
