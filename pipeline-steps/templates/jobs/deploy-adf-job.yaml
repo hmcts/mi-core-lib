@@ -6,6 +6,9 @@ parameters:
 - name: resourceGroup
   type: string
   default: mi-$(environment)-rg
+- name: deploymentPrefix
+  type: string
+  default: ''
 - name: adfOverrideParameters
   type: string
 - name: adfFolder
@@ -23,6 +26,9 @@ parameters:
 - name: enableTriggers
   type: boolean
   default: false
+- name: updateTriggers
+  type: boolean
+  default: false
 - name: disabledTriggers #List of disabled triggers separated by comma
   type: string
   default: ''
@@ -34,41 +40,20 @@ jobs:
 
   variables:
     packageWheelName: 'none'
-  environment: ${{ parameters.env }}
+  environment: '${{ parameters.deploymentPrefix }}${{ parameters.env }}'
   strategy:
     runOnce:
       deploy:
         steps:
         - task: CmdLine@2
-          displayName: 'Show Folders'
-          inputs:
-            script: 'ls -lRt $(Pipeline.Workspace)'
-        - task: AzureCLI@2
-          displayName: 'Check Scope Lock'
-          inputs:
-            azureSubscription: ${{ parameters.subscriptionEndpoint }}
-            scriptType: 'bash'
-            scriptLocation: 'inlineScript'
-            inlineScript: |
-              locks=$(az lock list -g "${{ parameters.resourceGroup }}" -o tsv)
-              if [[ ! -z "$locks" && $locks==" " ]]; then
-                echo "Lock exists on resource group to be modified."
-                exit 1
-              fi
-
-              exportLocks=$(az lock list -g "mi-${{ parameters.env }}-rg" -o tsv)
-              if [[ ! -z "$exportLocks" && $exportLocks==" " ]]; then
-                echo "Lock exists on export storage account resource group which will prevent updating the storage triggers."
-                exit 1
-              fi
-        - task: CmdLine@2
           displayName: 'Prepare Az environment'
           inputs:
             script: |
               pwsh --command Install-Module -Name Az.Accounts -RequiredVersion 2.6.1 -AllowClobber -Force
-              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.0 -AllowClobber -Force
+              pwsh --command Install-Module -Name Az.DataFactory -RequiredVersion 1.16.11 -AllowClobber -Force
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Use preDeploymentScript and stop ADF triggers'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'
@@ -122,6 +107,7 @@ jobs:
             overrideParameters: -factoryName ${{ parameters.adfName }} ${{ parameters.adfOverrideParameters }}
         - task: AzurePowerShell@4
           displayName: 'Azure PowerShell script: Start PostDeploymentScript'
+          condition: and(succeeded(), eq('${{ parameters.updateTriggers }}', 'true'))
           inputs:
             azureSubscription: ${{ parameters.subscriptionEndpoint }}
             ScriptPath: '$(Pipeline.Workspace)/ArmTemplates/PrePostDeploymentScript.ps1'

@@ -1,0 +1,161 @@
+parameters:
+  fortifyUsername: 'fortify-username'
+  fortifyPassword: 'fortify-password'
+  fortifyBaseUrl: 'https://api.emea.fortify.com'
+  applicationName: ''
+  rootFolder: '.'
+  qualityGateLevel: 1 # 0 for no quality gate, 1 includes critical issues only, 2 includes high, 3 includes medium and 4 includes low.
+  technologyStack: 'JAVA/J2EE/Kotlin'
+  technologyVersion: '17'
+  retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
+
+steps:
+  - task: Bash@3
+    displayName: "Run Fortify scan"
+    inputs:
+      targetType: "inlineScript"
+      script: |
+        set -e
+
+        zip -r "${{ parameters.applicationName }}.zip" "${{ parameters.rootFolder }}" -x .git/\* -x .gradle/\* -x bin/\* -x build/\* -x target/\* -x node_modules/\* .pytest_cache/\*
+
+        authResponse=$(curl \
+            --request POST "${{ parameters.fortifyBaseUrl }}/oauth/token" \
+            --form 'scope="api-tenant"' \
+            --form 'grant_type="password"' \
+            --form 'username="'${{ parameters.fortifyUsername }}'"' \
+            --form 'password="'${{ parameters.fortifyPassword }}'"')
+
+        # curl --fail-with-body not available on some hosted agents due to versioning. Below is a workaround.
+        if [[ $(echo "$authResponse" | jq -r ".access_token") != null ]]
+        then
+          accessToken=$(echo "$authResponse" | jq -r ".access_token")
+        else
+          echo "$authResponse"
+          exit 11
+        fi
+
+        echo "Generated access token for Fortify API."
+
+        releaseResponse=$(curl \
+            --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/releases?filters=releaseName:${{ parameters.applicationName }}&fields=releaseId" \
+            --header "Accept: application/json" \
+            --header "Authorization: Bearer $accessToken")
+
+        if [[ $(echo "$releaseResponse" | jq -r ".items[0].releaseId") != null ]]
+        then
+          releaseId=$(echo "$releaseResponse" | jq -r ".items[0].releaseId")
+        else
+          echo "$releaseResponse"
+          exit 12
+        fi
+
+        echo "Using Fortify release id: ${releaseId}"
+
+        # Assuming only 1 entitlement associated with our Fority account.
+        entitlementResponse=$(curl \
+            --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/tenant-entitlements" \
+            --header "Accept: application/json" \
+            --header "Authorization: Bearer $accessToken")
+
+        if [[ $(echo "$entitlementResponse" | jq -r ".tenantEntitlements[0].entitlementId") != null ]]
+        then
+          entitlementId=$(echo "$entitlementResponse" | jq -r ".tenantEntitlements[0].entitlementId")
+        else
+          echo "$entitlementResponse"
+          exit 13
+        fi
+
+        echo "Using Foritfy entitlement id: ${entitlementId}"
+
+        # Technology stack selection seems to make no impact on scan results.
+        scanUrl=$(echo "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}/static-scans/start-scan?assessmentTypeId=117&technologyStack=${{ parameters.technologyStack }}&fragNo=-1&offset=0&entitlementId=${entitlementId}&entitlementFrequencyType=Subscription")
+        if [[ -n "${{ parameters.technologyVersion }}" ]]
+        then
+          scanUrl=$(echo "${scanUrl}&languageLevel=${{ parameters.technologyVersion }}")
+        fi
+        scanResponse=$(curl \
+            --request POST "${scanUrl}" \
+            --header "Authorization: Bearer $accessToken" \
+            --header "Content-Type: application/octet-stream" \
+            --data-binary @"${{ parameters.applicationName }}.zip")
+
+        if [[ $(echo "$scanResponse" | jq -r ".scanId") != null ]]
+        then
+          scanId=$(echo "$scanResponse" | jq -r ".scanId")
+        else
+          echo "$scanResponse"
+          exit 14
+        fi
+
+        echo "Started Fortify scan id: ${scanId}"
+
+        analysisStatus="In_Progress"
+
+        loopCount=0
+        maxLoops=$(echo ${{ parameters.retryLimit }})
+
+        echo "About to start Fortify scan status check loop."
+        while [[ $analysisStatus != "Completed" && $analysisStatus != "Failed" && $analysisStatus != "Canceled" && $loopCount -lt $maxLoops ]]
+        do
+            loopCount=$(($loopCount + 1))
+            echo "Waiting 1 minute for Fortify scan completion. Currently on loop ${loopCount} out of ${maxLoops}."
+            sleep 60
+
+            analysisSummary=$(curl \
+                --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/scans/${scanId}/summary" \
+                --header "Authorization: Bearer $accessToken" \
+                --header "Content-Type: application/json")
+
+            analysisStatus=$(echo "$analysisSummary" | jq -r ".analysisStatusType")
+        done
+
+        echo "Fortify scan loop finished."
+        echo "$analysisSummary"
+        
+        echo "Getting updated Fortify release status. Required to account for existing issue audit resolution."
+        
+        releaseSummary=$(curl \
+            --request GET "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}" \
+            --header "Accept: application/json" \
+            --header "Authorization: Bearer $accessToken")
+            
+        echo "Got updated release summary."
+        echo "$releaseSummary"
+
+        if [[ $analysisStatus == "Completed" ]]
+        then
+            analysisIssueCount=$(echo "$releaseSummary" | jq -r ".issueCount")
+            criticalIssueCount=$(echo "$releaseSummary" | jq -r ".critical")
+            highIssueCount=$(echo "$releaseSummary" | jq -r ".high")
+            mediumIssueCount=$(echo "$releaseSummary" | jq -r ".medium")
+            lowIssueCount=$(echo "$releaseSummary" | jq -r ".low")
+
+            if [[ $analysisIssueCount -eq 0 ]]
+            then
+                echo "No Fortify issues found."
+                exit 0
+            else
+                echo "${analysisIssueCount} Fortify issues found. Please check the Fortify on Demand dashboard to see the issues that need resolving."
+                echo "There are ${criticalIssueCount} critical issues, ${highIssueCount} high issues, ${mediumIssueCount} medium issues, ${lowIssueCount} low issues."
+                if [[ ${{ parameters.qualityGateLevel }} -ge 1 && $criticalIssueCount -gt 0 ]]
+                then
+                  exit 15
+                elif [[ ${{ parameters.qualityGateLevel }} -ge 2 && $highIssueCount -gt 0 ]]
+                then
+                  exit 16
+                elif [[ ${{ parameters.qualityGateLevel }} -ge 3 && $mediumIssueCount -gt 0 ]]
+                then
+                  exit 17
+                elif [[ ${{ parameters.qualityGateLevel }} -ge 4 && $lowIssueCount -gt 0 ]]
+                then
+                  exit 18
+                fi
+            fi
+        else
+            echo "Unable to complete Fortify scan."
+            if [[ ${{ parameters.qualityGateLevel }} -ge 1 ]]
+            then
+              exit 19
+            fi
+        fi

@@ -25,6 +25,9 @@ parameters:
   ithcEnv: 'ithc'
   agentPool: hmcts-ss-sandbox
   jobTimeout: 900
+  fortifyTechnologyStack: 'JAVA/J2EE/Kotlin'
+  fortifyTechnologyVersion: '17'
+  javaVersion: '17'
   
 stages:
 - stage: BuildAndDeploy
@@ -38,6 +41,11 @@ stages:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
       steps:
+        - task: JavaToolInstaller@0
+          inputs:
+            versionSpec: ${{ parameters.javaVersion }}
+            jdkArchitectureOption: 'x64'
+            jdkSourceOption: 'PreInstalled'
         - template: ./steps/sonar-pr-option.yaml
         - template: ./steps/dependency-check.yaml
           parameters:
@@ -91,8 +99,20 @@ stages:
             azureContainerRegistrySubscription:  ${{ parameters.azureContainerRegistrySubscription }}
             applicationName:  ${{ parameters.applicationName }}
 
+    - template: ./jobs/fortify-scan-job.yaml
+      parameters:
+        dependsOn: BuildAndTestApplication
+        vaultAgentPool: ${{ parameters.agentPool }}
+        azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+        azureVault: ${{ parameters.azureVault }}
+        applicationName: ${{ parameters.applicationName }}
+        technologyStack: ${{ parameters.fortifyTechnologyStack }}
+        technologyVersion: ${{ parameters.fortifyTechnologyVersion }}
+
     - job: DeployBuild
-      dependsOn: BuildAndTestApplication
+      dependsOn:
+        - BuildAndTestApplication
+        - RunFortifyScan
       condition: succeeded()
       pool: ${{ parameters.agentPool }}
 
@@ -116,8 +136,8 @@ stages:
             secretsFilter: ${{ parameters.azureSecreKeys }}
         - template: ./steps/gradle-task.yaml
           parameters:
-            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             displayName: 'Run Pre Integration Test Setup'
+            azureKeyMapping: ${{ parameters.azureKeyMapping }}
             envMapping: ${{ parameters.envMapping }}
             gradleTasks: 'integrationPreTest'
             execute: ${{ parameters.preIntegrationTest }}

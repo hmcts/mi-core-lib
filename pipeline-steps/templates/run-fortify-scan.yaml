@@ -1,0 +1,39 @@
+parameters:
+  dependsOn: []
+  scanAgentPool: ''
+  vaultAgentPool: 'hmcts-ss-sbox'
+  azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-SBOX'
+  azureVault: 'mi-vault-sbox'
+  variableGroup: 'mi-env-variables'
+  useVariableGroup: 'true'
+  fortifyUsernameSecret: 'fortify-username'
+  fortifyPasswordSecret: 'fortify-password'
+  fortifyBaseUrl: 'https://api.emea.fortify.com'
+  applicationName: ''
+  rootFolder: '.'
+  qualityGateLevel: 2 # 0 for no quality gate, 1 includes critical issues only, 2 includes high, 3 includes medium and 4 includes low.
+  technologyStack: 'JS/TS/HTML'
+  technologyVersion: ''
+  retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
+
+stages:
+  - stage: FortifyScan
+    dependsOn: ${{ parameters.dependsOn }}
+    jobs:
+      - template: ./jobs/fortify-scan-job.yaml
+        parameters:
+          scanAgentPool: ${{ parameters.scanAgentPool }}
+          vaultAgentPool: ${{ parameters.vaultAgentPool }}
+          azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+          azureVault: ${{ parameters.azureVault }}
+          variableGroup: ${{ parameters.variableGroup }}
+          useVariableGroup: ${{ parameters.useVariableGroup }}
+          fortifyUsernameSecret: ${{ parameters.fortifyUsernameSecret }}
+          fortifyPasswordSecret: ${{ parameters.fortifyPasswordSecret }}
+          fortifyBaseUrl: ${{ parameters.fortifyBaseUrl }}
+          applicationName: ${{ parameters.applicationName }}
+          rootFolder: ${{ parameters.rootFolder }}
+          qualityGateLevel: ${{ parameters.qualityGateLevel }}
+          technologyStack: ${{ parameters.technologyStack }}
+          technologyVersion: ${{ parameters.technologyVersion }}
+          retryLimit: ${{ parameters.retryLimit }}

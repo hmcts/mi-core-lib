@@ -33,10 +33,11 @@ jobs:
   displayName: 'Run integration tests'
   dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
+  timeoutInMinutes: 120
 
   variables:
     pythonWorkingDir: './'
-    pythonVersion: 3.6
+    pythonVersion: '3.10'
   steps:
   - script: |
       apt-get update
@@ -64,6 +65,17 @@ jobs:
         curl -L -o oraclelib.zip "https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip"
         unzip oraclelib.zip
         chmod -R 755 instantclient_21_6
+  - task: Bash@3
+    displayName: 'Install latest sqlpackage'
+    inputs:
+      targetType: 'inline'
+      script: |
+        wget "http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0.0_1.0.2n-1ubuntu5.13_amd64.deb"
+        wget "http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.0/libssl1.0-dev_1.0.2n-1ubuntu5.13_amd64.deb"
+        dpkg -i libssl1.0.0_1.0.2n-1ubuntu5.13_amd64.deb
+        dpkg -i libssl1.0-dev_1.0.2n-1ubuntu5.13_amd64.deb
+        sed -i 's/#openssl_conf = openssl_init/openssl_conf = openssl_init/g' /etc/ssl/openssl.cnf
+        sed -i 's/SECLEVEL=2/SECLEVEL=0/g' /etc/ssl/openssl.cnf
   - task: AzureCLI@2
     inputs:
       scriptType: bash

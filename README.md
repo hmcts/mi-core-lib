@@ -1,5 +1,3 @@
 # Management Information Core
 
-### Core libraries and utilities for the MI services
-
-Library for Azure authentication based on entered details.
+Shared and common templates for use by other MI project repositories.

@@ -1,0 +1,30 @@
+name: HMCTS Management Information Core Library
+trigger:
+  - master
+
+parameters:
+  - name: environment
+    displayName: Environment
+    type: string
+    default: 'sbox'
+    values:
+      - 'sbox'
+      - 'dev'
+      - 'test'
+      - 'ithc'
+    
+variables:
+  applicationName: 'mi-core-lib'
+  azureSubscriptionPrefix: 'DTS-SHAREDSERVICES'
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+    environment: ${{ parameters.environment }}
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    environment: 'stg'
+    
+stages:
+  - template: ./pipeline-steps/templates/run-fortify-scan.yaml
+    parameters:
+      azureSubscriptionEndpoint: "${{ variables.azureSubscriptionPrefix }}-${{ upper(variables.environment) }}"
+      azureVault: "mi-vault-${{ lower(variables.environment) }}"
+      vaultAgentPool: "hmcts-ss-${{ lower(variables.environment) }}"
+      applicationName: "${{ variables.applicationName }}"

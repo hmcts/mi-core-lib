@@ -1,0 +1,95 @@
+parameters:
+  dependsOn: []
+  scanAgentPool: ''
+  vaultAgentPool: 'hmcts-ss-sbox'
+  azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-SBOX'
+  azureVault: 'mi-vault-sbox'
+  variableGroup: 'mi-env-variables'
+  useVariableGroup: 'true'
+  fortifyUsernameSecret: 'fortify-username'
+  fortifyPasswordSecret: 'fortify-password'
+  fortifyBaseUrl: 'https://api.emea.fortify.com'
+  applicationName: ''
+  rootFolder: '.'
+  qualityGateLevel: 2 # 0 for no quality gate, 1 includes critical issues only, 2 includes high, 3 includes medium and 4 includes low.
+  technologyStack: 'JS/TS/HTML'
+  technologyVersion: ''
+  retryLimit: 20 # 1 minute checks, so limit equals max timeout in minutes.
+
+jobs:
+  - ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/pull/')) }}:
+    - job: PrepareFortifySecrets
+      variables:
+        - group: ${{ parameters.variableGroup }}
+      dependsOn: ${{ parameters.dependsOn }}
+      ${{ if eq(parameters.useVariableGroup, 'true') }}:
+        ${{ if eq(parameters.scanAgentPool, '') }}:
+          pool:
+            vmImage: ubuntu-latest
+        ${{ if ne(parameters.scanAgentPool, '') }}:
+          pool: ${{ parameters.scanAgentPool }}
+        steps:
+          - checkout: none
+          - task: AzureCLI@2
+            name: GetFortifyCredentials
+            displayName: "Get Fortify Credentials"
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$(${{ parameters.fortifyUsernameSecret }})"
+                echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$(${{ parameters.fortifyPasswordSecret }})"
+      ${{ else }}:
+        pool: ${{ parameters.vaultAgentPool }}
+        steps:
+          - checkout: none
+          - task: AzureCLI@2
+            name: GetFortifyCredentials
+            displayName: "Get Fortify Credentials"
+            inputs:
+              azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                fortifyUsername=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyUsernameSecret }}" --query "value" -o tsv)
+                fortifyPassword=$(az keyvault secret show --vault-name "${{ parameters.azureVault }}" --name "${{ parameters.fortifyPasswordSecret }}" --query "value" -o tsv)
+                echo "##vso[task.setvariable variable=FortifyUsername;issecret=true;isOutput=true;]$fortifyUsername"
+                echo "##vso[task.setvariable variable=FortifyPassword;issecret=true;isOutput=true;]$fortifyPassword"
+    - job: RunFortifyScan
+      dependsOn: ['PrepareFortifySecrets']
+      variables:
+        fortifyUsername: $[ dependencies.PrepareFortifySecrets.outputs['GetFortifyCredentials.FortifyUsername'] ]
+        fortifyPassword: $[ dependencies.PrepareFortifySecrets.outputs['GetFortifyCredentials.FortifyPassword'] ]
+      ${{ if eq(parameters.scanAgentPool, '') }}:
+        pool:
+          vmImage: ubuntu-latest
+      ${{ if ne(parameters.scanAgentPool, '') }}:
+        pool: ${{ parameters.scanAgentPool }}
+      steps:
+        - checkout: self
+          clean: true
+        - template: ../steps/fortify-scan.yaml
+          parameters:
+            fortifyUsername: $(fortifyUsername)
+            fortifyPassword: $(fortifyPassword)
+            fortifyBaseUrl: ${{ parameters.fortifyBaseUrl }}
+            applicationName: ${{ parameters.applicationName }}
+            rootFolder: ${{ parameters.rootFolder }}
+            qualityGateLevel: ${{ parameters.qualityGateLevel }}
+            technologyStack: ${{ parameters.technologyStack }}
+            technologyVersion: ${{ parameters.technologyVersion }}
+            retryLimit: ${{ parameters.retryLimit }}
+  - ${{ else }}:
+    - job: RunFortifyScan
+      ${{ if eq(parameters.scanAgentPool, '') }}:
+        pool:
+          vmImage: ubuntu-latest
+      ${{ if ne(parameters.scanAgentPool, '') }}:
+        pool: ${{ parameters.scanAgentPool }}
+      steps:
+        - task: Bash@3
+          displayName: Skipping Fortify
+          inputs:
+            targetType: 'inline'
+            script: echo '$(Build.SourceBranch) does not match master, main or pull request.'

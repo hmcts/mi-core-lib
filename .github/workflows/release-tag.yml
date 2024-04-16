@@ -1,0 +1,42 @@
+name: create release tag
+
+on:
+  workflow_dispatch:
+  check_run:
+    types: [completed]
+
+jobs:
+  tags:
+    runs-on: ubuntu-latest
+    #if: github.sha == github.event.check_run.head_sha && github.event.check_run.conclusion == 'success'
+    steps:
+      # You have to check out your repo first.
+      - uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      github.event
+      - name: log-info
+        run: |
+          echo "build success"
+        env:
+          GIT_CONTEXT: ${{ toJSON(github) }}
+      - name: Wait for build to succeed
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: "bamboox2go.bamboox-synapse (1)"
+          timeoutSeconds: 30
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Do something with a passing build
+        if: steps.wait-for-build.outputs.conclusion == 'success'
+        run: |
+          echo "build success"
+      - name: Do something with a failing build
+        if: steps.wait-for-build.outputs.conclusion == 'failure'
+        run: |
+          echo "build failed"
+        
