@@ -32,14 +32,28 @@ parameters:
 stages:
 - stage: BuildAndDeploy
   jobs:
+    - job: GetSecrets
+      pool: ${{ parameters.agentPool }}
+      steps:
+        - task: AzureCLI@2
+          name: GetNvdApiKey
+          displayName: "Get NVD API key"
+          inputs:
+            azureSubscription: ${{ parameters.azureSubscriptionEndpoint }}
+            scriptType: "bash"
+            scriptLocation: "inlineScript"
+            inlineScript: |
+              nvdApiKeySecret=$(az keyvault secret show --vault-name "mi-vault-${{ lower(parameters.env) }}" --name "nvd-api-key" --query "value" -o tsv)
+              echo "##vso[task.setvariable variable=nvdApiKey;issecret=true;isOutput=true;]$nvdApiKeySecret"
     - job: BuildAndTestApplication
+      dependsOn: GetSecrets
       # condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-
       pool:
         vmImage: 'Ubuntu-latest'
       variables:
         aptDependencies: 'qtbase5-dev'
         env: ${{ parameters.env }}
+        nvdApiKey: $[ dependencies.GetSecrets.outputs['GetNvdApiKey.nvdApiKey'] ]
       steps:
         - task: JavaToolInstaller@0
           inputs:
@@ -50,6 +64,7 @@ stages:
         - template: ./steps/dependency-check.yaml
           parameters:
             execute: ${{ parameters.dependencyCheck }}
+            nvdApiKey: $(nvdApiKey)
         - template: ./steps/gradle-task.yaml
           parameters:
             checkstyle: true
