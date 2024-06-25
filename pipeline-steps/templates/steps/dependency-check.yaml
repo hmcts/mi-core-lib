@@ -1,7 +1,14 @@
 parameters:
   execute: true
+  nvdApiKey: ''
 
 steps:
+  - task: PowerShell@2
+    displayName: 'Add NVD API key to the environment for discovery by dependency check'
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "##vso[task.setvariable variable=NVD_API_KEY;]${{ parameters.nvdApiKey }}"
   - task: Gradle@2
     displayName: OWASP Dependency Check
     condition: eq('${{ parameters.execute }}', true)

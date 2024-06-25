@@ -1,5 +1,5 @@
 parameters:
-  helmVersion: '3.0.0'
+  helmVersion: '3.14.0'
   azureContainerRegistry: ''
   azureSubscriptionEndpoint: ''
   applicationName: ''
