@@ -114,20 +114,20 @@ stages:
             azureContainerRegistrySubscription:  ${{ parameters.azureContainerRegistrySubscription }}
             applicationName:  ${{ parameters.applicationName }}
 
-    # - template: ./jobs/fortify-scan-job.yaml
-    #   parameters:
-    #     dependsOn: BuildAndTestApplication
-    #     vaultAgentPool: ${{ parameters.agentPool }}
-    #     azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
-    #     azureVault: ${{ parameters.azureVault }}
-    #     applicationName: ${{ parameters.applicationName }}
-    #     technologyStack: ${{ parameters.fortifyTechnologyStack }}
-    #     technologyVersion: ${{ parameters.fortifyTechnologyVersion }}
+    - template: ./jobs/fortify-scan-job.yaml
+      parameters:
+        dependsOn: BuildAndTestApplication
+        vaultAgentPool: ${{ parameters.agentPool }}
+        azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
+        azureVault: ${{ parameters.azureVault }}
+        applicationName: ${{ parameters.applicationName }}
+        technologyStack: ${{ parameters.fortifyTechnologyStack }}
+        technologyVersion: ${{ parameters.fortifyTechnologyVersion }}
 
     - job: DeployBuild
       dependsOn:
         - BuildAndTestApplication
-        # - RunFortifyScan
+        - RunFortifyScan
       condition: succeeded()
       pool: ${{ parameters.agentPool }}
 
