@@ -28,6 +28,9 @@ parameters:
 - name: preExecuitonScript
   type: string
   default: ''
+- name: pythonVersion
+  type: string
+  default: '3.10'
 jobs:
 - job: run_integration_tests
   displayName: 'Run integration tests'
@@ -37,7 +40,7 @@ jobs:
 
   variables:
     pythonWorkingDir: './'
-    pythonVersion: '3.10'
+    pythonVersion: ${{ parameters.pythonVersion }}
   steps:
   - script: |
       apt-get update

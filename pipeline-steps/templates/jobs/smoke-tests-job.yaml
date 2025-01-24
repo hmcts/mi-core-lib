@@ -37,7 +37,10 @@ parameters:
 - name: dependsOn
   type: string
   default: 'deploy_adf'
-
+- name: pythonVersion
+  type: string
+  default: '3.10'
+  
 jobs:
 - job: run_smoke_tests
   displayName: 'Run smoke tests'
@@ -50,7 +53,7 @@ jobs:
   steps:
   - template: ../steps/install-python.yaml
     parameters:
-      pythonVersion: ${{ variables.pythonVersion }}
+      pythonVersion: ${{ parameters.pythonVersion }}
   - template: ../steps/vault-secrets.yaml
     parameters: 
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
