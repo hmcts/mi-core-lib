@@ -39,7 +39,7 @@ steps:
       echo Lower case env: $lowerCaseEnv
 
 
-- task: AzureKeyVault@1
+- task: AzureKeyVault@2
   displayName: 'Get Secrets from KeyVault'
   inputs:
     azureSubscription: ${{ parameters.serviceConnection }}
