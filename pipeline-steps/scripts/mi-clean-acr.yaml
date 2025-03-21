@@ -30,13 +30,12 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 az acr login --name sdshmctspublic
-          - ${{ if parameters.removePrs }}:
-            - task: AzureCLI@1
-              displayName: "Cleanup ACR PRs in Repository"
-              inputs:
-                azureSubscription: $(azureSubscriptionEndpoint)
-                scriptLocation: "inlineScript"
-                inlineScript: |
-                  az acr repository delete --name sdshmctspublic --image "${{ parameters.repository }}:${{ parameters.imageTag}}" --yes
-                  echo "Deleted image ${{ parameters.repository }}:${{ parameters.imageTag }}"
+          - task: AzureCLI@1
+            displayName: "Cleanup ACR PRs in Repository"
+            inputs:
+              azureSubscription: $(azureSubscriptionEndpoint)
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az acr repository delete --name sdshmctspublic --image "${{ parameters.repository }}:${{ parameters.imageTag}}" --yes
+                echo "Deleted image ${{ parameters.repository }}:${{ parameters.imageTag }}"
           
