@@ -1,0 +1,42 @@
+name: '$(SourceBranchName)-$(Build.SourceVersion) Build-$(Build.BuildId)'
+
+parameters:
+  - name: repository
+    displayName: Name of ACR Repository
+    type: string
+    default: mi/azure-functions
+  - name: imageTag
+    displayName: ImageToRemove
+    type: string
+    default: ''
+
+variables:
+  azureSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
+
+trigger: none
+pr: none
+
+stages:
+  - stage: CleanupAcr
+    jobs:
+      - job: 'CleanupSdsHmctsPublicAcr'
+        pool:
+          vmImage: 'Ubuntu-latest'
+        steps:
+          - task: AzureCLI@1
+            displayName: "ACR Login"
+            inputs:
+              azureSubscription: $(azureSubscriptionEndpoint)
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                az acr login --name sdshmctspublic
+          - ${{ if parameters.removePrs }}:
+            - task: AzureCLI@1
+              displayName: "Cleanup ACR PRs in Repository"
+              inputs:
+                azureSubscription: $(azureSubscriptionEndpoint)
+                scriptLocation: "inlineScript"
+                inlineScript: |
+                  az acr repository delete --name sdshmctspublic --image "${{ parameters.repository }}:${{ parameters.imageTag}}" --yes
+                  echo "Deleted image ${{ parameters.repository }}:${{ parameters.imageTag }}"
+          
