@@ -14,12 +14,11 @@ steps:
         seachedSecret=$(az keyvault secret list --vault-name ${{ parameters.azureVault }}  --query "[?name=='${{ parameters.secretName }}'].name" -o tsv)
         if [ -z "$seachedSecret" ]; then
               echo  "This is a new secret"
-              az keyvault secret set --name ${{ parameters.secretName }} --vault-name ${{ parameters.azureVault }}  --value "${{ parameters.secretValue }}"
         else
             currentValue=$(az keyvault secret show --vault-name ${{ parameters.azureVault }} --name ${{ parameters.secretName }} --query 'value' -o tsv)
             if [ "${{ parameters.secretValue }}" = "$currentValue" ]; then
                 echo "Secret has not changed. Skipped"
             else
-                az keyvault secret set --name ${{ parameters.secretName }} --vault-name ${{ parameters.azureVault }}  --value "${{ parameters.secretValue }}"
+                echo "Secret is different."
             fi
         fi
