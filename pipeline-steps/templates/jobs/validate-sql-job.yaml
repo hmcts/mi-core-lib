@@ -27,7 +27,7 @@ jobs:
       pathToPublish: '${{ parameters.sqlPath }}/bin/${{ parameters.buildConfiguration }}/${{ parameters.dacpacName }}.dacpac'
 
   pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2019'
   steps:
   - task: NuGetToolInstaller@1
 
