@@ -52,8 +52,6 @@ jobs:
     pythonVersion: '3.10'
   steps:
   - template: ../steps/install-python.yaml
-    parameters:
-      pythonVersion: ${{ parameters.pythonVersion }}
   - template: ../steps/vault-secrets.yaml
     parameters: 
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
