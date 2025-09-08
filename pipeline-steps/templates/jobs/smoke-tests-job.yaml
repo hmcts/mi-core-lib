@@ -67,8 +67,6 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         set -e
-        pythonCmd=python${{ variables.pythonVersion }}
-        echo ${{ variables.pythonVersion }}
         $pythonCmd --version
         $pythonCmd -m venv working_dir
         source working_dir/bin/activate
