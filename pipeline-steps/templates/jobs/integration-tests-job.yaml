@@ -64,10 +64,10 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |
-        apt-get install libaio1
-        curl -L -o oraclelib.zip "https://download.oracle.com/otn_software/linux/instantclient/216000/instantclient-basic-linux.x64-21.6.0.0.0dbru.zip"
+        apt-get install libaio1t64
+        curl -L -o oraclelib.zip "https://download.oracle.com/otn_software/linux/instantclient/2390000/instantclient-basic-linux.x64-23.9.0.25.07.zip"
         unzip oraclelib.zip
-        chmod -R 755 instantclient_21_6
+        chmod -R 755 instantclient_23_9
   - task: Bash@3
     displayName: 'Install latest sqlpackage'
     inputs:
