@@ -68,7 +68,7 @@ jobs:
         curl -L -o oraclelib.zip "https://download.oracle.com/otn_software/linux/instantclient/2390000/instantclient-basic-linux.x64-23.9.0.25.07.zip"
         unzip oraclelib.zip
         chmod -R 755 instantclient_23_9
-        ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /opt/oracle/instantclient_21_6/libaio.so.1
+        ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /opt/oracle/instantclient_21_13/libaio.so.1
   - task: Bash@3
     displayName: 'Install latest sqlpackage'
     inputs:
