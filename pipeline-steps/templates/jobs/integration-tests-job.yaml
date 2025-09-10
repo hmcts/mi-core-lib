@@ -69,6 +69,7 @@ jobs:
         unzip oraclelib.zip
         chmod -R 755 instantclient_23_9
         ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
+        ln -s instantclient_23_9/libclntsh.so /usr/lib/x86_64-linux-gnu/libclntsh.so
   - task: Bash@3
     displayName: 'Install latest sqlpackage'
     inputs:
