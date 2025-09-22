@@ -56,7 +56,7 @@ jobs:
             parameters: 
               azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
               keyVaultName: ${{ parameters.keyvaultName }}
-              azureSecreKeys: '*'
+              azureSecretKeys: '*'
               runAsPreJob: false
           - task: DownloadBuildArtifacts@0
             inputs:

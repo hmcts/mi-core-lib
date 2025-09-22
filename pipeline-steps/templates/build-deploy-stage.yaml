@@ -14,7 +14,7 @@ parameters:
   azurePromSubscriptionEndpoint: 'DTS-SHAREDSERVICES-PROD'
   azureKeyMapping: {}
   envMapping: {}
-  azureSecreKeys: '*' # coma separated azure keys
+  azureSecretKeys: '*' # coma separated azure keys
   azureVault: ''
   dependencyCheck: true
   preIntegrationTest: false
@@ -148,7 +148,7 @@ stages:
           parameters:
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
-            secretsFilter: ${{ parameters.azureSecreKeys }}
+            secretsFilter: ${{ parameters.azureSecretKeys }}
         - template: ./steps/gradle-task.yaml
           parameters:
             displayName: 'Run Pre Integration Test Setup'
@@ -188,7 +188,7 @@ stages:
           parameters: 
             azureSubscriptionEndpoint: ${{ parameters.azureSubscriptionEndpoint }}
             keyVaultName: ${{ parameters.azureVault }}
-            secretsFilter: ${{ parameters.azureSecreKeys }}
+            secretsFilter: ${{ parameters.azureSecretKeys }}
         - template: ./steps/gradle-task.yaml
           parameters:
             displayName: 'Run Integration Test'

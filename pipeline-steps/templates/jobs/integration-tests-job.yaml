@@ -42,7 +42,7 @@ jobs:
     parameters: 
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
-      azureSecreKeys: '*'
+      azureSecretKeys: '*'
   - script: |
       ${{ parameters.preExecuitonScript }}
     displayName: 'Pre-execution  script'

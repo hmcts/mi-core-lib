@@ -25,7 +25,7 @@ Path: ./templates/build-deploy-stage.yaml
 | azurePromAcr                     | $(azure.prom.acr)                   | Azure promotion container registry|
 | azurePromSubscriptionEndpoint    | $(azure.prom.subscription.endpoint) | Azure promotion subscription endpoint |
 | azureKeyMapping                  | {}                                  | Maps from vault secrets (SecretKey, environment variable name) |
-| azureSecreKeys                   | '*'                                 | coma separated azure keys |
+| azureSecretKeys                   | '*'                                 | coma separated azure keys |
 | azureVault                       | ''                                  | Azure vault |
 | preIntegrationTest               | false                               | Enable pre-deployment task |
 | postIntegrationTest              | true                                | Enable integration test(post deployment) |
