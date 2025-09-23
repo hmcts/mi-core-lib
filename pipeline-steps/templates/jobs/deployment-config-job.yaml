@@ -56,7 +56,7 @@ jobs:
     parameters: 
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
-      azureSecreKeys: '*'
+      azureSecretKeys: '*'
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
     inputs:
