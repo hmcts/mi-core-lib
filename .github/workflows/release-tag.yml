@@ -11,7 +11,7 @@ jobs:
     #if: github.sha == github.event.check_run.head_sha && github.event.check_run.conclusion == 'success'
     steps:
       # You have to check out your repo first.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
