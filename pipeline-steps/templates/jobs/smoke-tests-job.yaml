@@ -37,6 +37,9 @@ parameters:
 - name: dependsOn
   type: string
   default: 'deploy_adf'
+- name: smokeEnv
+  type: string
+  default: 'none'
 
 jobs:
 - job: run_smoke_tests
