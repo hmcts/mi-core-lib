@@ -52,6 +52,24 @@ jobs:
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecretKeys: '*'
+
+  - script: |
+      echo "SMOKE_ENV = $SMOKE_ENV"
+
+      if [ "$SMOKE_ENV" = "default" ]; then
+        echo "Running ALL smoke tests"
+        ./run-smoke-tests.sh all
+      else
+        IFS=',' read -ra SUITES <<< "$SMOKE_ENV"
+        for suite in "${SUITES[@]}"; do
+          echo "Running smoke test suite: $suite"
+          ./run-smoke-tests.sh "$suite"
+        done
+      fi
+    displayName: Run selected smoke tests
+    env:
+      SMOKE_ENV: ${{ parameters.smokeEnv }}
+
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
     inputs:
