@@ -72,7 +72,7 @@ jobs:
       pip install -r requirements.txt
 
       # Run smoke tests
-      python -m pytest src/smokeTest/test_smoke.py -v
+      python -m pytest src/smokeTest/mi/test_smoke.py -v
     displayName: Run Python smoke tests
     env:
       ENVIRONMENT: ${{ parameters.environment }}
