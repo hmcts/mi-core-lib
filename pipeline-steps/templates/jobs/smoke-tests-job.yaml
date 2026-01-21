@@ -51,6 +51,7 @@ jobs:
 
   variables:
     pythonWorkingDir: './'
+
   steps:
   - template: ../steps/vault-secrets.yaml
     parameters: 
@@ -62,14 +63,21 @@ jobs:
       echo "ENVIRONMENT = $ENVIRONMENT"
       echo "SMOKE_ENV = $SMOKE_ENV"
 
-      python3 -m pip install --upgrade pip
-      python3 -m pip install -r requirements.txt
+      # Create and activate virtual environment
+      python3 -m venv .venv
+      source .venv/bin/activate
 
-      python3 -m pytest src/smokeTest/test_smoke.py -v
+      # Install dependencies inside venv
+      pip install --upgrade pip
+      pip install -r requirements.txt
+
+      # Run smoke tests
+      python -m pytest src/smokeTest/test_smoke.py -v
     displayName: Run Python smoke tests
     env:
       ENVIRONMENT: ${{ parameters.environment }}
       SMOKE_ENV: ${{ parameters.smokeEnv }}
+
 
   - task: CmdLine@2
     displayName: 'Prepare Az environment'
