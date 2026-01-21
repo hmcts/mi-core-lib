@@ -62,10 +62,10 @@ jobs:
       echo "ENVIRONMENT = $ENVIRONMENT"
       echo "SMOKE_ENV = $SMOKE_ENV"
 
-      python -m pip install --upgrade pip
-      pip install -r requirements.txt
+      python3 -m pip install --upgrade pip
+      python3 -m pip install -r requirements.txt
 
-      python -m pytest src/smokeTest/test_smoke.py -v
+      python3 -m pytest src/smokeTest/test_smoke.py -v
     displayName: Run Python smoke tests
     env:
       ENVIRONMENT: ${{ parameters.environment }}
