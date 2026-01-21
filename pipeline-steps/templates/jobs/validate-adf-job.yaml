@@ -26,14 +26,12 @@ jobs:
     displayName: 'Install npm package'
     inputs:
       command: 'install'
-      workingDir: '$(Build.Repository.LocalPath)/${{ parameters.rootFolder }}'
       verbose: true
 
   - task: Npm@1
     displayName: 'Validate'
     inputs:
       command: 'custom'
-      workingDir: '$(Build.Repository.LocalPath)/${{ parameters.rootFolder }}'
       customCommand: >
         run start validate
         $(Build.Repository.LocalPath)/${{ parameters.rootFolder }}
