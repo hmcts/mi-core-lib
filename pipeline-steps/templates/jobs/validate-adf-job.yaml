@@ -25,19 +25,19 @@ jobs:
   - task: Npm@1
     displayName: 'Install npm package'
     inputs:
-    command: 'install'
-    workingDir: '$(Build.Repository.LocalPath)/${{ parameters.rootFolder }}'
-    verbose: true
+      command: 'install'
+      workingDir: '$(Build.Repository.LocalPath)/${{ parameters.rootFolder }}'
+      verbose: true
 
   - task: Npm@1
     displayName: 'Validate'
     inputs:
-    command: 'custom'
-    workingDir: '$(Build.Repository.LocalPath)/${{ parameters.rootFolder }}'
-    customCommand: >
-      run start validate
-      $(Build.Repository.LocalPath)/${{ parameters.rootFolder }}
-      /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }}
+      command: 'custom'
+      workingDir: '$(Build.Repository.LocalPath)/${{ parameters.rootFolder }}'
+      customCommand: >
+        run start validate
+        $(Build.Repository.LocalPath)/${{ parameters.rootFolder }}
+        /subscriptions/${{ parameters.subscriptionId }}/resourceGroups/mi-${{ parameters.env }}-rg/providers/Microsoft.DataFactory/factories/${{ parameters.adfName }}
 
   - task: Npm@1
     displayName: 'Validate and Generate ARM template'
