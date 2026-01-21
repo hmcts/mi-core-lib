@@ -57,6 +57,7 @@ jobs:
       azureSecretKeys: '*'
 
   - script: |
+      echo "ENVIRONMENT = $ENVIRONMENT"
       echo "SMOKE_ENV = $SMOKE_ENV"
 
       python -m pip install --upgrade pip
@@ -65,10 +66,7 @@ jobs:
       python -m pytest src/smokeTest/test_smoke.py -v
     displayName: Run Python smoke tests
     env:
-      SMOKE_ENV: ${{ parameters.smokeEnv }}
-
-    displayName: Run selected smoke tests
-    env:
+      ENVIRONMENT: ${{ parameters.environment }}
       SMOKE_ENV: ${{ parameters.smokeEnv }}
 
   - task: CmdLine@2
