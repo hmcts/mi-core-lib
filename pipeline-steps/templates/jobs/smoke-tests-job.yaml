@@ -40,6 +40,8 @@ parameters:
 - name: smokeEnv
   type: string
   default: 'none'
+- name: environment
+  type: string
 
 jobs:
 - job: run_smoke_tests
