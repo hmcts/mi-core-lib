@@ -58,6 +58,11 @@ jobs:
       azureSubscriptionEndpoint: ${{ parameters.subscriptionEndpoint }}
       keyVaultName: ${{ parameters.keyvaultName }}
       azureSecretKeys: '*'
+      
+  - script: |
+      echo "==== Azure SP env vars (sanitized) ===="
+      env | sort | grep AZ_ || true
+    displayName: 'DEBUG: List AZ_* environment variables'
 
   - script: |
       echo "ENVIRONMENT = $ENVIRONMENT"
