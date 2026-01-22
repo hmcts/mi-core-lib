@@ -66,7 +66,7 @@ jobs:
       export AZ_SERVICE_PRINCIPAL_SECRET="$(AZ_SERVICE_PRINCIPAL_SECRET)"
       export AZ_SERVICE_PRINCIPAL_TENANT_ID="$(AZ_SERVICE_PRINCIPAL_TENANT_ID)"
 
-      export AZ_SUBSCRIPTION_ID="${{ parameters.subscriptionId }}"
+      export AZ_SUBSCRIPTION_ID="$(AZ_SUBSCRIPTION_ID)"
       export AZ_RESOURCE_GROUP_NAME="mi-${{ parameters.environment }}-rg"
       export AZ_DATAFACTORY_NAME="mi-ingestion-adf-${{ parameters.environment }}"
     displayName: 'Set Azure env vars for smoke tests'
