@@ -37,12 +37,29 @@ parameters:
 - name: dependsOn
   type: string
   default: 'deploy_adf'
+- name: runSmoke
+  type: string
 
 jobs:
 - job: run_smoke_tests
   displayName: 'Run smoke tests'
   dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
+
+  steps:
+    - checkout: self
+
+    - script: |
+        echo "Selected smoke suite: ${{ parameters.runSmoke }}"
+
+        if [ "${{ parameters.runSmoke }}" = "default" ]; then
+          echo "Running full smoke suite"
+          ./run-smoke.sh all
+        else
+          echo "Running selected smoke suite"
+          ./run-smoke.sh "${{ parameters.runSmoke }}"
+        fi
+      displayName: Run selected smoke tests
 
   variables:
     pythonWorkingDir: './'
