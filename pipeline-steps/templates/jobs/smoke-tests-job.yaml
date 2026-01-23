@@ -89,6 +89,7 @@ jobs:
 
         deactivate
     env:
+      SMOKE_SUITE: ${{ parameters.runSmoke }}
       SQL_SERVER_NAME: ${{ parameters.databaseServerName }}
       SQL_DATABASE_NAME: ${{ parameters.databaseName }}
       SQL_SERVER_USERNAME: '$(${{ parameters.sqlServerUserNameKey }})'
