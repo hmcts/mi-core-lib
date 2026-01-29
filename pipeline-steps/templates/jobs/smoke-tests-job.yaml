@@ -39,6 +39,7 @@ parameters:
   default: 'deploy_adf'
 - name: runSmoke
   type: string
+  default: 'All'
 
 jobs:
 - job: run_smoke_tests
