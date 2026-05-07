@@ -69,7 +69,7 @@ steps:
         echo "Using Foritfy entitlement id: ${entitlementId}"
 
         # Technology stack selection seems to make no impact on scan results.
-        scanUrl=$(echo "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}/static-scans/start-scan?assessmentTypeId=117&technologyStack=${{ parameters.technologyStack }}&fragNo=-1&offset=0&entitlementId=${entitlementId}&entitlementFrequencyType=Subscription")
+        scanUrl=$(echo "${{ parameters.fortifyBaseUrl }}/api/v3/releases/${releaseId}/static-scans/start-scan?assessmentTypeId=117&technologyStack=${{ parameters.technologyStack }}&fragNo=-1&offset=0&entitlementId=${entitlementId}&entitlementFrequencyType=SingleScan")
         if [[ -n "${{ parameters.technologyVersion }}" ]]
         then
           scanUrl=$(echo "${scanUrl}&languageLevel=${{ parameters.technologyVersion }}")
