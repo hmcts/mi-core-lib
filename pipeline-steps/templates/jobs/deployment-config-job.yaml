@@ -43,6 +43,7 @@ jobs:
   displayName: 'Run deployment config'
   dependsOn: ${{ parameters.dependsOn }}
   pool: ${{ parameters.agentPool }}
+  timeoutInMinutes: 120
 
   variables:
     pythonWorkingDir: './'
